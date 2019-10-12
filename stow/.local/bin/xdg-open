@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+# Fake out xdg to use rifle to open files.
+
+rifle "$@"

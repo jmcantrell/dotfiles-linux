@@ -1,0 +1,55 @@
+#!/usr/bin/env sh
+
+# Install a minecraft server service.
+# Usage: install-minecraft-service [version] [user] [variant]
+# Examples:
+#     install-minecraft-service 1.12
+#     user=minecraft install-minecraft-service 1.9
+#     variant=forge install-minecraft-service
+
+set -e
+
+version=${1:-`minecraft-version-latest`}
+user=${user:-minecraft}
+
+home=/home/$user
+
+if ! test -d "$home"; then
+    sudo useradd -m "$user"
+    sudo passwd -d "$user"
+fi
+
+dir=$home sudo install-minecraft-server "$version"
+
+if test "$variant"; then
+    dir=$home sudo install-minecraft-server-"$variant" "$version"
+fi
+
+sh="#!/usr/bin/env sh"
+echo -e "$sh\n\nexport PATH=\$HOME" | sudo tee "$home"/.profile
+echo -e "$sh\n\nminecraft-server \"$version\" \$HOME" | sudo tee "$home"/server
+sudo cp -L --preserve=mode "`which minecraft-server`" "$home"
+sudo chown -R "$user:$user" "$home"
+
+# allow service to run without being logged in
+sudo loginctl enable-linger "$user"
+
+systemd=$home/.config/systemd/user
+service_name=minecraft_server.service
+service=$systemd/$service_name
+target=default.target
+wants=$systemd/$target.wants
+
+sudo mkdir -p "$wants"
+
+echo "[Unit]
+Description='A Minecraft Server'
+After=network.target
+[Service]
+Restart=on-failure
+ExecStart=$home/server
+[Install]
+WantedBy=$target
+" | sudo tee "$service"
+
+sudo ln -sfv "$service" "$wants/$service_name"

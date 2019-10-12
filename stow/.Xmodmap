@@ -1,0 +1,11 @@
+! Turn "Caps Lock" into Compose for typing fancy UTF-8 characters.
+! To see all of the characters that you can type, run the command:
+!     less $(locate en_US.UTF-8/Compose)
+
+keycode 66 = Multi_key
+clear lock
+
+! Turn right-Ctrl, which I never use anyway, into a Greek key so that
+! typing mathematics becomes easier.
+
+keycode 105 = dead_greek

@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+
+# Run a minecraft client.
+# Usage: minecraft [version] [directory]
+
+set -e
+
+current=$HOME/.minecraft
+
+version=${1:-`minecraft-version-latest`}
+dir=${2:-$current}
+
+mkdir -p "$dir"; cd "$dir"
+
+test "$dir" = "$current" || ln -sfvT "$dir" "$current"
+test -x client || install-minecraft $version .
+
+exec ./client

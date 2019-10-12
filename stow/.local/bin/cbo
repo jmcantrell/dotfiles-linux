@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+# Command abstraction for pasting text from clipboard.
+
+xsel -ob

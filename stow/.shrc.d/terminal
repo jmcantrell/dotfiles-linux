@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+alias term=$TERMINAL
+alias t=term
+alias te='t -e'      # run command in terminal
+alias th='te -hold'  # same, but leave open after

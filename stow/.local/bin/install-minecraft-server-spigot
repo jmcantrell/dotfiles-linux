@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+
+# Install and configure a minecraft spigot server.
+
+set -e
+
+version=${1:-`minecraft-version-latest`}
+
+dir=${dir:-$HOME/.minecraft-server}
+
+mkdir -p "$dir"; cd "$dir"
+
+curl -sL -o buildtools.jar \
+    https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
+
+spigot=spigot-$version.jar
+
+test -f "$spigot" || java -jar buildtools.jar --rev $version
+
+ln -sfv "$spigot" spigot.jar
+ln -sfv spigot.jar server.jar
+
+echo "eula=true" >eula.txt
+echo stop | java -jar spigot.jar nogui

@@ -1,0 +1,56 @@
+#!/usr/bin/env sh
+
+# Persist settings for a touchpad.
+
+set -e
+
+if ! which xinit &>/dev/null; then
+    echo "Xorg is not installed" >&2
+    exit 0
+fi
+
+device_ids() {
+    xinput --list | grep -v XTEST |
+    grep '\bslave \+pointer\b' |
+    cut -f2 | cut -d= -f2
+}
+
+device_name() {
+    local id=${1:?missing device id}
+    xinput --list --name-only "$id"
+}
+
+choose_device() {
+    echo "Enter the device id to enable:" >&2
+    local id
+    device_ids |
+    while read -r id; do
+        echo "$id) `device_name "$id"`" >&2
+    done
+    read -p "${PS3:-#? }" id
+    # ensure a valid id was entered
+    device_ids | grep -q "^$id$" || return 1
+    echo "$id"
+}
+
+id=${1:-`choose_device`}
+name=`device_name "$id"`
+conf=/etc/X11/xorg.conf.d/99-touchpad-$id.conf
+
+echo "
+Section \"InputClass\"
+    Identifier \"touchpad\"
+    MatchProduct \"$name\"
+    Driver \"libinput\"
+    Option \"AccelSpeed\"          \"1\"
+    Option \"DisableWhileTyping\"  \"on\"
+    Option \"HorizontalScrolling\" \"off\"
+    Option \"NaturalScrolling\"    \"on\"
+    Option \"ScrollMethod\"        \"twofinger\"
+    Option \"Tapping\"             \"on\"
+    Option \"TappingButtonMap\"    \"lrm\"
+    Option \"TappingDrag\"         \"on\"
+EndSection
+" | sudo tee "$conf"
+
+echo "Change options in: $conf" >&2

@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+# A wrapper for feh to set default actions and options.
+
+exec /usr/bin/feh \
+    --sort filename --scale-down --auto-zoom \
+    --action1 ";[copy path to clipboard]echo %F | xsel -ib" \
+    --action2 ";[open in gimp]gimp -ad %F" \
+    --action3 ";[open in mypaint]mypaint %F" \
+    --action4 ";[animate gif]gifview -a %F" \
+    --action5 ";[set desktop background]setbg %F" \
+    --info ";identify -format '%%m %%Q%%%% %%z-bit %%r %%G %%b' %F" \
+    "$@"

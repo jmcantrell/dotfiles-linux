@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+
+# Download a minecraft server to the current directory.
+# Usage: jar=`get-minecraft-server [version]`
+
+set -e
+
+version=${1:-`minecraft-version-latest`}
+
+jar=minecraft-$version.jar
+url=https://s3.amazonaws.com/Minecraft.Download/versions/$version/minecraft_server.$version.jar
+
+test -f "$jar" || curl -sL -o "$jar" "$url"
+
+echo "$jar"

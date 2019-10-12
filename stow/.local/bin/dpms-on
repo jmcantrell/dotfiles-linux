@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# Blank display at 5 min, sleep at 10, power off at 15.
+
+xset s on +dpms
+setterm --default
+
+blank_minutes=5
+sleep_minutes=10
+power_minutes=15
+
+xset dpms \
+    $(( $blank_minutes * 60 )) \
+    $(( $sleep_minutes * 60 )) \
+    $(( $power_minutes * 60 ))

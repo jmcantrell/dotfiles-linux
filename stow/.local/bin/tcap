@@ -1,0 +1,165 @@
+#!/usr/bin/env bash
+
+me=$(basename $0)
+usage="Capture text snippet on clipboard to a file.
+
+Think (t)ext (cap)ture when typing tcap.
+
+Optional Dependencies:
+xsel, libcanberra, notification daemon
+
+Usage:
+    $me [-h] [-nca] [-bp]
+    [-e command][-D directory] [filename]
+
+Examples:
+    # capture text from stdin
+    echo 'remember that thing that time' | $me
+
+    # capture from clipboard, notify, copy filename
+    $me -bnc
+
+The first non-option argument is the output filename.
+If no filename is given, %Y-%m-%d_%H-%M-%S.txt will be used.
+"
+
+capture_format() {
+    local text=$1
+    local lines=$2
+    local words=$3
+    local bytes=$4
+
+    text=${text//\$t/$capture_filetype}
+
+    # some should only be applied if the file exists
+    if [[ -f $capture_file ]]; then
+        # full path
+        text=${text//\$f/$capture_file}
+
+        # file name (w/o dir or ext)
+        local n=${capture_file##*/}; n=${n%%.*}
+        text=${text//\$n/$n}
+
+        # file size (bytes)
+        local s=$(stat -c %s "$capture_file")
+        text=${text//\$s/$s}
+    fi
+
+    # number of lines
+    text=${text//\$l/$lines}
+
+    # number of words
+    text=${text//\$w/$words}
+
+    # number of characters
+    text=${text//\$c/$bytes}
+
+    # handle any literal '$'
+    text=${text//\$\$/\$}
+
+    date +"$text"  # handle date/time on the way out
+}
+
+# ls /usr/share/sounds/freedesktop/stereo/
+tick_sound=message-new-instant
+shutter_sound=camera-shutter
+
+directory=$PWD
+capture_filetype=txt
+unset verbose
+unset use_audible_cues
+unset notify_on_capture
+unset copy_path_to_clipboard
+unset from_primary
+unset from_clipboard
+unset preview_content
+
+unset OPTIND
+while getopts ":D:pbiand:ce:h" option; do
+    case $option in
+        D) directory=$OPTARG ;;
+        p) from_primary=1 ;;
+        b) from_clipboard=1 ;;
+        i) preview_content=1 ;;
+
+        # might be suitable for another tool
+        a) use_audible_cues=1 ;;
+        n) notify_on_capture=1 ;;
+        d) delay_count=$OPTARG ;;
+        c) copy_path_to_clipboard=1 ;;
+
+        # run commands after capture
+        e) exec_command=$OPTARG ;;
+
+        *) echo "$usage" >&2; exit 1 ;;
+        h) echo "$usage" >&2; exit 0 ;;
+    esac
+done && shift $(($OPTIND - 1))
+
+# if file isn't given as $1, then
+# use a default filename that sorts chronologically
+capture_file=${1:-${directory:-$PWD}/%Y-%m-%d_%H-%M-%S.\$t}
+
+if [[ -n $from_primary ]]; then
+    # use currently selected text
+    text=$(xsel -p)
+elif [[ -n $from_clipboard ]]; then
+    # use text from clipboard
+    text=$(xsel -b)
+else
+    # use text from stdin
+    text=$(cat)
+fi
+
+wc=($(echo "$text" | wc -lwc))
+lines=${wc[0]}
+words=${wc[1]}
+bytes=${wc[2]}
+
+capture_file=$(capture_format "$capture_file" $lines $words $bytes)
+capture_file=$(readlink -f "$capture_file")
+
+if [[ -z $text ]]; then
+    notify-send "no text to capture"
+    exit 1
+fi
+
+rm -f "$capture_file"
+mkdir -p "$(dirname "$capture_file")"
+
+if [[ -n $preview_content ]]; then
+    echo "$text" | ${EDITOR:-vim} - +"file $capture_file"
+else
+    echo "$text" >"$capture_file"
+fi
+
+if [[ ! -f $capture_file ]]; then
+    notify-send -u critical "text capture failed"
+    exit 1
+fi
+
+if [[ -n $copy_path_to_clipboard ]]; then
+    echo -n "$capture_file" | xsel -ib
+fi
+
+if [[ -n $notify_on_capture ]]; then
+    if (( $lines > 1 )); then
+        size="$lines lines"
+    elif (( $words > 1 )); then
+        size="$words words"
+    else
+        size="$bytes bytes"
+    fi
+    info="<u>${capture_file/$HOME/\~}</u>, $size"
+    notify-send "text captured" "$info"
+fi
+
+if [[ -n $use_audible_cues ]]; then
+    canberra-gtk-play -i $shutter_sound
+fi
+
+echo -n "$capture_file"
+
+if [[ -n $exec_command ]]; then
+    exec $(capture_format "$exec_command")
+fi

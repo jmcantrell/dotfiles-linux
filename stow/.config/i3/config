@@ -1,0 +1,237 @@
+# key modifier aliases
+set $Alt   Mod1
+set $Super Mod4
+
+# same directory as focused window
+set $here "`xpwd`"
+
+# exec without waiting
+set $fork exec --no-startup-id
+
+# border for new windows
+new_float  pixel 1
+new_window pixel 1
+
+hide_edge_borders smart
+
+# while holding floating_modifier:
+# left drag to move, right drag to resize
+floating_modifier $Super
+
+# open new windows in a tab by default
+workspace_layout tabbed
+
+# vim semantics for splitting
+bindsym $Super+s split v
+bindsym $Super+v split h
+
+# focus window
+bindsym $Super+h focus left
+bindsym $Super+j focus down
+bindsym $Super+k focus up
+bindsym $Super+l focus right
+
+# focus output
+bindsym $Alt+$Super+h focus output left
+bindsym $Alt+$Super+j focus output down
+bindsym $Alt+$Super+k focus output up
+bindsym $Alt+$Super+l focus output right
+
+# move window
+bindsym Shift+$Super+h move left
+bindsym Shift+$Super+j move down
+bindsym Shift+$Super+k move up
+bindsym Shift+$Super+l move right
+
+# traverse container hierarchy
+bindsym $Super+a focus parent
+
+# center floating window
+bindsym $Super+c move absolute position center
+
+# move window to mouse pointer
+bindsym $Super+m move position mouse
+
+# toggle focus between floating/tiling layer
+bindsym $Super+space focus mode_toggle
+
+# toggle focus between scratchpad/tiling layer
+bindsym $Super+BackSpace scratchpad show
+
+# move all floating windows to the scratchpad
+bindsym $Super+x [floating] move scratchpad
+
+# focus urgent window
+bindsym $Super+i [urgent=latest] focus
+
+# focus workspace
+bindsym $Super+1   workspace number 1
+bindsym $Super+2   workspace number 2
+bindsym $Super+3   workspace number 3
+bindsym $Super+4   workspace number 4
+bindsym $Super+5   workspace number 5
+bindsym $Super+6   workspace number 6
+bindsym $Super+7   workspace number 7
+bindsym $Super+8   workspace number 8
+bindsym $Super+9   workspace number 9
+bindsym $Super+0   workspace number 10
+bindsym $Super+n   workspace next_on_output
+bindsym $Super+p   workspace prev_on_output
+bindsym $Super+Tab workspace back_and_forth
+
+# move container to workspace
+bindsym Shift+$Super+1   move container to workspace number 1
+bindsym Shift+$Super+2   move container to workspace number 2
+bindsym Shift+$Super+3   move container to workspace number 3
+bindsym Shift+$Super+4   move container to workspace number 4
+bindsym Shift+$Super+5   move container to workspace number 5
+bindsym Shift+$Super+6   move container to workspace number 6
+bindsym Shift+$Super+7   move container to workspace number 7
+bindsym Shift+$Super+8   move container to workspace number 8
+bindsym Shift+$Super+9   move container to workspace number 9
+bindsym Shift+$Super+0   move container to workspace number 10
+bindsym Shift+$Super+n   move container to workspace next_on_output
+bindsym Shift+$Super+p   move container to workspace prev_on_output
+bindsym Shift+$Super+Tab move container to workspace back_and_forth
+
+# change layout of container
+bindsym Shift+$Super+d layout default
+bindsym Shift+$Super+s layout stacking
+bindsym Shift+$Super+w layout tabbed
+bindsym Shift+$Super+x layout toggle split
+
+# move container to output
+bindsym Shift+$Alt+$Super+h move container to output left
+bindsym Shift+$Alt+$Super+j move container to output down
+bindsym Shift+$Alt+$Super+k move container to output up
+bindsym Shift+$Alt+$Super+l move container to output right
+
+# move workspace to output
+bindsym Shift+Ctrl+$Super+h move workspace to output left
+bindsym Shift+Ctrl+$Super+j move workspace to output down
+bindsym Shift+Ctrl+$Super+k move workspace to output up
+bindsym Shift+Ctrl+$Super+l move workspace to output right
+
+# toggle window between tiled and floating
+bindsym Shift+$Super+space floating toggle
+
+# floating window will always be visible
+bindsym Shift+$Super+u sticky toggle
+
+# move between scratchpad/tiling layer
+bindsym Shift+$Super+BackSpace move scratchpad
+
+# fullscreen for current and all displays
+bindsym      $Alt+Return fullscreen toggle
+bindsym Ctrl+$Alt+Return fullscreen toggle global
+
+# toggle status
+bindsym $Super+u bar mode toggle
+
+# reload config
+bindsym Shift+$Super+c reload
+
+# restart window manager
+bindsym Shift+$Super+r restart
+
+# kill focused window
+bindsym Shift+$Super+q kill
+
+# resize window
+set $resize_px  40
+set $resize_ppt 4
+# grow edges
+bindsym $Alt+h resize grow left  $resize_px px or $resize_ppt ppt
+bindsym $Alt+j resize grow down  $resize_px px or $resize_ppt ppt
+bindsym $Alt+k resize grow up    $resize_px px or $resize_ppt ppt
+bindsym $Alt+l resize grow right $resize_px px or $resize_ppt ppt
+# shrink edges
+bindsym Shift+$Alt+h resize shrink left  $resize_px px or $resize_ppt ppt
+bindsym Shift+$Alt+j resize shrink down  $resize_px px or $resize_ppt ppt
+bindsym Shift+$Alt+k resize shrink up    $resize_px px or $resize_ppt ppt
+bindsym Shift+$Alt+l resize shrink right $resize_px px or $resize_ppt ppt
+
+# session commands
+set $mode_session session: (q)uit, (l)ock, (s)uspend, (h)ibernate, (r)eboot, (p)oweroff
+mode "$mode_session" {
+    # exit window manager
+    bindsym q $fork i3exit quit, mode "default"
+    # lock screen
+    bindsym l $fork i3exit lock, mode "default"
+    # lock screen, then suspend/hibernate
+    bindsym s $fork i3exit suspend,   mode "default"
+    bindsym h $fork i3exit hibernate, mode "default"
+    # reboot/poweroff
+    bindsym r $fork i3exit reboot,   mode "default"
+    bindsym p $fork i3exit poweroff, mode "default"
+    # exit mode
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $Super+q mode "$mode_session"
+
+# lock session
+bindsym Ctrl+$Alt+l $fork i3exit lock
+
+# send command to i3
+bindsym $Super+semicolon exec i3-input -P:
+
+# rename the workspace (prefix with -9 to focus with Super+0-9)
+bindsym $Super+apostrophe exec i3-input -F 'rename workspace to "%s"' -P 'workspace name: '
+
+# used in status bar and dialogs
+font pango:DejaVu Sans Mono Bold 8
+
+set $dark   #000000
+set $bold   #ffffff
+set $text   #4c4c4c
+set $border #191919
+set $marker #667f33
+set $urgent #993333
+set $focus  #7f3fb2
+
+client.background $dark
+
+#class                  border  bg      text  indicator child_border
+client.urgent           $bold   $urgent $bold $marker   $bold
+client.focused          $border $focus  $bold $marker   $focus
+client.focused_inactive $border $focus  $bold $border   $border
+client.unfocused        $border $dark   $text $border   $border
+client.placeholder      $border $dark   $text $border   $border
+
+bar {
+
+    binding_mode_indicator on
+
+    status_command py3status
+    hidden_state   hide
+    modifier       $Super
+    position       top
+    tray_output    primary
+
+    # mouse wheel over statusbar
+    bindsym button4 workspace prev_on_output
+    bindsym button5 workspace next_on_output
+
+    colors {
+
+        background $dark
+        separator  $border
+        statusline $bold
+
+        #class             border  bg      text
+        urgent_workspace   $bold   $urgent $bold
+        active_workspace   $bold   $focus  $bold
+        focused_workspace  $bold   $focus  $bold
+        inactive_workspace $border $dark   $text
+
+    }
+
+}
+
+# windows that should float by default
+for_window [window_role="(pop-up|task_dialog)"] floating enable
+for_window [title="Preferences$"]               floating enable
+for_window [class="(Xmessage|Zenity)"]          floating enable  # script dialogs
+for_window [class="Pinentry"]                   floating enable
+for_window [class="System-config-printer.py"]   floating enable

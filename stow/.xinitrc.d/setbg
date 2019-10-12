@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+# Restores the desktop image from last session.
+
+exec setbg &

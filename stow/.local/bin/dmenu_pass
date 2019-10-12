@@ -1,0 +1,55 @@
+#!/usr/bin/env sh
+
+me=${0##*/}
+usage="Use dmenu to interact with pass.
+Usage: $me [-h] [-g] [-n len]"
+usage() { echo "$usage" >&2; }
+
+passdir=${PASSWORD_STORE_DIR:-$HOME/.password-store}
+
+passlist() {
+    find -L "$passdir" -type f -name "*.gpg" | sort |
+    while read gpg; do
+        gpg=${gpg#$passdir/}
+        gpg=${gpg%%.gpg}
+        echo "$gpg"
+    done
+}
+
+passlen=16
+unset OPTIND
+while getopts ":hcgn:" option; do
+    case $option in
+        c) copy=-c ;;
+        g) action=generate ;;
+        n) passlen=$OPTARG ;;
+        h) usage; exit 0 ;;
+        *) usage; exit 1 ;;
+    esac
+done && shift $(($OPTIND - 1))
+
+name=$(
+    passlist |
+    dmenu -p "${action:+$action }password for"
+)
+
+if test $name; then
+
+    case ${action:-show} in
+        show)
+            pass show $copy $name
+            ;;
+        generate)
+            pass generate $copy -f $name $passlen
+            ;;
+    esac
+
+    test $? -eq 0 || exit 1
+
+    if test $copy; then
+        title="password for $name copied to clipboard"
+        body="self-destructing in <b>45</b> seconds..."
+        notify-send "$title" "$body"
+    fi
+
+fi

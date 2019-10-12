@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+alias browse=$BROWSER
+alias b=browse

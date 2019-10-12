@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+# Exec the last command run from dmenu_run_mru.
+
+cache=${XDG_CACHE_HOME:-$HOME/.cache}
+mrufile=$cache/dmenu/run_mru
+
+test -f "$mrufile" || exit 0
+
+mru=`head -n1 "$mrufile"`
+
+echo "$mru" >&2
+exec $mru

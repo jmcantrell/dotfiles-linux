@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# Blank display at 5 min, sleep at 10, power off at 15.
+
+exec dpms-on &

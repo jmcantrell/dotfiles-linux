@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+# Pretend that gvim is just vim in a terminal.
+
+${TERMINAL:-xterm} -e ${EDITOR:-vim} "$@"

@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+# Set the background color.
+
+exec xsetroot -solid black &

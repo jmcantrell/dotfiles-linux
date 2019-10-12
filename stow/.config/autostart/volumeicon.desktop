@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=volumeicon
+GenericName=Volume Tray Icon
+Comment=Interact with sound mixer through a tray icon.
+Exec=volumeicon
+TryExec=volumeicon
+Terminal=false
+StartupNotify=false
+Type=Application

@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+# Run a minecraft server instance.
+# Usage: minecraft-server [version]
+
+set -e
+
+version=${1:-`minecraft-version-latest`}
+
+dir=${dir:-$HOME/.minecraft-server}
+
+mkdir -p "$dir"; cd "$dir"
+
+test -x server || dir=$dir install-minecraft-server "$version"
+
+exec ./server

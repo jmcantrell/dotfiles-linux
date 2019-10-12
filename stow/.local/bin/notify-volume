@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+# Show a notification with the current volume level and mute status.
+
+icon=/usr/share/icons/gnome/32x32/status/${icon:-audio-volume-high}.png
+
+muted=`pamixer --get-mute`
+volume=`pamixer --get-volume`
+
+canberra-gtk-play -i audio-volume-change &
+
+notify-send -u low -i "$icon" "Volume Control" \
+    "volume: $volume%<br>muted: $muted"

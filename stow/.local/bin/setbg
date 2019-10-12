@@ -1,0 +1,29 @@
+#!/usr/bin/env sh
+
+# set desktop background to the given image
+
+#stretch=center  # centered, no resize
+#stretch=fill    # preserve aspect ratio, cropped
+#stretch=max     # preserve aspect ratio, uncropped
+stretch=scale    # fill entire screen
+#stretch=tile    # repeat image to fill screen
+
+imagefile=$1
+
+background=$HOME/.config/background.png
+
+icon=/usr/share/icons/gnome/32x32/apps/preferences-desktop-wallpaper.png
+
+if test -f "$imagefile"; then
+    convert "$imagefile" "$background"
+    echo "$imagefile"
+    notify-send -u low -i "$icon" \
+        "Background Changed" "${imagefile/$HOME/\~}"
+fi
+
+if test -f "$background"; then
+    feh --bg-$stretch "$background"
+else
+    # if no background image, just set it to solid color
+    xsetroot -solid black
+fi

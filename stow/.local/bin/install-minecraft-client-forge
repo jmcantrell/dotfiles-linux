@@ -1,0 +1,26 @@
+#!/usr/bin/env sh
+
+# Install and configure a minecraft forge client.
+# Usage: install-minecraft-client-forge [version]
+
+set -e
+
+version=${1:-`minecraft-version`}
+
+dir=$HOME/.minecraft
+
+mkdir -p "$dir"; cd "$dir"
+
+build=`get-minecraft-forge $version installer`
+
+if ! test -f "$build"; then
+    echo "Unable to download installer for $version" >&2
+    exit 1
+fi
+
+installer=forge-$version-installer.jar
+test -f "$installer" || ln -sfv "$build" "$installer"
+
+echo "Be sure to install to $dir!" >&2
+
+java -jar "$installer"

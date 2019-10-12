@@ -1,0 +1,89 @@
+#!/usr/bin/env sh
+
+# Run commands with dmenu.
+
+# Shows the most recent $HISTSIZE commands first.
+# Optional command modifiers allow different ways to run commands.
+
+# These modifiers can be added to the end of commands:
+#  !  run command with sudo
+#  ;  run command in terminal
+#  .  run command in terminal (leave open)
+
+# Examples:
+#  top;             # runs `top` in a terminal
+#  cat ~/.profile.  # display ~/.profile in terminal (leave open)
+#  updatedb!        # runs `gksudo updatedb`
+#  parted!;         # runs `sudo parted` in a terminal
+#  parted!.         # same, but terminal stays open after
+
+histsize=${HISTSIZE:-100}
+
+me=${0##*/}
+cache=${XDG_CACHE_HOME:-$HOME/.cache}/dmenu
+mkdir -p "$cache"
+mru=$cache/run_mru
+touch "$mru"
+
+temp=`mktemp -t $me.XXXXXXXXXX`
+trap "rm -f '$temp'" INT TERM EXIT
+
+# rearranges the commands in $PATH,
+# with preference given to command history
+mru_path() {
+    cat "$mru"; dmenu_path | grep -vxF "$mru"
+}
+
+# add a command to the mru cache
+mru_add() {
+    local cmd=${1:?missing command}
+    {
+        echo "$cmd"
+        grep -vx "$cmd" "$mru"
+    } | head -n$histsize >"$temp"
+    mv -f "$temp" "$mru"
+}
+
+# get command from dmenu prompt
+cmd=`mru_path | dmenu -i -p run "$@"`
+
+# nothing was entered or selected
+test "$cmd" || exit 1
+
+# add command to history
+mru_add "$cmd"
+
+# strip a modifier from a command
+# errors if no modifiers were found
+stripmod() {
+    local mod=${1:?missing modifier}
+    local cmd=${2:?missing command}
+    local suffix=${cmd: -1}
+    echo "${cmd%%$mod}"
+    test "$suffix" = "$mod" || return 1
+}
+
+# detect and remove any modifiers
+unset term sudo hold
+cmd=`stripmod "." "$cmd"` && term=1 && hold=1
+cmd=`stripmod ";" "$cmd"` && term=1
+cmd=`stripmod "!" "$cmd"` && sudo=1
+
+# if any modifiers are left, ignore them
+cmd=${cmd%%.}; cmd=${cmd%%;*}; cmd=${cmd%%!*}
+
+# if requested, run command with sudo
+if test $sudo; then
+    if test $term; then
+        # ask for password in terminal
+        cmd="sudo $cmd"
+    else
+        # ask for password with gui
+        cmd="gksudo $cmd"
+    fi
+fi
+
+# if requested, run command in a terminal
+test $term && cmd="${TERMINAL} ${hold:+-hold} -e ${cmd//\~/$HOME}"
+
+exec $cmd

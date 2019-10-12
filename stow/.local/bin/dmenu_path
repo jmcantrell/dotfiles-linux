@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+
+# Provide dmenu with list of executables.
+# The list is cached and regenerated when needed.
+
+cache=${XDG_CACHE_HOME:-$HOME/.cache}/dmenu
+mkdir -p "$cache"
+path=$cache/path
+
+# test if cache is outdated
+cache_bad() {
+    stest -q -dr -n "$path" "$@"
+}
+
+# cache list of executables in given directories
+cache_path() {
+    stest -flx "$@" | sort -u | tee "$path"
+}
+
+# regenerate cache if needed
+IFS=:  # breaks up PATH to treat as args to stest
+cache_bad $PATH && cache_path $PATH
+
+cat "$path"

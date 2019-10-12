@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+# Remove all browser cache files for vimb.
+
+cache=${XDG_CACHE_HOME:-$HOME/.cache}
+config=${XDG_CONFIG_HOME:-$HOME/.config}
+
+killall vimb
+
+rm -rfv "$cache"/vimb
+rm -fv "$config"/vimb/{closed,command,cookies,history,hsts,search}

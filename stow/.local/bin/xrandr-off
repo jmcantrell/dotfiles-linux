@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+# Disconnect any external outputs.
+
+primary=`xrandr-primary` || exit 1
+
+outputs() {
+    xrandr | grep -E '\b(dis)?connected\b' |
+    cut -d' ' -f1 | grep -v "^$primary\b"
+}
+
+outputs | while read -r output; do
+    xrandr --output "$output" --off "$@"
+done
+
+setbg

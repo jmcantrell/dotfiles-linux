@@ -1,0 +1,48 @@
+general {
+    interval = 5
+    colors = true
+    color_good = '#00ff00'
+    color_bad = '#ff0000'
+}
+
+order += "window_title_async"
+order += "wireless _first_"
+order += "ethernet _first_"
+order += "dpms"
+order += "disk /home"
+order += "tztime pretty"
+
+window_title_async {
+    format = " {title} "
+    on_click 1 = "exec --no-startup-id xterm -e glances"
+}
+
+ethernet _first_ {
+    format_up = " en %ip "
+    format_down = " en down "
+    on_click 1 = "exec --no-startup-id xdg-open http://ip-api.com"
+    on_click 3 = "exec --no-startup-id xdg-open http://ip-api.com/json"
+}
+
+wireless _first_ {
+    format_up = " %essid %ip "
+    format_down = " wl down "
+    on_click 1 = "exec --no-startup-id gksudo 'xterm -e wifi-menu'"
+}
+
+dpms {
+    format = " {icon} "
+    icon_on = "dpms on"
+    icon_off = "dpms off"
+}
+
+disk "/home" {
+    format = " ~ %avail "
+    on_click 1 = "exec --no-startup-id xterm -e 'df --si | pager'"
+    on_click 3 = "exec --no-startup-id xterm -e 'ncdu ~'"
+}
+
+tztime pretty {
+    format = " %c "
+    on_click 1 = "exec --no-startup-id xterm -e i3settz"
+}

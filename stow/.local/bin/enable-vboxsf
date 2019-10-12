@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+# Symlink any virtualbox shared folders to a directory.
+
+set -e
+
+# allow user to access shared folders
+sudo gpasswd -a "$USER" vboxsf
+sudo chmod -v 755 /media
