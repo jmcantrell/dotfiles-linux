@@ -14,9 +14,9 @@ config:
 	sh ./scripts/config.sh
 
 stow:
-	stow --no-folding -d . -t $$HOME -R stow
+	stow --no-folding -d stow -t ~ -R dotfiles
 
 unstow:
-	stow --no-folding -d . -t $$HOME -D stow
+	stow --no-folding -d stow -t ~ -D dotfiles
 
-.PHONY: install config
+.PHONY: install config stow
