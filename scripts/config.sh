@@ -10,5 +10,9 @@ if groups | grep -wq wheel; then
 
 fi
 
+# ca certs can be in different places, so link to a common place
+mkdir -p ~/.local/etc/ssl/certs
+ln -sfv /etc/ssl/certs/ca-certificates.crt ~/.local/etc/ssl/certs/ca-certificates.crt
+
 # change shell to zsh
 test ${SHELL##*/} = zsh || chsh -s /bin/zsh
