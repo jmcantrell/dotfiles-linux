@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+# Add an url to the vimb queue.
+
+set -e
+
+url=${1:?missing url}
+
+config=${XDG_CONFIG_HOME:-$HOME/.config}
+queue=$config/vimb/queue
+
+# only add if not already added
+grep -q "^$url$" "$queue" || echo "$url" >>"$queue"
