@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Persist settings for a touchpad.
 
@@ -25,16 +25,16 @@ choose_device() {
     local id
     device_ids |
     while read -r id; do
-        echo "$id) `device_name "$id"`" >&2
+        echo "$id) $(device_name "$id")" >&2
     done
-    read -p "${PS3:-#? }" id
+    read -r -p "${PS3:-#? }" id
     # ensure a valid id was entered
     device_ids | grep -q "^$id$" || return 1
     echo "$id"
 }
 
-id=${1:-`choose_device`}
-name=`device_name "$id"`
+id=${1:-$(choose_device)}
+name=$(device_name "$id")
 conf=/etc/X11/xorg.conf.d/99-touchpad-$id.conf
 
 echo "

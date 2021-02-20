@@ -1,17 +1,17 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Install and configure a minecraft server environment.
 # Usage: install-minecraft-server [version]
 
 set -e
 
-version=${1:-`minecraft-version-latest`}
+version=${1:-$(minecraft-version-latest)}
 
 dir=${dir:-$HOME/.minecraft-server}
 
 mkdir -p "$dir"; cd "$dir"
 
-jar=`get-minecraft-server "$version"`
+jar=$(get-minecraft-server "$version")
 ln -sfv "$jar" minecraft.jar
 ln -sfv minecraft.jar server.jar
 

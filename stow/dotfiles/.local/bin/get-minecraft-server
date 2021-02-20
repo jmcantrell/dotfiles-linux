@@ -1,11 +1,11 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Download a minecraft server to the current directory.
-# Usage: jar=`get-minecraft-server [version]`
+# Usage: jar=$(get-minecraft-server [version])
 
 set -e
 
-version=${1:-`minecraft-version-latest`}
+version=${1:-$(minecraft-version-latest)}
 
 jar=minecraft-$version.jar
 url=https://s3.amazonaws.com/Minecraft.Download/versions/$version/minecraft_server.$version.jar

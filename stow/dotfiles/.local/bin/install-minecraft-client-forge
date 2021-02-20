@@ -1,17 +1,17 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Install and configure a minecraft forge client.
 # Usage: install-minecraft-client-forge [version]
 
 set -e
 
-version=${1:-`minecraft-version`}
+version=${1:-$(minecraft-version)}
 
 dir=$HOME/.minecraft
 
 mkdir -p "$dir"; cd "$dir"
 
-build=`get-minecraft-forge $version installer`
+build=$(get-minecraft-forge "$version" installer)
 
 if ! test -f "$build"; then
     echo "Unable to download installer for $version" >&2

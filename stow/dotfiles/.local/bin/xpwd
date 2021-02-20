@@ -27,11 +27,11 @@ selected_window_id() {
 tmux_session_id() {
     local win_id=$1
     tmux list-sessions -F '#{session_id}' |
-    while read session_id; do
+    while read -r session_id; do
         unset WINDOWID
-        eval $(tmux showenv -t "$session_id" WINDOWID)
-        session_win_id=0x$(printf "%x" $WINDOWID)
-        if [[ $session_win_id == $win_id ]]; then
+        eval "$(tmux showenv -t "$session_id" WINDOWID)"
+        session_win_id=0x$(printf "%x" "$WINDOWID")
+        if [[ $session_win_id == "$win_id" ]]; then
             echo "$session_id"
             return
         fi
@@ -58,7 +58,7 @@ while getopts ":hwcn" option; do
         h) echo "$usage" >&2; exit 0 ;;
         *) echo "$usage" >&2; exit 1 ;;
     esac
-done && shift $(($OPTIND - 1))
+done && shift $((OPTIND - 1))
 
 [[ -z $win_id ]] && win_id=$(active_window_id)
 
@@ -72,9 +72,9 @@ if [[ -z $win_id ]]; then
 fi
 
 cwd=$PWD
-win_pid=$(xprop -id $win_id | grep -m1 PID | cut -f3 -d' ')
+win_pid=$(xprop -id "$win_id" | grep -m1 PID | cut -f3 -d' ')
 if [[ -n $win_pid ]]; then
-    for proc in $(pstree -lpA $win_pid | sed 's/---/ /g'); do
+    for proc in $(pstree -lpA "$win_pid" | sed 's/---/ /g'); do
         name=${proc%%(*}
         pid=${proc//[^0-9]/}
 
@@ -87,8 +87,8 @@ if [[ -n $win_pid ]]; then
                 break
                 ;;
             tmux)
-                session_id=$(tmux_session_id $win_id)
-                pid=$(tmux_active_pane_pid $session_id)
+                session_id=$(tmux_session_id "$win_id")
+                pid=$(tmux_active_pane_pid "$session_id")
                 break
                 ;;
         esac

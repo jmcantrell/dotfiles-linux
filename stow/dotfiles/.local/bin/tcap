@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-me=$(basename $0)
+me=$(basename "$0")
 usage="Capture text snippet on clipboard to a file.
 
 Think (t)ext (cap)ture when typing tcap.
@@ -61,7 +61,6 @@ capture_format() {
 }
 
 # ls /usr/share/sounds/freedesktop/stereo/
-tick_sound=message-new-instant
 shutter_sound=camera-shutter
 
 directory=$PWD
@@ -75,7 +74,7 @@ unset from_clipboard
 unset preview_content
 
 unset OPTIND
-while getopts ":D:pbiand:ce:h" option; do
+while getopts ":D:pbiance:h" option; do
     case $option in
         D) directory=$OPTARG ;;
         p) from_primary=1 ;;
@@ -85,16 +84,15 @@ while getopts ":D:pbiand:ce:h" option; do
         # might be suitable for another tool
         a) use_audible_cues=1 ;;
         n) notify_on_capture=1 ;;
-        d) delay_count=$OPTARG ;;
         c) copy_path_to_clipboard=1 ;;
 
         # run commands after capture
         e) exec_command=$OPTARG ;;
 
-        *) echo "$usage" >&2; exit 1 ;;
         h) echo "$usage" >&2; exit 0 ;;
+        *) echo "$usage" >&2; exit 1 ;;
     esac
-done && shift $(($OPTIND - 1))
+done && shift $((OPTIND - 1))
 
 # if file isn't given as $1, then
 # use a default filename that sorts chronologically
@@ -111,12 +109,12 @@ else
     text=$(cat)
 fi
 
-wc=($(echo "$text" | wc -lwc))
+readarray -t wc < <(wc -lwc <<<"$text")
 lines=${wc[0]}
 words=${wc[1]}
 bytes=${wc[2]}
 
-capture_file=$(capture_format "$capture_file" $lines $words $bytes)
+capture_file=$(capture_format "$capture_file" "$lines" "$words" "$bytes")
 capture_file=$(readlink -f "$capture_file")
 
 if [[ -z $text ]]; then
@@ -143,9 +141,9 @@ if [[ -n $copy_path_to_clipboard ]]; then
 fi
 
 if [[ -n $notify_on_capture ]]; then
-    if (( $lines > 1 )); then
+    if (( lines > 1 )); then
         size="$lines lines"
-    elif (( $words > 1 )); then
+    elif (( words > 1 )); then
         size="$words words"
     else
         size="$bytes bytes"
@@ -161,5 +159,5 @@ fi
 echo -n "$capture_file"
 
 if [[ -n $exec_command ]]; then
-    exec $(capture_format "$exec_command")
+    exec "$(capture_format "$exec_command")"
 fi

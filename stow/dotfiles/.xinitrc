@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 export DESKTOP=i3
 export VISUAL=gvim

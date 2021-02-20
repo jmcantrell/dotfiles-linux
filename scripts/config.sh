@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 set -e
 
@@ -15,4 +15,4 @@ mkdir -p ~/.local/etc/ssl/certs
 ln -sfv /etc/ssl/certs/ca-certificates.crt ~/.local/etc/ssl/certs/ca-certificates.crt
 
 # change shell to zsh
-test ${SHELL##*/} = zsh || chsh -s /bin/zsh
+[[ ${SHELL##*/} = zsh ]] || chsh -s /bin/zsh

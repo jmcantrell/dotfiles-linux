@@ -22,7 +22,7 @@ seconds() {
         h) in_secs=3600 ;;
         d) in_secs=86400 ;;
     esac
-    echo $(( $value * $in_secs ))
+    echo $(( value * in_secs ))
 }
 
 name=timer
@@ -33,19 +33,20 @@ while getopts ":hn:" option; do
         h) echo "$usage" >&2; exit 0 ;;
         *) echo "$usage" >&2; exit 1 ;;
     esac
-done && shift $(($OPTIND - 1))
+done && shift $((OPTIND - 1))
 
 # default to 30 sec
 duration=${1:-30s}
 
 
-secs=$(seconds ${1:-30s})
+secs=$(seconds "${1:-30s}")
 w=${#secs}
 stop=$(date -d "$secs seconds" "+on %F at %-l:%M:%S%P")
 while true; do
-    remain=$(( $secs - $SECONDS ))
-    printf "%s ending %s: %*ss remaining\r" "$name" "$stop" $w $remain
-    (( $remain <= 0 )) && break || sleep 1
+    remain=$(( secs - SECONDS ))
+    printf "%s ending %s: %*ss remaining\r" "$name" "$stop" "$w" $remain
+    (( remain <= 0 )) && break
+    sleep 1
 done
 echo
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-me=$(basename $0)
+me=$(basename "$0")
 usage="Capture screenshot in a variety of ways.
 
 Think (i)mage (cap)ture when typing icap.
@@ -66,19 +66,20 @@ capture_format() {
 }
 
 xrect() {
-    local dim=($(
+	local dim
+	readarray -t dim < <(
         xwininfo "$@" |
         grep -Ei "(absolute upper-left [xy]|width|height)" |
-        cut -d: -f2 | tr '\n' ' '
-    ))
+        cut -d: -f2
+    )
 
     local l=${dim[0]}
     local t=${dim[1]}
     # must be div by 2 or else...
-    w=$(( (${dim[2]} / 2) * 2 ))
-    h=$(( (${dim[3]} / 2) * 2 ))
+    w=$(( (dim[2] / 2) * 2 ))
+    h=$(( (dim[3] / 2) * 2 ))
 
-    echo ${w}x${h}+${l}+${t}
+    echo "${w}x${h}+${l}+${t}"
 }
 
 active_window_id() {
@@ -115,8 +116,8 @@ while getopts ":D:q:owusg:and:ce:h" option; do
         o) use_optimization=1 ;;
 
         # various ways to define capture region
-        w) capture_geometry=$(xrect -frame -id $(selected_window_id)) ;;
-        u) capture_geometry=$(xrect -frame -id $(active_window_id)) ;;
+        w) capture_geometry=$(xrect -frame -id "$(selected_window_id)") ;;
+        u) capture_geometry=$(xrect -frame -id "$(active_window_id)") ;;
         s) capture_geometry=$(xrectsel) ;;  # TODO: dependency hurdle
         g) capture_geometry=$OPTARG ;;
 
@@ -129,10 +130,10 @@ while getopts ":D:q:owusg:and:ce:h" option; do
         # run commands after capture
         e) exec_command=$OPTARG ;;
 
-        *) echo "$usage" >&2; exit 1 ;;
         h) echo "$usage" >&2; exit 0 ;;
+        *) echo "$usage" >&2; exit 1 ;;
     esac
-done && shift $(($OPTIND - 1))
+done && shift $((OPTIND - 1))
 
 # this isn't accurate when using multiple displays.
 # it gives the total of all displays, instead of the current one
@@ -158,16 +159,16 @@ capture_file=${1:-$directory/%Y-%m-%d_%H-%M-%S.\$t}
 capture_file=$(capture_format "$capture_file")
 
 # options for imagemagick
-import_options="-window root"
-[[ -n $capture_geometry ]] && import_options+=" -crop $capture_geometry"
-[[ -n $capture_quality ]] && import_options+=" -quality $capture_quality"
+import_options=(-window root)
+[[ -n $capture_geometry ]] && import_options+=(-crop "$capture_geometry")
+[[ -n $capture_quality ]] && import_options+=(-quality "$capture_quality")
 
 # some tools output a ton of garbage.
 # if debugging, comment out these braces
 {
 
     if [[ -n $use_audible_cues ]]; then
-        for (( tick=1; $tick <= $delay_count; tick+=1 )); do
+        for (( tick=1; tick <= delay_count; tick+=1 )); do
             canberra-gtk-play -i $tick_sound
         done
     fi
@@ -175,7 +176,7 @@ import_options="-window root"
     rm -f "$capture_file"
     mkdir -p "$(dirname "$capture_file")"
 
-    import $import_options "$capture_file"
+    import "${import_options[@]}" "$capture_file"
 
     if [[ ! -f $capture_file ]]; then
         notify-send -u critical "screenshot capture failed"
@@ -210,5 +211,5 @@ import_options="-window root"
 echo -n "$capture_file"
 
 if [[ -n $exec_command ]]; then
-    $(capture_format "$exec_command")
+    exec "$(capture_format "$exec_command")"
 fi

@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-alias browse=$BROWSER
+alias browse='$BROWSER'
 alias b=browse

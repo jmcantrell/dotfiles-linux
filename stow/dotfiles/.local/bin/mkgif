@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Convert given images into an animated gif.
 # Usage: mkgif <gif> [image...]

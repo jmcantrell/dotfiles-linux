@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 me=${0##*/}
 usage="Use dmenu to interact with pass.
@@ -9,7 +9,7 @@ passdir=${PASSWORD_STORE_DIR:-$HOME/.password-store}
 
 passlist() {
     find -L "$passdir" -type f -name "*.gpg" | sort |
-    while read gpg; do
+    while read -r gpg; do
         gpg=${gpg#$passdir/}
         gpg=${gpg%%.gpg}
         echo "$gpg"
@@ -26,21 +26,21 @@ while getopts ":hcgn:" option; do
         h) usage; exit 0 ;;
         *) usage; exit 1 ;;
     esac
-done && shift $(($OPTIND - 1))
+done && shift $((OPTIND - 1))
 
 name=$(
     passlist |
     dmenu -p "${action:+$action }password for"
 )
 
-if test $name; then
+if [[ $name ]]; then
 
     case ${action:-show} in
         show)
-            pass show $copy $name
+            pass show $copy "$name"
             ;;
         generate)
-            pass generate $copy -f $name $passlen
+            pass generate $copy -f "$name" "$passlen"
             ;;
     esac
 

@@ -1,10 +1,10 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Install and configure a minecraft spigot server.
 
 set -e
 
-version=${1:-`minecraft-version-latest`}
+version=${1:-$(minecraft-version-latest)}
 
 dir=${dir:-$HOME/.minecraft-server}
 
@@ -15,7 +15,7 @@ curl -sL -o buildtools.jar \
 
 spigot=spigot-$version.jar
 
-test -f "$spigot" || java -jar buildtools.jar --rev $version
+test -f "$spigot" || java -jar buildtools.jar --rev "$version"
 
 ln -sfv "$spigot" spigot.jar
 ln -sfv spigot.jar server.jar

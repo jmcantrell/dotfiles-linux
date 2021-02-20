@@ -10,6 +10,6 @@ sleep_minutes=10
 power_minutes=15
 
 xset dpms \
-    $(( $blank_minutes * 60 )) \
-    $(( $sleep_minutes * 60 )) \
-    $(( $power_minutes * 60 ))
+    $(( blank_minutes * 60 )) \
+    $(( sleep_minutes * 60 )) \
+    $(( power_minutes * 60 ))

@@ -8,7 +8,7 @@ Usage: $me [-h] [-f [command]
 
 pid_status() {
     local pid=$1
-    local status=$(ps -p $pid -o stat= 2>/dev/null) || return 1
+    local status=$(ps -p "$pid" -o stat= 2>/dev/null) || return 1
     case $status in
         D*) desc="blocking" ;;
         R*) desc="running" ;;
@@ -24,8 +24,8 @@ pid_status() {
 
 pid_time() {
     local pid=$1
-    local seconds=$(ps -p $pid -o etimes= 2>/dev/null)
-    secspan $seconds
+    local seconds=$(ps -p "$pid" -o etimes= 2>/dev/null)
+    secspan "$seconds"
 }
 
 seconds=1
@@ -40,7 +40,7 @@ while getopts ":hf:s:n" option; do
         h) echo "$usage" >&2; exit 0 ;;
         *) echo "$usage" >&2; exit 1 ;;
     esac
-done && shift $(($OPTIND - 1))
+done && shift $((OPTIND - 1))
 
 {
     # start the command
@@ -55,24 +55,24 @@ done && shift $(($OPTIND - 1))
     old_status="started"
     message="process $pid is $old_status"
     echo "# $message"
-    notify-send -u low "$message" "$*"
+    [[ $notify ]] && notify-send -u low "$message" "$*"
 
     while true; do
         new_status=$(pid_status $pid) || break
-        if [[ -n $new_status && $new_status != $old_status ]]; then
+        if [[ -n $new_status && $new_status != "$old_status" ]]; then
             message="process $pid is $new_status (was $old_status)"
             time=$(pid_time $pid)
             [[ $time ]] && message+=", running for $time"
             echo "# $message"
             notify-send -u low "$message" "$*"
         fi
-        sleep $seconds
+        sleep "$seconds"
     done
 
     wait $pid; e=$?
 
     # post-mortem report
-    if (( $e == 0 )); then
+    if (( e == 0 )); then
         urgency="normal"
         summary="succeeded"
     else
@@ -84,4 +84,4 @@ done && shift $(($OPTIND - 1))
     notify-send -u $urgency "$message" "$*"
     echo "# $message"
 
-} | tee $monfile
+} | tee "$monfile"

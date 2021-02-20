@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Run commands with dmenu.
 
@@ -25,7 +25,7 @@ mkdir -p "$cache"
 mru=$cache/run_mru
 touch "$mru"
 
-temp=`mktemp -t $me.XXXXXXXXXX`
+temp=$(mktemp -t "$me.XXXXXXXXXX")
 trap "rm -f '$temp'" INT TERM EXIT
 
 # rearranges the commands in $PATH,
@@ -45,7 +45,7 @@ mru_add() {
 }
 
 # get command from dmenu prompt
-cmd=`mru_path | dmenu -i -p run "$@"`
+cmd=$(mru_path | dmenu -i -p run "$@")
 
 # nothing was entered or selected
 test "$cmd" || exit 1
@@ -65,9 +65,9 @@ stripmod() {
 
 # detect and remove any modifiers
 unset term sudo hold
-cmd=`stripmod "." "$cmd"` && term=1 && hold=1
-cmd=`stripmod ";" "$cmd"` && term=1
-cmd=`stripmod "!" "$cmd"` && sudo=1
+cmd=$(stripmod "." "$cmd") && term=1 && hold=1
+cmd=$(stripmod ";" "$cmd") && term=1
+cmd=$(stripmod "!" "$cmd") && sudo=1
 
 # if any modifiers are left, ignore them
 cmd=${cmd%%.}; cmd=${cmd%%;*}; cmd=${cmd%%!*}
@@ -86,4 +86,4 @@ fi
 # if requested, run command in a terminal
 test $term && cmd="${TERMINAL} ${hold:+-hold} -e ${cmd//\~/$HOME}"
 
-exec $cmd
+exec "$cmd"

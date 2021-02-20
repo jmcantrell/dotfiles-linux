@@ -1,8 +1,8 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Disconnect any external outputs.
 
-primary=`xrandr-primary` || exit 1
+primary=$(xrandr-primary) || exit 1
 
 outputs() {
     xrandr | grep -E '\b(dis)?connected\b' |

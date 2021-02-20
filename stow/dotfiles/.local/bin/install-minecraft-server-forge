@@ -1,17 +1,17 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Install and configure a minecraft forge server.
 
 set -e
 
-version=${1:-`minecraft-version-latest`}
+version=${1:-$(minecraft-version-latest)}
 
 dir=${dir:-$HOME/.minecraft-server}
 
 mkdir -p "$dir"; cd "$dir"
 
 installer=forge-$version-installer.jar
-build=`get-minecraft-forge "$version" installer`
+build=$(get-minecraft-forge "$version" installer)
 
 test -f "$installer" || ln -sfv "$build" "$installer"
 

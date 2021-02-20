@@ -9,7 +9,7 @@ extension=txt
 
 snippetfiles() {
     find "$snippets/" -type f -name "*.$extension" 2>/dev/null |
-    sort | while read snippetfile; do
+    sort | while read -r snippetfile; do
         local name=$snippetfile
         name=${name#$snippets/}
         name=${name%.$extension}
@@ -22,14 +22,14 @@ action=show
 unset OPTIND
 while getopts ":hcetp" option; do
     case $option in
-        t) action=type ;;
-        e) action=edit ;;
-        c) action=copy ;;
-        p) action=paste ;;
+        t) action="type" ;;
+        e) action="edit" ;;
+        c) action="copy" ;;
+        p) action="paste" ;;
         h) echo "$usage" >&2; exit 0 ;;
         *) echo "$usage" >&2; exit 1 ;;
     esac
-done && shift $(($OPTIND - 1))
+done && shift $((OPTIND - 1))
 
 # choose snippet
 name=$(snippetfiles | dmenu -p "$action snippet")
@@ -41,7 +41,7 @@ fi
 
 snippet=$snippets/$name.$extension
 
-test -f "$snippet" && text=`cat "$snippet"`
+test -f "$snippet" && text=$(<"$snippet")
 
 case $action in
     show)
@@ -57,11 +57,11 @@ case $action in
         ;;
     edit)
         mkdir -p "$snippets"
-        exec ${VISUAL:-xterm -e vim} "$snippet"
+        exec "$TERMINAL" -e "$EDITOR" "$snippet"
         ;;
     paste)
         mkdir -p "$snippets"
-        text=`xsel -ob`
+        text=$(xsel -ob)
         echo "$text" >"$snippet"
         title="snippet text for $name grabbed from clipboard"
         notify-send "$title" "$text"

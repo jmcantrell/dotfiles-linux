@@ -1,9 +1,9 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Set the lightdm background from an image or the current background.
 
 set -e
 
 sudo cp -v \
-    ${1:-$HOME/.config/background.png} \
+    "${1:-$HOME/.config/background.png}" \
     /usr/share/pixmaps/lightdm_background.png

@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Set the primary output, and ensure save it.
 # Usage: xrandr-primary [output]
@@ -6,7 +6,7 @@
 config=${XDG_CONFIG_HOME:-$HOME/.config}
 
 primary() {
-    local primary=`xrandr | grep '\bprimary\b' | cut -d' ' -f1`
+    local primary=$(xrandr | grep '\bprimary\b' | cut -d' ' -f1)
     test "$primary" || return 1
     echo "$primary"
 }

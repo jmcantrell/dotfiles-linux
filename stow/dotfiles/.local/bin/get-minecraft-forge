@@ -1,7 +1,7 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Download a minecraft forge installer in the current directory.
-# Usage: file=`get-minecraft-forge [version]`
+# Usage: file=$(get-minecraft-forge [version])
 
 set -e
 
@@ -13,9 +13,9 @@ die() {
 me=${0##*/}
 
 package=${package:-installer}
-version=${1:-`minecraft-version-latest`}
+version=${1:-$(minecraft-version-latest)}
 
-index=`mktemp -t $me.XXXXXXXXXX`
+index=$(mktemp -t "$me.XXXXXXXXXX")
 trap "rm -f '$index'" INT TERM EXIT
 
 url=http://files.minecraftforge.net
@@ -24,19 +24,19 @@ url=http://files.minecraftforge.net
 indexurl=$url/maven/net/minecraftforge/forge/index_$version.html
 curl -sL -o "$index" "$indexurl" || die "Could not get index page"
 
-build=`
+build=$(
     grep latest "$index" |
     grep '^ *[0-9]' |
     sed -e 's/^ *//' -e 's/<.*//'
-    `
+)
 
 test "$build" || die "Unable to get the latest forge version for $version"
 
-path=`
+path=$(
     grep "Direct Download" "$index" |
     grep "forge-$version-$build-$package" |
     head -n1 | sed 's/.*href="\([^"]\+\)".*/\1/'
-    `
+)
 file=${path##*/}
 
 test "$file" || die "Could not parse filename"

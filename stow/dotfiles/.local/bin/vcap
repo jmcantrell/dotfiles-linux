@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-me=$(basename $0)
+me=$(basename "$0")
 usage="Capture camera activity in a variety of ways.
 
 Think (v)ideo (cap)ture when typing vcap.
@@ -95,7 +95,7 @@ while getopts ":D:t:r:q:os:and:b:ce:xh" option; do
         a) use_audible_cues=1 ;;
         n) notify_on_capture=1 ;;
         d) delay_count=$OPTARG ;;
-        b) capture_count=$OPTARG ;;
+        b) capture_count=$OPTARG ;;  # TODO: unfinished option?
         c) copy_path_to_clipboard=1 ;;
 
         # run commands after capture
@@ -103,10 +103,10 @@ while getopts ":D:t:r:q:os:and:b:ce:xh" option; do
 
         x) stop_recording; exit 0 ;;
 
-        *) echo "$usage" >&2; exit 1 ;;
         h) echo "$usage" >&2; exit 0 ;;
+        *) echo "$usage" >&2; exit 1 ;;
     esac
-done && shift $(($OPTIND - 1))
+done && shift $((OPTIND - 1))
 
 if [[ -z $capture_size ]]; then
     capture_size=$(
@@ -124,23 +124,23 @@ capture_file=${1:-$directory/%Y-%m-%d_%H-%M-%S.\$t}
 # format capture properties, etc
 capture_file=$(capture_format "$capture_file")
 
-capture_options="-y -f v4l2"
-capture_options+=" -framerate $capture_framerate"
-capture_options+=" -video_size $capture_size"
-capture_options+=" -i /dev/video0"
+capture_options=(-y -f v4l2)
+capture_options+=(-framerate "$capture_framerate")
+capture_options+=(-video_size "$capture_size")
+capture_options+=(-i /dev/video0)
 
 case $capture_filetype in
-    gif) capture_options+=" -pix_fmt rgb24" ;;
-    jpg|png) capture_options+=" -vframes 1" ;;
-    *) capture_options+=" -c:v libx264" ;;
+    gif) capture_options+=(-pix_fmt rgb24) ;;
+    jpg|png) capture_options+=(-vframes 1) ;;
+    *) capture_options+=(-c:v libx264) ;;
 esac
 
 # optimizations for hq output
-capture_options+=" -qscale $capture_quality -threads 0"
+capture_options+=(-qscale "$capture_quality" -threads 0)
 
 # if no time, ctrl-c to stop
 if [[ -n $capture_seconds ]]; then
-    capture_options+=" -t $capture_seconds"
+    capture_options+=(-t "$capture_seconds")
 fi
 
 # some tools output a ton of garbage.
@@ -149,7 +149,7 @@ fi
 
     if [[ -n $use_audible_cues ]]; then
         canberra-gtk-play -i $start_sound
-        for (( tick=1; $tick <= $delay_count; tick+=1 )); do
+        for (( tick=1; tick <= delay_count; tick+=1 )); do
             canberra-gtk-play -i $tick_sound
         done
     fi
@@ -157,7 +157,7 @@ fi
     rm -f "$capture_file"
     mkdir -p "$(dirname "$capture_file")"
 
-    ffmpeg $capture_options "$capture_file"
+    ffmpeg "${capture_options[@]}" "$capture_file"
 
     if [[ ! -f $capture_file ]]; then
         notify-send -u critical "recording failed"
@@ -192,5 +192,5 @@ fi
 echo -n "$capture_file"
 
 if [[ -n $exec_command ]]; then
-    exec $(capture_format "$exec_command")
+    exec "$(capture_format "$exec_command")"
 fi

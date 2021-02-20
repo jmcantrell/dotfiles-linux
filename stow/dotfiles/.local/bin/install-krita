@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Download and install appimage for krita.
 
@@ -6,9 +6,11 @@ set -e
 
 index=https://krita.org/en/download/krita-desktop/
 
-url=`curl -sL "$index" |
-    egrep 'https://[^"]+\.appimage' |
-    sed 's/.*"\(.*\)".*/\1/'`
+url=$(
+	curl -sL "$index" |
+    grep -E 'https://[^"]+\.appimage' |
+    sed 's/.*"\(.*\)".*/\1/'
+)
 
 if ! test "$url"; then
     echo "Unable to get download url from $index" >&2
@@ -17,6 +19,6 @@ fi
 
 bin=$HOME/.local/bin/krita
 
-mkdir -p "`dirname "$bin"`"
+mkdir -p "$(dirname "$bin")"
 curl -L -o "$bin" "$url"
 chmod +x "$bin"

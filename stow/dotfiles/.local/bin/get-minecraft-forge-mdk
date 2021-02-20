@@ -1,12 +1,12 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Download a minecraft forge mdk project in the current directory.
 
 set -e
 
-version=${1:-`minecraft-version-latest`}
+version=${1:-$(minecraft-version-latest)}
 
-zip=`package=mdk get-minecraft-forge "$version"`
+zip=$(package=mdk get-minecraft-forge "$version")
 
 unzip "$zip"
 gradle setupDecompWorkspace

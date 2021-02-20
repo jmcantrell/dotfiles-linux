@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Exec the last command run from dmenu_run_mru.
 
@@ -7,7 +7,7 @@ mrufile=$cache/dmenu/run_mru
 
 test -f "$mrufile" || exit 0
 
-mru=`head -n1 "$mrufile"`
+mru=$(head -n1 "$mrufile")
 
 echo "$mru" >&2
-exec $mru
+exec "$mru"

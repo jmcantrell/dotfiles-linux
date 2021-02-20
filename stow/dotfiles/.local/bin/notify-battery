@@ -22,14 +22,14 @@ icon_set=/usr/share/icons/gnome/32x32
 title="Battery Information"
 
 if test "$state" = Discharging; then
-    if (( $percent <= $hibernate_percent )); then
+    if (( percent <= hibernate_percent )); then
         notify-send -u critical -i "$icon_set"/status/battery-empty.png "$title" \
             "battery level empty: $percent<br>hibernating in $hibernate_delay seconds..."
         sleep "$hibernate_delay" && i3exit hibernate
-    elif (( $percent <= $critical_percent )); then
+    elif (( percent <= critical_percent )); then
         notify-send -u normal -i "$icon_set"/status/battery-caution.png "$title" \
             "battery level critical: $percent<br>hibernating at $hibernate_percent% battery level"
-    elif (( $percent <= $low_percent )); then
+    elif (( percent <= low_percent )); then
         notify-send -u normal -i "$icon_set"/status/battery-low.png "$title" \
             "battery level low: $percent<br>attach power supply to avoid hibernation"
     fi

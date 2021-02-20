@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Provide dmenu with list of executables.
 # The list is cached and regenerated when needed.
@@ -19,6 +19,6 @@ cache_path() {
 
 # regenerate cache if needed
 IFS=:  # breaks up PATH to treat as args to stest
-cache_bad $PATH && cache_path $PATH
+cache_bad "$PATH" && cache_path "$PATH"
 
 cat "$path"

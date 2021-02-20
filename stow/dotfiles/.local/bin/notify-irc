@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 nick=${1:?missing nickname}
 message=${2:?missing message}
