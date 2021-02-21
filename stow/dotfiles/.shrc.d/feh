@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 # animate by default
 alias gifview='gifview -a'
 
@@ -16,3 +14,5 @@ alias fehshow='feh --sort name --hide-pointer'
 for n in 3 5 10 20; do
     alias fehshow$n="fehshow --slideshow-delay $n"
 done
+
+# vi:ft=sh

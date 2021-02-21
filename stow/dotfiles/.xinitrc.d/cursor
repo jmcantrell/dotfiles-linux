@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-
 # Set the mouse cursor to a left-pointing arrow.
 
 exec xsetroot -cursor_name left_ptr &
+
+# vi:ft=sh

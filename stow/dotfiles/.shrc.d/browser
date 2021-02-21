@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
-
 alias browse='$BROWSER'
 alias b=browse
+
+# vi:ft=sh
