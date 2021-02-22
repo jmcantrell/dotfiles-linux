@@ -15,15 +15,15 @@ background=$HOME/.config/background.png
 icon=/usr/share/icons/gnome/32x32/apps/preferences-desktop-wallpaper.png
 
 if test -f "$imagefile"; then
-    convert "$imagefile" "$background"
-    echo "$imagefile"
-    notify-send -u low -i "$icon" \
-        "Background Changed" "${imagefile/$HOME/\~}"
+	convert "$imagefile" "$background"
+	echo "$imagefile"
+	notify-send -u low -i "$icon" \
+		"Background Changed" "${imagefile/$HOME/\~}"
 fi
 
 if test -f "$background"; then
-    feh --bg-$stretch "$background"
+	feh --bg-$stretch "$background"
 else
-    # if no background image, just set it to solid color
-    xsetroot -solid black
+	# if no background image, just set it to solid color
+	xsetroot -solid black
 fi

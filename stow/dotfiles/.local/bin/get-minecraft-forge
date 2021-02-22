@@ -6,8 +6,8 @@
 set -e
 
 die() {
-    echo "$@" >&2
-    exit 1
+	echo "$@" >&2
+	exit 1
 }
 
 me=${0##*/}
@@ -25,24 +25,24 @@ indexurl=$url/maven/net/minecraftforge/forge/index_$version.html
 curl -sL -o "$index" "$indexurl" || die "Could not get index page"
 
 build=$(
-    grep latest "$index" |
-    grep '^ *[0-9]' |
-    sed -e 's/^ *//' -e 's/<.*//'
+	grep latest "$index" |
+	grep '^ *[0-9]' |
+	sed -e 's/^ *//' -e 's/<.*//'
 )
 
 test "$build" || die "Unable to get the latest forge version for $version"
 
 path=$(
-    grep "Direct Download" "$index" |
-    grep "forge-$version-$build-$package" |
-    head -n1 | sed 's/.*href="\([^"]\+\)".*/\1/'
+	grep "Direct Download" "$index" |
+	grep "forge-$version-$build-$package" |
+	head -n1 | sed 's/.*href="\([^"]\+\)".*/\1/'
 )
 file=${path##*/}
 
 test "$file" || die "Could not parse filename"
 
 if ! test -f "$file"; then
-    curl -sL -o "$file" "$url/$path" || die "Could not download package"
+	curl -sL -o "$file" "$url/$path" || die "Could not download package"
 fi
 
 echo "$file"

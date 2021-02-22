@@ -2,10 +2,10 @@
 
 # Install a minecraft server service.
 # Usage: install-minecraft-service [version] [user] [variant]
-# Examples:
-#     install-minecraft-service 1.12
-#     USER=minecraft install-minecraft-service 1.9
-#     VARIANT=forge install-minecraft-service
+# Usage examples:
+# install-minecraft-service 1.12
+# USER=minecraft install-minecraft-service 1.9
+# VARIANT=forge install-minecraft-service
 
 set -e
 
@@ -14,15 +14,15 @@ USER=${USER:-minecraft}
 
 home=/home/$USER
 
-if ! test -d "$home"; then
-    sudo useradd -m "$USER"
-    sudo passwd -d "$USER"
+if [[ ! -d $home ]]; then
+	sudo useradd -m "$USER"
+	sudo passwd -d "$USER"
 fi
 
 dir=$home sudo install-minecraft-server "$version"
 
 if [[ $VARIANT ]]; then
-    dir=$home sudo install-minecraft-server-"$VARIANT" "$version"
+	dir=$home sudo install-minecraft-server-"$VARIANT" "$version"
 fi
 
 sh="#!/usr/bin/env sh"

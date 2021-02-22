@@ -11,6 +11,6 @@ dir=${dir:-$HOME/.minecraft-server}
 
 mkdir -p "$dir"; cd "$dir"
 
-test -x server || dir=$dir install-minecraft-server "$version"
+[[ -x server ]] || dir=$dir install-minecraft-server "$version"
 
 exec ./server

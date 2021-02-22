@@ -8,13 +8,13 @@ index=https://krita.org/en/download/krita-desktop/
 
 url=$(
 	curl -sL "$index" |
-    grep -E 'https://[^"]+\.appimage' |
-    sed 's/.*"\(.*\)".*/\1/'
+	grep -E 'https://[^"]+\.appimage' |
+	sed 's/.*"\(.*\)".*/\1/'
 )
 
-if ! test "$url"; then
-    echo "Unable to get download url from $index" >&2
-    exit 1
+if [[ ! $url ]]; then
+	echo "Unable to get download url from $index" >&2
+	exit 1
 fi
 
 bin=$HOME/.local/bin/krita

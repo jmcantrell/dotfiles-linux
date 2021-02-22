@@ -5,5 +5,5 @@
 set -e
 
 sudo cp -v \
-    "${1:-$HOME/.config/background.png}" \
-    /usr/share/pixmaps/lightdm_background.png
+	"${1:-$HOME/.config/background.png}" \
+	/usr/share/pixmaps/lightdm_background.png

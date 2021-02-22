@@ -33,68 +33,68 @@ If no filename is given, %Y-%m-%d_%H-%M-%S.gif will be used.
 "
 
 capture_format() {
-    local text=$1
+	local text=$1
 
-    # recording properties
-    text=${text//\$t/$capture_filetype}
-    text=${text//\$p/$capture_size}
-    text=${text//\$w/$capture_width}
-    text=${text//\$h/$capture_height}
-    text=${text//\$c/$capture_coord}
-    text=${text//\$l/$capture_left}
-    text=${text//\$t/$capture_top}
+	# recording properties
+	text=${text//\$t/$capture_filetype}
+	text=${text//\$p/$capture_size}
+	text=${text//\$w/$capture_width}
+	text=${text//\$h/$capture_height}
+	text=${text//\$c/$capture_coord}
+	text=${text//\$l/$capture_left}
+	text=${text//\$t/$capture_top}
 
-    # some should only be applied if the file exists
-    if [[ -f $capture_file ]]; then
-        # full image path
-        text=${text//\$f/$capture_file}
+	# some should only be applied if the file exists
+	if [[ -f $capture_file ]]; then
+		# full image path
+		text=${text//\$f/$capture_file}
 
-        # file name (w/o dir or ext)
-        local n=${capture_file##*/}; n=${capture_file%%.*}
-        text=${text//\$n/$n}
+		# file name (w/o dir or ext)
+		local n=${capture_file##*/}; n=${capture_file%%.*}
+		text=${text//\$n/$n}
 
-        # file size (bytes)
-        local s=$(stat -c %s "$capture_file")
-        text=${text//\$s/$s}
-    fi
+		# file size (bytes)
+		local s=$(stat -c %s "$capture_file")
+		text=${text//\$s/$s}
+	fi
 
-    # handle any literal '$'
-    text=${text//\$\$/\$}
+	# handle any literal '$'
+	text=${text//\$\$/\$}
 
-    date +"$text"  # handle date/time on the way out
+	date +"$text"  # handle date/time on the way out
 }
 
 xrect() {
 	local dim
 	readarray -t dim < <(
-        xwininfo "$@" |
-        grep -Ei "(absolute upper-left [xy]|width|height)" |
-        cut -d: -f2 | tr '\n' ' '
-    )
+		xwininfo "$@" |
+		grep -Ei "(absolute upper-left [xy]|width|height)" |
+		cut -d: -f2 | tr '\n' ' '
+	)
 
-    local l=${dim[0]}
-    local t=${dim[1]}
-    # must be div by 2 or else...
-    w=$(( (dim[2] / 2) * 2 ))
-    h=$(( (dim[3] / 2) * 2 ))
+	local l=${dim[0]}
+	local t=${dim[1]}
+	# must be div by 2 or else...
+	w=$(( (dim[2] / 2) * 2 ))
+	h=$(( (dim[3] / 2) * 2 ))
 
-    echo "${w}x${h}+${l}+${t}"
+	echo "${w}x${h}+${l}+${t}"
 }
 
 active_window_id() {
-    xprop -root |
-    grep "_NET_ACTIVE_WINDOW(WINDOW)" |
-    cut -d# -f2
+	xprop -root |
+	grep "_NET_ACTIVE_WINDOW(WINDOW)" |
+	cut -d# -f2
 }
 
 selected_window_id() {
-    xprop |
-    grep "WM_CLIENT_LEADER(WINDOW)" |
-    cut -d# -f2
+	xprop |
+	grep "WM_CLIENT_LEADER(WINDOW)" |
+	cut -d# -f2
 }
 
 stop_recording() {
-    killall -INT ffmpeg >/dev/null 2>&1
+	killall -INT ffmpeg >/dev/null 2>&1
 }
 
 shutter_sound=camera-shutter
@@ -115,37 +115,37 @@ unset copy_path_to_clipboard
 
 unset OPTIND
 while getopts ":D:t:r:q:og:wusm:and:ce:xh" option; do
-    case $option in
-        D) directory=$OPTARG ;;
-        t) capture_seconds=$OPTARG ;;
-        r) capture_framerate=$OPTARG ;;
-        q) video_quality=$OPTARG ;;
-        o) use_optimization=1 ;;
+	case $option in
+		D) directory=$OPTARG ;;
+		t) capture_seconds=$OPTARG ;;
+		r) capture_framerate=$OPTARG ;;
+		q) video_quality=$OPTARG ;;
+		o) use_optimization=1 ;;
 
-        # various ways to define capture region
-        g) capture_geometry=$OPTARG ;;
-        w) capture_geometry=$(xrect -id "$(selected_window_id)") ;;
-        u) capture_geometry=$(xrect -id "$(active_window_id)") ;;
-        s|m) capture_geometry=$(xrectsel) ;&  # TODO: dependency hurdle
+		# various ways to define capture region
+		g) capture_geometry=$OPTARG ;;
+		w) capture_geometry=$(xrect -id "$(selected_window_id)") ;;
+		u) capture_geometry=$(xrect -id "$(active_window_id)") ;;
+		s|m) capture_geometry=$(xrectsel) ;&  # TODO: dependency hurdle
 
-        # region follows when $OPTARG pixels from edge
-        # same result: -m centered, -m 999999999
-        m) capture_follows_mouse=1; pixels_from_edge=$OPTARG ;;
+		# region follows when $OPTARG pixels from edge
+		# same result: -m centered, -m 999999999
+		m) capture_follows_mouse=1; pixels_from_edge=$OPTARG ;;
 
-        # might be suitable for another tool
-        a) use_audible_cues=1 ;;
-        n) notify_on_capture=1 ;;
-        d) delay_count=$OPTARG ;;
-        c) copy_path_to_clipboard=1 ;;
+		# might be suitable for another tool
+		a) use_audible_cues=1 ;;
+		n) notify_on_capture=1 ;;
+		d) delay_count=$OPTARG ;;
+		c) copy_path_to_clipboard=1 ;;
 
-        # run commands after capture
-        e) exec_command=$OPTARG ;;
+		# run commands after capture
+		e) exec_command=$OPTARG ;;
 
-        x) stop_recording; exit 0 ;;
+		x) stop_recording; exit 0 ;;
 
-        h) echo "$usage" >&2; exit 0 ;;
-        *) echo "$usage" >&2; exit 1 ;;
-    esac
+		h) echo "$usage" >&2; exit 0 ;;
+		*) echo "$usage" >&2; exit 1 ;;
+	esac
 done && shift $((OPTIND - 1))
 
 # this isn't accurate when using multiple displays.
@@ -153,7 +153,7 @@ done && shift $((OPTIND - 1))
 root_geometry=$(xrect -root)
 # image properties (mostly for formatting)
 if [[ -z $capture_geometry ]]; then
-    capture_geometry=$root_geometry
+	capture_geometry=$root_geometry
 fi
 capture_size=${capture_geometry%%+*}
 capture_width=${capture_size%x*}
@@ -178,8 +178,8 @@ capture_file=${1:-$directory/%Y-%m-%d_%H-%M-%S.\$t}
 capture_file=$(capture_format "$capture_file")
 
 case $capture_filetype in
-    gif) capture_options+=(-pix_fmt rgb24) ;;
-    *) capture_options+=(-c:v libx264) ;;
+	gif) capture_options+=(-pix_fmt rgb24) ;;
+	*) capture_options+=(-c:v libx264) ;;
 esac
 
 # optimizations for hq output
@@ -194,49 +194,49 @@ fi
 # if debugging, comment out these braces
 {
 
-    if [[ -n $use_audible_cues ]]; then
-        canberra-gtk-play -i $start_sound
-        for (( tick=1; tick <= delay_count; tick+=1 )); do
-            canberra-gtk-play -i $tick_sound
-        done
-    fi
+	if [[ -n $use_audible_cues ]]; then
+		canberra-gtk-play -i $start_sound
+		for (( tick=1; tick <= delay_count; tick+=1 )); do
+			canberra-gtk-play -i $tick_sound
+		done
+	fi
 
-    rm -f "$capture_file"
-    mkdir -p "$(dirname "$capture_file")"
+	rm -f "$capture_file"
+	mkdir -p "$(dirname "$capture_file")"
 
-    ffmpeg "${capture_options[@]}" "$capture_file"
+	ffmpeg "${capture_options[@]}" "$capture_file"
 
-    if [[ ! -f $capture_file ]]; then
-        notify-send -u critical "screencast recording failed"
-        exit 1
-    fi
+	if [[ ! -f $capture_file ]]; then
+		notify-send -u critical "screencast recording failed"
+		exit 1
+	fi
 
-    if [[ -n $use_optimization ]]; then
-        case $capture_file in
-            *.gif) gifsicle --batch --optimize=3 "$capture_file" ;;
-        esac
-    fi
+	if [[ -n $use_optimization ]]; then
+		case $capture_file in
+			*.gif) gifsicle --batch --optimize=3 "$capture_file" ;;
+		esac
+	fi
 
-    capture_file=$(readlink -f "$capture_file")
+	capture_file=$(readlink -f "$capture_file")
 
-    if [[ -n $copy_path_to_clipboard ]]; then
-        echo -n "$capture_file" | xsel -ib
-    fi
+	if [[ -n $copy_path_to_clipboard ]]; then
+		echo -n "$capture_file" | xsel -ib
+	fi
 
-    if [[ -n $notify_on_capture ]]; then
-        fs=$(du -h "$capture_file" | cut -f1)
-        info="<u>${capture_file/$HOME/\~}</u>, $fs, $capture_size"
-        notify-send "screencast captured" "$info"
-    fi
+	if [[ -n $notify_on_capture ]]; then
+		fs=$(du -h "$capture_file" | cut -f1)
+		info="<u>${capture_file/$HOME/\~}</u>, $fs, $capture_size"
+		notify-send "screencast captured" "$info"
+	fi
 
-    if [[ -n $use_audible_cues ]]; then
-        canberra-gtk-play -i $shutter_sound
-    fi
+	if [[ -n $use_audible_cues ]]; then
+		canberra-gtk-play -i $shutter_sound
+	fi
 
 } >/dev/null 2>&1
 
 echo -n "$capture_file"
 
 if [[ -n $exec_command ]]; then
-    exec "$(capture_format "$exec_command")"
+	exec "$(capture_format "$exec_command")"
 fi

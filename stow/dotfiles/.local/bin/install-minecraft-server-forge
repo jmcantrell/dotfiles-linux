@@ -13,17 +13,17 @@ mkdir -p "$dir"; cd "$dir"
 installer=forge-$version-installer.jar
 build=$(get-minecraft-forge "$version" installer)
 
-test -f "$installer" || ln -sfv "$build" "$installer"
+[[ -f $installer ]] || ln -sfv "$build" "$installer"
 
-if ! test -f "$installer"; then
-    echo "Unable to download installer for $version" >&2
-    exit 1
+if [[ ! -f $installer ]]; then
+	echo "Unable to download installer for $version" >&2
+	exit 1
 fi
 
 universal=${build/installer/universal}
 forge=forge-$version.jar
 
-test -f "$universal" || java -jar "$installer" --installServer
+[[ -f $universal ]] || java -jar "$installer" --installServer
 
 ln -sfv "$universal" "$forge"
 ln -sfv "$forge" forge.jar

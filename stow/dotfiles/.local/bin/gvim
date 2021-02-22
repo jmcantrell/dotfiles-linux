@@ -2,4 +2,4 @@
 
 # Pretend that gvim is just vim in a terminal.
 
-"$TERMINAL" -e "$EDITOR" "$@"
+"${TERMINAL[@]}" -e "${EDITOR[@]}" "$@"

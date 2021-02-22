@@ -3,14 +3,14 @@
 # Command abstraction for copying text to clipboard.
 
 copy() {
-    # copy to primary selection and clipboard
-    xsel -i; xsel -o | xsel -ib
+	# copy to primary selection and clipboard
+	xsel -i; xsel -o | xsel -ib
 }
 
 if test $# -gt 0; then
-    # copy arguments passed
-    echo "$@" | copy
+	# copy arguments passed
+	echo "$@" | copy
 else
-    # otherwise copy stdin
-    copy
+	# otherwise copy stdin
+	copy
 fi

@@ -5,8 +5,8 @@
 pamixer --toggle-mute
 
 case "$(pamixer --get-mute)" in
-    true) icon=audio-volume-muted ;;
-    *) icon=audio-volume-high ;;
+	true) icon=audio-volume-muted ;;
+	*) icon=audio-volume-high ;;
 esac
 
 icon=$icon notify-volume

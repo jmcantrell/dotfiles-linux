@@ -3,36 +3,37 @@
 me=${0##*/}
 usage="Sound an alarm after a specified amount of time.
 Usage: $me [-h] <n>[dhms] # (days, hours, minutes, seconds)
-Examples:
-    timer -n laundry 45m
-    timer -n 'boat tour' 3h"
+Usage examples:
+timer -n laundry 45m
+timer -n 'boat tour' 3h
+"
 
 seconds() {
-    local duration=$1
-    case $duration in
-        *[dhms])
-            unit=${duration:$((${#duration}-1)):1}
-            value=${duration%$unit}
-        ;;
-        *) return 1
-    esac
-    case $unit in
-        s) in_secs=1 ;;
-        m) in_secs=60 ;;
-        h) in_secs=3600 ;;
-        d) in_secs=86400 ;;
-    esac
-    echo $(( value * in_secs ))
+	local duration=$1
+	case $duration in
+		*[dhms])
+			unit=${duration:$((${#duration}-1)):1}
+			value=${duration%$unit}
+		;;
+		*) return 1
+	esac
+	case $unit in
+		s) in_secs=1 ;;
+		m) in_secs=60 ;;
+		h) in_secs=3600 ;;
+		d) in_secs=86400 ;;
+	esac
+	echo $(( value * in_secs ))
 }
 
 name=timer
 unset OPTIND
 while getopts ":hn:" option; do
-    case $option in
-        n) name=$OPTARG ;;
-        h) echo "$usage" >&2; exit 0 ;;
-        *) echo "$usage" >&2; exit 1 ;;
-    esac
+	case $option in
+		n) name=$OPTARG ;;
+		h) echo "$usage" >&2; exit 0 ;;
+		*) echo "$usage" >&2; exit 1 ;;
+	esac
 done && shift $((OPTIND - 1))
 
 # default to 30 sec
@@ -43,10 +44,10 @@ secs=$(seconds "${1:-30s}")
 w=${#secs}
 stop=$(date -d "$secs seconds" "+on %F at %-l:%M:%S%P")
 while true; do
-    remain=$(( secs - SECONDS ))
-    printf "%s ending %s: %*ss remaining\r" "$name" "$stop" "$w" $remain
-    (( remain <= 0 )) && break
-    sleep 1
+	remain=$(( secs - SECONDS ))
+	printf "%s ending %s: %*ss remaining\r" "$name" "$stop" "$w" $remain
+	(( remain <= 0 )) && break
+	sleep 1
 done
 echo
 

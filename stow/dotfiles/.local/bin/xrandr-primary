@@ -6,13 +6,13 @@
 config=${XDG_CONFIG_HOME:-$HOME/.config}
 
 primary() {
-    local primary=$(xrandr | grep '\bprimary\b' | cut -d' ' -f1)
-    test "$primary" || return 1
-    echo "$primary"
+	local primary=$(xrandr | grep '\bprimary\b' | cut -d' ' -f1)
+	test "$primary" || return 1
+	echo "$primary"
 }
 
 outputs() {
-    xrandr | grep '\bconnected\b' | cut -d' ' -f1
+	xrandr | grep '\bconnected\b' | cut -d' ' -f1
 }
 
 output=$1

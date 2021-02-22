@@ -154,19 +154,19 @@ bindsym Shift+$Alt+l resize shrink right $resize_px px or $resize_ppt ppt
 # session commands
 set $mode_session session: (q)uit, (l)ock, (s)uspend, (h)ibernate, (r)eboot, (p)oweroff
 mode "$mode_session" {
-    # exit window manager
-    bindsym q $fork i3exit quit, mode "default"
-    # lock screen
-    bindsym l $fork i3exit lock, mode "default"
-    # lock screen, then suspend/hibernate
-    bindsym s $fork i3exit suspend,   mode "default"
-    bindsym h $fork i3exit hibernate, mode "default"
-    # reboot/poweroff
-    bindsym r $fork i3exit reboot,   mode "default"
-    bindsym p $fork i3exit poweroff, mode "default"
-    # exit mode
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
+	# exit window manager
+	bindsym q $fork i3exit quit, mode "default"
+	# lock screen
+	bindsym l $fork i3exit lock, mode "default"
+	# lock screen, then suspend/hibernate
+	bindsym s $fork i3exit suspend,   mode "default"
+	bindsym h $fork i3exit hibernate, mode "default"
+	# reboot/poweroff
+	bindsym r $fork i3exit reboot,   mode "default"
+	bindsym p $fork i3exit poweroff, mode "default"
+	# exit mode
+	bindsym Return mode "default"
+	bindsym Escape mode "default"
 }
 bindsym $Super+q mode "$mode_session"
 
@@ -201,31 +201,31 @@ client.placeholder      $border $dark   $text $border   $border
 
 bar {
 
-    binding_mode_indicator on
+	binding_mode_indicator on
 
-    status_command py3status
-    hidden_state   hide
-    modifier       $Super
-    position       top
-    tray_output    primary
+	status_command py3status
+	hidden_state   hide
+	modifier       $Super
+	position       top
+	tray_output    primary
 
-    # mouse wheel over statusbar
-    bindsym button4 workspace prev_on_output
-    bindsym button5 workspace next_on_output
+	# mouse wheel over statusbar
+	bindsym button4 workspace prev_on_output
+	bindsym button5 workspace next_on_output
 
-    colors {
+	colors {
 
-        background $dark
-        separator  $border
-        statusline $bold
+		background $dark
+		separator  $border
+		statusline $bold
 
-        #class             border  bg      text
-        urgent_workspace   $bold   $urgent $bold
-        active_workspace   $bold   $focus  $bold
-        focused_workspace  $bold   $focus  $bold
-        inactive_workspace $border $dark   $text
+		#class             border  bg      text
+		urgent_workspace   $bold   $urgent $bold
+		active_workspace   $bold   $focus  $bold
+		focused_workspace  $bold   $focus  $bold
+		inactive_workspace $border $dark   $text
 
-    }
+	}
 
 }
 

@@ -9,13 +9,13 @@ user=${1:-$USER}
 config=/etc/lightdm/lightdm.conf
 
 if ! test -f "$config"; then
-    echo "Missing config file $config" >&2
-    exit 1
+	echo "Missing config file $config" >&2
+	exit 1
 fi
 
 # usage: enable_line filename name [value]
 enable_line() {
-    sudo sed -i "/^#\?$1=/{ s/^#//; ${2:+s/=.*/=$2/;} }" "$config"
+	sudo sed -i "/^#\?$1=/{ s/^#//; ${2:+s/=.*/=$2/;} }" "$config"
 }
 
 sudo groupadd -r autologin || true

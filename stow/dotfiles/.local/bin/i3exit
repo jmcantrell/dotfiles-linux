@@ -3,30 +3,30 @@
 # Encapsulate various ways of leaving i3.
 
 case ${1:-quit} in
-    quit)
-        i3-msg exit
-        ;;
-    lock)
-        i3lock &
-        ;;
-    suspend)
-        i3lock &
-        sleep 2
-        systemctl suspend
-        ;;
-    hibernate)
-        i3lock &
-        sleep 2
-        systemctl hibernate
-        ;;
-    reboot)
-        systemctl reboot
-        ;;
-    poweroff)
-        systemctl poweroff
-        ;;
-    *)
-        echo "usage: ${0##*/} [quit|lock|suspend|hibernate|reboot|poweroff]" >&2
-        exit 1
-        ;;
+	quit)
+		i3-msg exit
+		;;
+	lock)
+		i3lock &
+		;;
+	suspend)
+		i3lock &
+		sleep 2
+		systemctl suspend
+		;;
+	hibernate)
+		i3lock &
+		sleep 2
+		systemctl hibernate
+		;;
+	reboot)
+		systemctl reboot
+		;;
+	poweroff)
+		systemctl poweroff
+		;;
+	*)
+		echo "usage: ${0##*/} [quit|lock|suspend|hibernate|reboot|poweroff]" >&2
+		exit 1
+		;;
 esac

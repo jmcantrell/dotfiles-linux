@@ -9,7 +9,7 @@ dir=$HOME/.minecraft
 mkdir -p "$dir"; cd "$dir"
 
 curl -sL -o launcher.jar \
-    https://s3.amazonaws.com/Minecraft.Download/launcher/Minecraft.jar
+	https://s3.amazonaws.com/Minecraft.Download/launcher/Minecraft.jar
 
 ln -sfvT "$HOME" screenshots
 

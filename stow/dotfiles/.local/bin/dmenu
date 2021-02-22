@@ -3,6 +3,6 @@
 # Ensure dmenu is uniform across different invocations.
 
 /usr/bin/dmenu -i -b \
-    -fn 'DejaVu Sans Mono-10:normal' \
-    -nb '#000000' -nf '#808080' \
-    -sb '#800080' -sf '#ffffff' "$@"
+	-fn 'DejaVu Sans Mono-10:normal' \
+	-nb '#000000' -nf '#808080' \
+	-sb '#800080' -sf '#ffffff' "$@"

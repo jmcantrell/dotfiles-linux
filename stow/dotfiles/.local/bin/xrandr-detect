@@ -3,11 +3,11 @@
 # Enable any connected outputs.
 
 outputs() {
-    xrandr | grep '\bconnected\b' | cut -d' ' -f1
+	xrandr | grep '\bconnected\b' | cut -d' ' -f1
 }
 
 outputs | while read -r output; do
-    xrandr --output "$output" --auto "$@"
+	xrandr --output "$output" --auto "$@"
 done
 
 setbg

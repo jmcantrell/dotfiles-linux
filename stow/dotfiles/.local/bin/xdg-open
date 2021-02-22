@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-# Fake out xdg to use rifle to open files.
-
-rifle "$@"

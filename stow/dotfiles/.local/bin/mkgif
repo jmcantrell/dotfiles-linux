@@ -4,5 +4,5 @@
 # Usage: mkgif <gif> [image...]
 
 convert -verbose \
-    -layers -delay 15 -loop 0 \
-    -resize 500 OptimizeTransparency "$@"
+	-layers -delay 15 -loop 0 \
+	-resize 500 OptimizeTransparency "$@"

@@ -9,12 +9,12 @@ path=$cache/path
 
 # test if cache is outdated
 cache_bad() {
-    stest -q -dr -n "$path" "$@"
+	stest -q -dr -n "$path" "$@"
 }
 
 # cache list of executables in given directories
 cache_path() {
-    stest -flx "$@" | sort -u | tee "$path"
+	stest -flx "$@" | sort -u | tee "$path"
 }
 
 # regenerate cache if needed

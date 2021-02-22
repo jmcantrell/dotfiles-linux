@@ -1,123 +1,123 @@
 alt + space
-    dmenu_run_mru
+	dmenu_run_mru
 
 super + alt + space
-    dmenu_run_prev
+	dmenu_run_prev
 
 super + Return
-    cd `xpwd` && $TERMINAL
+	cd `xpwd` && $TERMINAL
 
 super + b
-    firefox
+	firefox
 
 super + B
-    firefox --private-window
+	firefox --private-window
 
 super + alt + b
-    vimb
+	vimb
 
 super + e
-    cd `xpwd` && $TERMINAL -e $EDITOR
+	cd `xpwd` && $TERMINAL -e $EDITOR
 
 super + f
-    cd `xpwd` && $TERMINAL -e ranger
+	cd `xpwd` && $TERMINAL -e ranger
 
 super + {Home,End}
-    volume-{max,mute}
+	volume-{max,mute}
 
 super + {Prior,Next}
-    volume-{up,down}
+	volume-{up,down}
 
 super + alt + {Prior,Next}
-    mpc -q {prev,next} && mpdnotify
+	mpc -q {prev,next} && mpdnotify
 
 XF86Audio{Prev,Next}
-    mpc -q {prev,next} && mpdnotify
+	mpc -q {prev,next} && mpdnotify
 
 XF86AudioMute
-    volume-mute
+	volume-mute
 
 XF86Audio{Raise,Lower}Volume
-    volume-{up,down}
+	volume-{up,down}
 
 # copy text snippets
 super + Delete
-    dmenu_snip -c
+	dmenu_snip -c
 
 # type text snippets
 super + alt + Delete
-    dmenu_snip -t
+	dmenu_snip -t
 
 # edit text snippets
 super + shift + Delete
-    dmenu_snip -e
+	dmenu_snip -e
 
 # copy password
 ctrl + alt + space
-    dmenu_pass -c
+	dmenu_pass -c
 
 # generate password
 ctrl + alt + shift + space
-    dmenu_pass -cg
+	dmenu_pass -cg
 
 # start a magifier at 1:1 (+/- to zoom)
 super + equal
-    xzoom -mag 1
+	xzoom -mag 1
 
 # add an output oriented to the primary
 super + o; {h,j,k,l}
-    xrandr-orient {left-of,below,above,right-of}
+	xrandr-orient {left-of,below,above,right-of}
 
 # automatically add outputs or mirror primary
 super + o; {d,c}
-    xrandr-{detect,clone}
+	xrandr-{detect,clone}
 
 # remove all connected outputs
 super + alt + o
-    xrandr-off
+	xrandr-off
 
 # capture desktop
 super + Print; d
-    icap -ncoa
+	icap -ncoa
 
 # capture current window
 super + Print; u
-    icap -ncoa -u
+	icap -ncoa -u
 
 # capture selected window
 super + Print; w
-    icap -ncoa -w
+	icap -ncoa -w
 
 # capture selected region
 super + Print; s
-    icap -ncoa -s
+	icap -ncoa -s
 
 # record desktop
 super + alt + Print; d
-    mcap -ncoa
+	mcap -ncoa
 
 # record current window
 super + alt + Print; u
-    mcap -ncoa -u
+	mcap -ncoa -u
 
 # record selected window
 super + alt + Print; w
-    mcap -ncoa -w
+	mcap -ncoa -w
 
 # record selected region
 super + alt + Print; s
-    mcap -ncoa -s
+	mcap -ncoa -s
 
 # record region around mouse
 # keep mouse in the center of the rectangle
 super + alt + Print; c
-    mcap -ncoa -m centered
+	mcap -ncoa -m centered
 
 # record region around mouse
 # only move rectangle when mouse is 10-90 pixels from edge
 super + alt + Print; {1-9}
-    mcap -ncoa -m {1-9}0
+	mcap -ncoa -m {1-9}0
 
 # stop recording
 super + Pause
-    mcap -x
+	mcap -x

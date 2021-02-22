@@ -12,7 +12,7 @@ alias fehshuf='feh --recursive --randomize'
 # slideshow with some preset delays
 alias fehshow='feh --sort name --hide-pointer'
 for n in 3 5 10 20; do
-    alias fehshow$n="fehshow --slideshow-delay $n"
+	alias fehshow$n="fehshow --slideshow-delay $n"
 done
 
 # vi:ft=sh

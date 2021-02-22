@@ -7,17 +7,17 @@ set -e
 imagefile=${1:-$HOME/.config/me.png}
 
 if ! test -f "$imagefile"; then
-    echo "Image $imagefile does not exist"
-    exit 1
+	echo "Image $imagefile does not exist"
+	exit 1
 fi
 
 accounts=/var/lib/AccountsService
 
 if groups | grep -wq wheel; then
-    # allow users to add their own user image
-    sudo mkdir -p "$accounts"/{icons,users}
-    sudo chgrp -R users "$accounts"/{icons,users}
-    sudo chmod -R g+rw "$accounts"/{icons,users}
+	# allow users to add their own user image
+	sudo mkdir -p "$accounts"/{icons,users}
+	sudo chgrp -R users "$accounts"/{icons,users}
+	sudo chmod -R g+rw "$accounts"/{icons,users}
 fi
 
 icon=$accounts/icons/$USER

@@ -7,81 +7,81 @@ Usage: $me [-h] [-f [command]
 "
 
 pid_status() {
-    local pid=$1
-    local status=$(ps -p "$pid" -o stat= 2>/dev/null) || return 1
-    case $status in
-        D*) desc="blocking" ;;
-        R*) desc="running" ;;
-        S*) desc="waiting" ;;
-        T*) desc="stopped" ;;
-        W*) desc="paging" ;;
-        X*) desc="dead" ;;
-        Z*) desc="a zombie" ;;
-        *) return 1 ;;
-    esac
-    echo "$desc"
+	local pid=$1
+	local status=$(ps -p "$pid" -o stat= 2>/dev/null) || return 1
+	case $status in
+		D*) desc="blocking" ;;
+		R*) desc="running" ;;
+		S*) desc="waiting" ;;
+		T*) desc="stopped" ;;
+		W*) desc="paging" ;;
+		X*) desc="dead" ;;
+		Z*) desc="a zombie" ;;
+		*) return 1 ;;
+	esac
+	echo "$desc"
 }
 
 pid_time() {
-    local pid=$1
-    local seconds=$(ps -p "$pid" -o etimes= 2>/dev/null)
-    secspan "$seconds"
+	local pid=$1
+	local seconds=$(ps -p "$pid" -o etimes= 2>/dev/null)
+	secspan "$seconds"
 }
 
 seconds=1
 monfile=/dev/null
 unset OPTIND
 while getopts ":hf:s:n" option; do
-    case $option in
-        f) monfile=$OPTARG ;;
-        s) seconds=$OPTARG ;;
-        n) notify=1 ;;
+	case $option in
+		f) monfile=$OPTARG ;;
+		s) seconds=$OPTARG ;;
+		n) notify=1 ;;
 
-        h) echo "$usage" >&2; exit 0 ;;
-        *) echo "$usage" >&2; exit 1 ;;
-    esac
+		h) echo "$usage" >&2; exit 0 ;;
+		*) echo "$usage" >&2; exit 1 ;;
+	esac
 done && shift $((OPTIND - 1))
 
 {
-    # start the command
-    date +"%c"
-    echo "$ $*"
-    "$@" 2>&1 &
-    pid=$!
+	# start the command
+	date +"%c"
+	echo "$ $*"
+	"$@" 2>&1 &
+	pid=$!
 
-    # if $0 dies, cleanup the process being monitored
-    trap "kill -9 $pid" INT TERM EXIT
+	# if $0 dies, cleanup the process being monitored
+	trap "kill -9 $pid" INT TERM EXIT
 
-    old_status="started"
-    message="process $pid is $old_status"
-    echo "# $message"
-    [[ $notify ]] && notify-send -u low "$message" "$*"
+	old_status="started"
+	message="process $pid is $old_status"
+	echo "# $message"
+	[[ $notify ]] && notify-send -u low "$message" "$*"
 
-    while true; do
-        new_status=$(pid_status $pid) || break
-        if [[ -n $new_status && $new_status != "$old_status" ]]; then
-            message="process $pid is $new_status (was $old_status)"
-            time=$(pid_time $pid)
-            [[ $time ]] && message+=", running for $time"
-            echo "# $message"
-            notify-send -u low "$message" "$*"
-        fi
-        sleep "$seconds"
-    done
+	while true; do
+		new_status=$(pid_status $pid) || break
+		if [[ -n $new_status && $new_status != "$old_status" ]]; then
+			message="process $pid is $new_status (was $old_status)"
+			time=$(pid_time $pid)
+			[[ $time ]] && message+=", running for $time"
+			echo "# $message"
+			notify-send -u low "$message" "$*"
+		fi
+		sleep "$seconds"
+	done
 
-    wait $pid; e=$?
+	wait $pid; e=$?
 
-    # post-mortem report
-    if (( e == 0 )); then
-        urgency="normal"
-        summary="succeeded"
-    else
-        urgency="critical"
-        summary="failed ($e)"
-    fi
+	# post-mortem report
+	if (( e == 0 )); then
+		urgency="normal"
+		summary="succeeded"
+	else
+		urgency="critical"
+		summary="failed ($e)"
+	fi
 
-    message="process $pid $summary"
-    notify-send -u $urgency "$message" "$*"
-    echo "# $message"
+	message="process $pid $summary"
+	notify-send -u $urgency "$message" "$*"
+	echo "# $message"
 
 } | tee "$monfile"

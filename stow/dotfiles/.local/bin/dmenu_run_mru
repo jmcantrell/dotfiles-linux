@@ -31,17 +31,17 @@ trap "rm -f '$temp'" INT TERM EXIT
 # rearranges the commands in $PATH,
 # with preference given to command history
 mru_path() {
-    cat "$mru"; dmenu_path | grep -vxF "$mru"
+	cat "$mru"; dmenu_path | grep -vxF "$mru"
 }
 
 # add a command to the mru cache
 mru_add() {
-    local cmd=${1:?missing command}
-    {
-        echo "$cmd"
-        grep -vx "$cmd" "$mru"
-    } | head -n$histsize >"$temp"
-    mv -f "$temp" "$mru"
+	local cmd=${1:?missing command}
+	{
+		echo "$cmd"
+		grep -vx "$cmd" "$mru"
+	} | head -n$histsize >"$temp"
+	mv -f "$temp" "$mru"
 }
 
 # get command from dmenu prompt
@@ -56,11 +56,11 @@ mru_add "$cmd"
 # strip a modifier from a command
 # errors if no modifiers were found
 stripmod() {
-    local mod=${1:?missing modifier}
-    local cmd=${2:?missing command}
-    local suffix=${cmd: -1}
-    echo "${cmd%%$mod}"
-    test "$suffix" = "$mod" || return 1
+	local mod=${1:?missing modifier}
+	local cmd=${2:?missing command}
+	local suffix=${cmd: -1}
+	echo "${cmd%%$mod}"
+	test "$suffix" = "$mod" || return 1
 }
 
 # detect and remove any modifiers
@@ -74,13 +74,13 @@ cmd=${cmd%%.}; cmd=${cmd%%;*}; cmd=${cmd%%!*}
 
 # if requested, run command with sudo
 if test $sudo; then
-    if test $term; then
-        # ask for password in terminal
-        cmd="sudo $cmd"
-    else
-        # ask for password with gui
-        cmd="gksudo $cmd"
-    fi
+	if test $term; then
+		# ask for password in terminal
+		cmd="sudo $cmd"
+	else
+		# ask for password with gui
+		cmd="gksudo $cmd"
+	fi
 fi
 
 # if requested, run command in a terminal

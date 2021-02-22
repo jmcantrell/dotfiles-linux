@@ -34,36 +34,36 @@ If no filename is given, %Y-%m-%d_%H-%M-%S.gif will be used.
 "
 
 capture_format() {
-    local text=$1
+	local text=$1
 
-    # recording properties
-    text=${text//\$t/$capture_filetype}
-    text=${text//\$p/$capture_size}
-    text=${text//\$w/$capture_width}
-    text=${text//\$h/$capture_height}
+	# recording properties
+	text=${text//\$t/$capture_filetype}
+	text=${text//\$p/$capture_size}
+	text=${text//\$w/$capture_width}
+	text=${text//\$h/$capture_height}
 
-    # some should only be applied if the file exists
-    if [[ -f $capture_file ]]; then
-        # full image path
-        text=${text//\$f/$capture_file}
+	# some should only be applied if the file exists
+	if [[ -f $capture_file ]]; then
+		# full image path
+		text=${text//\$f/$capture_file}
 
-        # file name (w/o dir or ext)
-        local n=${capture_file##*/}; n=${capture_file%%.*}
-        text=${text//\$n/$n}
+		# file name (w/o dir or ext)
+		local n=${capture_file##*/}; n=${capture_file%%.*}
+		text=${text//\$n/$n}
 
-        # file size (bytes)
-        local s=$(stat -c %s "$capture_file")
-        text=${text//\$s/$s}
-    fi
+		# file size (bytes)
+		local s=$(stat -c %s "$capture_file")
+		text=${text//\$s/$s}
+	fi
 
-    # handle any literal '$'
-    text=${text//\$\$/\$}
+	# handle any literal '$'
+	text=${text//\$\$/\$}
 
-    date +"$text"  # handle date/time on the way out
+	date +"$text"  # handle date/time on the way out
 }
 
 stop_recording() {
-    killall -INT ffmpeg >/dev/null 2>&1
+	killall -INT ffmpeg >/dev/null 2>&1
 }
 
 shutter_sound=camera-shutter
@@ -83,36 +83,36 @@ unset copy_path_to_clipboard
 
 unset OPTIND
 while getopts ":D:t:r:q:os:and:b:ce:xh" option; do
-    case $option in
-        D) directory=$OPTARG ;;
-        t) capture_seconds=$OPTARG ;;
-        r) capture_framerate=$OPTARG ;;
-        q) capture_quality=$OPTARG ;;
-        o) use_optimization=1 ;;
-        s) capture_size=$OPTARG ;;
+	case $option in
+		D) directory=$OPTARG ;;
+		t) capture_seconds=$OPTARG ;;
+		r) capture_framerate=$OPTARG ;;
+		q) capture_quality=$OPTARG ;;
+		o) use_optimization=1 ;;
+		s) capture_size=$OPTARG ;;
 
-        # might be suitable for another tool
-        a) use_audible_cues=1 ;;
-        n) notify_on_capture=1 ;;
-        d) delay_count=$OPTARG ;;
-        b) capture_count=$OPTARG ;;  # TODO: unfinished option?
-        c) copy_path_to_clipboard=1 ;;
+		# might be suitable for another tool
+		a) use_audible_cues=1 ;;
+		n) notify_on_capture=1 ;;
+		d) delay_count=$OPTARG ;;
+		b) capture_count=$OPTARG ;;  # TODO: unfinished option?
+		c) copy_path_to_clipboard=1 ;;
 
-        # run commands after capture
-        e) exec_command=$OPTARG ;;
+		# run commands after capture
+		e) exec_command=$OPTARG ;;
 
-        x) stop_recording; exit 0 ;;
+		x) stop_recording; exit 0 ;;
 
-        h) echo "$usage" >&2; exit 0 ;;
-        *) echo "$usage" >&2; exit 1 ;;
-    esac
+		h) echo "$usage" >&2; exit 0 ;;
+		*) echo "$usage" >&2; exit 1 ;;
+	esac
 done && shift $((OPTIND - 1))
 
 if [[ -z $capture_size ]]; then
-    capture_size=$(
-        v4l2-ctl --list-formats-ext |
-        grep "\bSize:" | cut -d' ' -f3 | head -n1
-    )
+	capture_size=$(
+		v4l2-ctl --list-formats-ext |
+		grep "\bSize:" | cut -d' ' -f3 | head -n1
+	)
 fi
 capture_width=${capture_size%x*}
 capture_height=${capture_size#*x}
@@ -130,9 +130,9 @@ capture_options+=(-video_size "$capture_size")
 capture_options+=(-i /dev/video0)
 
 case $capture_filetype in
-    gif) capture_options+=(-pix_fmt rgb24) ;;
-    jpg|png) capture_options+=(-vframes 1) ;;
-    *) capture_options+=(-c:v libx264) ;;
+	gif) capture_options+=(-pix_fmt rgb24) ;;
+	jpg|png) capture_options+=(-vframes 1) ;;
+	*) capture_options+=(-c:v libx264) ;;
 esac
 
 # optimizations for hq output
@@ -140,57 +140,57 @@ capture_options+=(-qscale "$capture_quality" -threads 0)
 
 # if no time, ctrl-c to stop
 if [[ -n $capture_seconds ]]; then
-    capture_options+=(-t "$capture_seconds")
+	capture_options+=(-t "$capture_seconds")
 fi
 
 # some tools output a ton of garbage.
 # if debugging, comment out these braces
 {
 
-    if [[ -n $use_audible_cues ]]; then
-        canberra-gtk-play -i $start_sound
-        for (( tick=1; tick <= delay_count; tick+=1 )); do
-            canberra-gtk-play -i $tick_sound
-        done
-    fi
+	if [[ -n $use_audible_cues ]]; then
+		canberra-gtk-play -i $start_sound
+		for (( tick=1; tick <= delay_count; tick+=1 )); do
+			canberra-gtk-play -i $tick_sound
+		done
+	fi
 
-    rm -f "$capture_file"
-    mkdir -p "$(dirname "$capture_file")"
+	rm -f "$capture_file"
+	mkdir -p "$(dirname "$capture_file")"
 
-    ffmpeg "${capture_options[@]}" "$capture_file"
+	ffmpeg "${capture_options[@]}" "$capture_file"
 
-    if [[ ! -f $capture_file ]]; then
-        notify-send -u critical "recording failed"
-        exit 1
-    fi
+	if [[ ! -f $capture_file ]]; then
+		notify-send -u critical "recording failed"
+		exit 1
+	fi
 
-    if [[ -n $use_optimization ]]; then
-        case $capture_file in
-            *.png) optipng "$capture_file" ;;
-            *.jpg) jpegtran -optimize -copy none "$capture_file" ;;
-            *.gif) gifsicle --batch --optimize=3 "$capture_file" ;;
-        esac
-    fi
-    capture_file=$(readlink -f "$capture_file")
+	if [[ -n $use_optimization ]]; then
+		case $capture_file in
+			*.png) optipng "$capture_file" ;;
+			*.jpg) jpegtran -optimize -copy none "$capture_file" ;;
+			*.gif) gifsicle --batch --optimize=3 "$capture_file" ;;
+		esac
+	fi
+	capture_file=$(readlink -f "$capture_file")
 
-    if [[ -n $copy_path_to_clipboard ]]; then
-        echo -n "$capture_file" | xsel -ib
-    fi
+	if [[ -n $copy_path_to_clipboard ]]; then
+		echo -n "$capture_file" | xsel -ib
+	fi
 
-    if [[ -n $notify_on_capture ]]; then
-        fs=$(du -h "$capture_file" | cut -f1)
-        info="<u>${capture_file/$HOME/\~}</u>, $fs, $capture_size"
-        notify-send "camera activity captured" "$info"
-    fi
+	if [[ -n $notify_on_capture ]]; then
+		fs=$(du -h "$capture_file" | cut -f1)
+		info="<u>${capture_file/$HOME/\~}</u>, $fs, $capture_size"
+		notify-send "camera activity captured" "$info"
+	fi
 
-    if [[ -n $use_audible_cues ]]; then
-        canberra-gtk-play -i $shutter_sound
-    fi
+	if [[ -n $use_audible_cues ]]; then
+		canberra-gtk-play -i $shutter_sound
+	fi
 
 } >/dev/null 2>&1
 
 echo -n "$capture_file"
 
 if [[ -n $exec_command ]]; then
-    exec "$(capture_format "$exec_command")"
+	exec "$(capture_format "$exec_command")"
 fi

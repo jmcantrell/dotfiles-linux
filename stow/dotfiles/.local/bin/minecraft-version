@@ -13,8 +13,8 @@ profile=${1:-$(jq -r .selectedProfile "$profiles")}
 version=$(jq -r ".profiles[\"${profile:-default}\"].lastVersionId" "$profiles")
 
 # if not explicitly set, use the latest version
-if ! test "$version" || test "$version" = null; then
-    version=$(minecraft-version-latest)
+if [[ ! "$version" || "$version" = null ]]; then
+	version=$(minecraft-version-latest)
 fi
 
 # strip off any variant version info
