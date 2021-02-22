@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=compton
-GenericName=Xorg Compositor
-Comment=Enable visual effects for windows.
-Exec=compton
-TryExec=compton
-Terminal=false
-StartupNotify=false
-Type=Application

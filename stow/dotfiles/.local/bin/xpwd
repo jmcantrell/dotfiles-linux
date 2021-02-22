@@ -15,13 +15,13 @@ icon=$icon_set/actions/edit-paste.png
 active_window_id() {
 	xprop -root |
 	grep "_NET_ACTIVE_WINDOW(WINDOW)" |
-	cut -d# -f2
+	cut -d# -f2 | tr -d '[:space:]'
 }
 
 selected_window_id() {
 	xprop |
 	grep "WM_CLIENT_LEADER(WINDOW)" |
-	cut -d# -f2
+	cut -d# -f2 | tr -d '[:space:]'
 }
 
 tmux_session_id() {

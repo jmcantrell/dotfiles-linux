@@ -1,0 +1,5 @@
+# Enable visual effects for windows.
+
+exec compton &
+
+# vi:ft=sh

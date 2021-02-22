@@ -22,6 +22,4 @@ for d in /etc/X11/xinit/xinitrc.d ~/.xinitrc.d; do
 	done
 done
 
-xterm &
-
 exec "$DESKTOP"

@@ -1,5 +1,0 @@
-# Start XDG autostart applications.
-
-exec dex --autostart --environment "$DESKTOP" &
-
-# vi:ft=sh

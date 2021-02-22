@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=Simple X Hotkey Daemon
-GenericName=Hotkey Daemon
-Comment=Listen for keyboard shortcuts and execute associated commands.
-Exec=sxhkd
-TryExec=sxhkd
-Terminal=false
-StartupNotify=false
-Type=Application

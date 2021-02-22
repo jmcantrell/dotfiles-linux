@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=cbatticon
-GenericName=Battery Tray Icon
-Comment=Enable a tray icon to show battery notifications.
-Exec=cbatticon -n -c notify-battery -l 20 -r 5 -x 'xterm -e "$PAGER /sys/class/power_supply/BAT*/uevent"'
-TryExec=cbatticon
-Terminal=false
-StartupNotify=false
-Type=Application

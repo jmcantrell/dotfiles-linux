@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=udiskie
-GenericName=Device Automounter
-Comment=Automatically mount removable media, such as CDs or flash drives.
-Exec=udiskie --automount --tray --notify
-TryExec=udiskie
-Terminal=false
-StartupNotify=false
-Type=Application
