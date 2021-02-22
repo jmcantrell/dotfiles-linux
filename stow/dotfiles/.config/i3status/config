@@ -12,22 +12,21 @@ order += "dpms"
 order += "disk /home"
 order += "tztime pretty"
 
-window_title_async {
+window {
 	format = " {title} "
-	on_click 1 = "exec --no-startup-id xterm -e glances"
+	on_click 1 = "exec --no-startup-id terminal -e glances"
 }
 
 ethernet _first_ {
 	format_up = " en %ip "
 	format_down = " en down "
-	on_click 1 = "exec --no-startup-id xdg-open http://ip-api.com"
-	on_click 3 = "exec --no-startup-id xdg-open http://ip-api.com/json"
+	on_click 1 = "exec --no-startup-id terminal -e 'networkctl status'"
 }
 
 wireless _first_ {
 	format_up = " %essid %ip "
 	format_down = " wl down "
-	on_click 1 = "exec --no-startup-id gksudo 'xterm -e wifi-menu'"
+	on_click 1 = "exec --no-startup-id terminal -e 'networkctl status'"
 }
 
 dpms {
@@ -38,11 +37,11 @@ dpms {
 
 disk "/home" {
 	format = " ~ %avail "
-	on_click 1 = "exec --no-startup-id xterm -e 'df --si | pager'"
-	on_click 3 = "exec --no-startup-id xterm -e 'ncdu ~'"
+	on_click 1 = "exec --no-startup-id terminal -e 'df --si | pager'"
+	on_click 3 = "exec --no-startup-id terminal -e 'ncdu ~'"
 }
 
 tztime pretty {
 	format = " %c "
-	on_click 1 = "exec --no-startup-id xterm -e i3settz"
+	on_click 1 = "exec --no-startup-id terminal -e i3settz"
 }
