@@ -18,8 +18,10 @@ done
 # auto start scripts
 for d in /etc/X11/xinit/xinitrc.d ~/.xinitrc.d; do
 	for xinitrc in "$d"/*; do
-		test -x "$xinitrc" && . "$xinitrc"
+		test -f "$xinitrc" && . "$xinitrc"
 	done
 done
+
+xterm &
 
 exec "$DESKTOP"

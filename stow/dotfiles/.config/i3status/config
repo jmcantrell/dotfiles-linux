@@ -5,7 +5,7 @@ general {
 	color_bad = '#ff0000'
 }
 
-order += "window_title_async"
+order += "window"
 order += "wireless _first_"
 order += "ethernet _first_"
 order += "dpms"

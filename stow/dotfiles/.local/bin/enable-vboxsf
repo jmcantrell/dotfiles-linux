@@ -7,3 +7,8 @@ set -e
 # allow user to access shared folders
 sudo gpasswd -a "$USER" vboxsf
 sudo chmod -v 755 /media
+
+for target in /media/sf_*; do
+	basename=${target##*/}
+	ln -svfT "$target" "$HOME/${basename#sf_}"
+done
