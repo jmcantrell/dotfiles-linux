@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-# Pretend that gvim is just vim in a terminal.
-
-"${TERMINAL[@]}" -e "${EDITOR[@]}" "$@"

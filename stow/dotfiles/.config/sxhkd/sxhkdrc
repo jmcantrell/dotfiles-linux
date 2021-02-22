@@ -5,22 +5,19 @@ super + alt + space
 	dmenu_run_prev
 
 super + Return
-	cd `xpwd` && $TERMINAL
+	cd "$(xpwd)" && terminal
 
 super + b
-	firefox
+	browser
 
 super + B
-	firefox --private-window
-
-super + alt + b
-	vimb
+	browser --incognito
 
 super + e
-	cd `xpwd` && $TERMINAL -e $EDITOR
+	cd "$(xpwd)" && terminal -e editor
 
 super + f
-	cd `xpwd` && $TERMINAL -e ranger
+	cd "$(xpwd)" && terminal -e ranger
 
 super + {Home,End}
 	volume-{max,mute}
