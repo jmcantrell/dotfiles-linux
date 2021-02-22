@@ -36,54 +36,46 @@ mru_path() {
 
 # add a command to the mru cache
 mru_add() {
-	local cmd=${1:?missing command}
+	local input=${1:?missing command}
 	{
-		echo "$cmd"
-		grep -vx "$cmd" "$mru"
+		echo "$input"
+		grep -vx "$input" "$mru"
 	} | head -n$histsize >"$temp"
 	mv -f "$temp" "$mru"
 }
 
 # get command from dmenu prompt
-cmd=$(mru_path | dmenu -i -p run "$@")
+input=$(mru_path | dmenu -i -p run "$@")
 
 # nothing was entered or selected
-test "$cmd" || exit 1
+[[ "$input" ]] || exit 1
 
 # add command to history
-mru_add "$cmd"
+mru_add "$input"
 
 # strip a modifier from a command
 # errors if no modifiers were found
 stripmod() {
 	local mod=${1:?missing modifier}
-	local cmd=${2:?missing command}
-	local suffix=${cmd: -1}
-	echo "${cmd%%$mod}"
-	test "$suffix" = "$mod" || return 1
+	local input=${2:?missing command}
+	local suffix=${input: -1}
+	echo "${input%%$mod}"
+	[[ "$suffix" = "$mod" ]] || return 1
 }
 
 # detect and remove any modifiers
 unset term sudo hold
-cmd=$(stripmod "." "$cmd") && term=1 && hold=1
-cmd=$(stripmod ";" "$cmd") && term=1
-cmd=$(stripmod "!" "$cmd") && sudo=1
+input=$(stripmod "." "$input") && term=1 && hold=1
+input=$(stripmod ";" "$input") && term=1
 
 # if any modifiers are left, ignore them
-cmd=${cmd%%.}; cmd=${cmd%%;*}; cmd=${cmd%%!*}
-
-# if requested, run command with sudo
-if test $sudo; then
-	if test $term; then
-		# ask for password in terminal
-		cmd="sudo $cmd"
-	else
-		# ask for password with gui
-		cmd="gksudo $cmd"
-	fi
-fi
+input=${input%%.}; input=${input%%;*}
 
 # if requested, run command in a terminal
-test $term && cmd="${TERMINAL} ${hold:+-hold} -e ${cmd//\~/$HOME}"
+if [[ $term ]]; then
+	cmd=(terminal ${hold:+-hold} -e "${input//\~/$HOME}")
+else
+	cmd=("$input")
+fi
 
-exec "$cmd"
+exec "${cmd[@]}"

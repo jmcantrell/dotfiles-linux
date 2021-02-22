@@ -5,20 +5,22 @@
 
 cache=${XDG_CACHE_HOME:-$HOME/.cache}/dmenu
 mkdir -p "$cache"
-path=$cache/path
+commands=$cache/commands
+readarray -d: -t path <<<"$PATH"
 
 # test if cache is outdated
-cache_bad() {
-	stest -q -dr -n "$path" "$@"
+is_cache_bad() {
+	stest -q -dr -n "$commands" "${path[@]}"
 }
 
 # cache list of executables in given directories
-cache_path() {
-	stest -flx "$@" | sort -u | tee "$path"
+cache_commands() {
+	stest -flx "${path[@]}" | sort -u | tee "$commands"
 }
 
 # regenerate cache if needed
-IFS=:  # breaks up PATH to treat as args to stest
-cache_bad "$PATH" && cache_path "$PATH"
+if [[ ! -f "$path" ]] || is_cache_bad; then
+	cache_commands
+fi
 
-cat "$path"
+cat "$commands"

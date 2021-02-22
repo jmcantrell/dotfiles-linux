@@ -52,7 +52,7 @@ sticky_history = yes
 # font decides the line height
 line_height = 0
 
-browser = vimb
+browser = browser
 dmenu = dmenu -p dunst
 
 [shortcuts]
