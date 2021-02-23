@@ -1,5 +1,5 @@
 # Enable a tray icon to show battery notifications.
 
-exec cbatticon -n -c notify-battery -l 20 -r 5 -x 'terminal -e "$PAGER /sys/class/power_supply/BAT*/uevent"' &
+exec cbatticon -n -c notify-battery -l 20 -r 5 -x 'terminal -e pager /sys/class/power_supply/BAT*/uevent' &
 
 # vi:ft=sh

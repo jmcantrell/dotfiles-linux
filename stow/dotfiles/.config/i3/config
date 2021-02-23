@@ -53,7 +53,7 @@ bindsym $super+m move position mouse
 bindsym $super+space focus mode_toggle
 
 # toggle focus between scratchpad/tiling layer
-bindsym $super+backspace scratchpad show
+bindsym $super+Backspace scratchpad show
 
 # move all floating windows to the scratchpad
 bindsym $super+x [floating] move scratchpad
@@ -74,7 +74,7 @@ bindsym $super+9   workspace number 9
 bindsym $super+0   workspace number 10
 bindsym $super+n   workspace next_on_output
 bindsym $super+p   workspace prev_on_output
-bindsym $super+tab workspace back_and_forth
+bindsym $super+Tab workspace back_and_forth
 
 # move container to workspace
 bindsym shift+$super+1   move container to workspace number 1
@@ -89,7 +89,7 @@ bindsym shift+$super+9   move container to workspace number 9
 bindsym shift+$super+0   move container to workspace number 10
 bindsym shift+$super+n   move container to workspace next_on_output
 bindsym shift+$super+p   move container to workspace prev_on_output
-bindsym shift+$super+tab move container to workspace back_and_forth
+bindsym shift+$super+Tab move container to workspace back_and_forth
 
 # change layout of container
 bindsym shift+$super+d layout default
@@ -116,7 +116,7 @@ bindsym shift+$super+space floating toggle
 bindsym shift+$super+u sticky toggle
 
 # move between scratchpad/tiling layer
-bindsym shift+$super+backspace move scratchpad
+bindsym shift+$super+Backspace move scratchpad
 
 # fullscreen for current and all displays
 bindsym      $alt+return fullscreen toggle
