@@ -41,13 +41,16 @@ XF86Audio{Raise,Lower}Volume
 super + Delete
 	dmenu_snip -c
 
-# type text snippets
-super + alt + Delete
-	dmenu_snip -t
-
 # edit text snippets
-super + shift + Delete
+super + alt + Delete
 	dmenu_snip -e
+
+# create text snippet from clipboard
+super + shift + Delete
+
+# type text snippets
+super + Insert
+	dmenu_snip -t
 
 # copy password
 ctrl + alt + space
