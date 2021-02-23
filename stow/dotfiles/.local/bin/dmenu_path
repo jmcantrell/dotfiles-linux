@@ -19,7 +19,7 @@ cache_commands() {
 }
 
 # regenerate cache if needed
-if [[ ! -f "$path" ]] || is_cache_bad; then
+if [[ ! -f "$commands" ]] || is_cache_bad; then
 	cache_commands
 fi
 

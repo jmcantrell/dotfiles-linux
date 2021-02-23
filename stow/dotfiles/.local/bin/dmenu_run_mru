@@ -31,7 +31,7 @@ trap "rm -f '$temp'" INT TERM EXIT
 # rearranges the commands in $PATH,
 # with preference given to command history
 mru_path() {
-	cat "$mru"; dmenu_path | grep -vxF "$mru"
+	cat "$mru"; dmenu_path | grep -vxF -f "$mru"
 }
 
 # add a command to the mru cache
