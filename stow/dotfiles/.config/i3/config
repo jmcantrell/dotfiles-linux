@@ -119,8 +119,8 @@ bindsym shift+$super+u sticky toggle
 bindsym shift+$super+Backspace move scratchpad
 
 # fullscreen for current and all displays
-bindsym      $alt+return fullscreen toggle
-bindsym ctrl+$alt+return fullscreen toggle global
+bindsym      $alt+Return fullscreen toggle
+bindsym ctrl+$alt+Return fullscreen toggle global
 
 # toggle status
 bindsym $super+u bar mode toggle
@@ -162,8 +162,8 @@ mode "$mode_session" {
 	bindsym r $fork i3exit reboot,   mode "default"
 	bindsym p $fork i3exit poweroff, mode "default"
 	# exit mode
-	bindsym return mode "default"
-	bindsym escape mode "default"
+	bindsym Return mode "default"
+	bindsym Escape mode "default"
 }
 bindsym $super+q mode "$mode_session"
 
