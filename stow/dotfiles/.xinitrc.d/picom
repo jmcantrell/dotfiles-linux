@@ -1,5 +1,5 @@
 # Enable visual effects for windows.
 
-exec compton &
+exec picom &
 
 # vi:ft=sh
