@@ -8,7 +8,7 @@ Think (i)mage (cap)ture when typing icap.
 Dependencies: imagemagick
 
 Optional Dependencies:
-xsel, xrectsel, optipng exiftran, libcanberra, notification daemon
+xsel, xrectsel, optipng, exiftran, libcanberra, notification daemon
 
 Usage:
     $me [-h] [-ncao] [-wus]
@@ -65,35 +65,6 @@ capture_format() {
 	date +"$text"  # handle date/time on the way out
 }
 
-xrect() {
-	local dim
-	readarray -t dim < <(
-		xwininfo "$@" |
-		grep -Ei "(absolute upper-left [xy]|width|height)" |
-		cut -d: -f2
-	)
-
-	local l=${dim[0]}
-	local t=${dim[1]}
-	# must be div by 2 or else...
-	w=$(( (dim[2] / 2) * 2 ))
-	h=$(( (dim[3] / 2) * 2 ))
-
-	echo "${w}x${h}+${l}+${t}"
-}
-
-active_window_id() {
-	xprop -root |
-	grep "_NET_ACTIVE_WINDOW(WINDOW)" |
-	cut -d# -f2
-}
-
-selected_window_id() {
-	xprop |
-	grep "WM_CLIENT_LEADER(WINDOW)" |
-	cut -d# -f2
-}
-
 tick_sound=message-new-instant
 shutter_sound=camera-shutter
 
@@ -116,8 +87,8 @@ while getopts ":D:q:owusg:and:ce:h" option; do
 		o) use_optimization=1 ;;
 
 		# various ways to define capture region
-		w) capture_geometry=$(xrect -frame -id "$(selected_window_id)") ;;
-		u) capture_geometry=$(xrect -frame -id "$(active_window_id)") ;;
+		w) capture_geometry=$(xwinrect -frame -id "$(xprop-selected-window)") ;;
+		u) capture_geometry=$(xwinrect -frame -id "$(xprop-active-window)") ;;
 		s) capture_geometry=$(xrectsel) ;;  # TODO: dependency hurdle
 		g) capture_geometry=$OPTARG ;;
 
@@ -137,7 +108,7 @@ done && shift $((OPTIND - 1))
 
 # this isn't accurate when using multiple displays.
 # it gives the total of all displays, instead of the current one
-root_geometry=$(xrect -root)
+root_geometry=$(xwinrect -root)
 
 # image properties (mostly for formatting)
 if [[ -z $capture_geometry ]]; then

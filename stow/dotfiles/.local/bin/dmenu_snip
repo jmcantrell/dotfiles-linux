@@ -57,7 +57,7 @@ case $action in
 		;;
 	edit)
 		mkdir -p "$snippets"
-		exec "$TERMINAL" -e "$EDITOR" "$snippet"
+		exec terminal -e editor "$snippet"
 		;;
 	paste)
 		mkdir -p "$snippets"

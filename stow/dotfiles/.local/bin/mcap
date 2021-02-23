@@ -64,35 +64,6 @@ capture_format() {
 	date +"$text"  # handle date/time on the way out
 }
 
-xrect() {
-	local dim
-	readarray -t dim < <(
-		xwininfo "$@" |
-		grep -Ei "(absolute upper-left [xy]|width|height)" |
-		cut -d: -f2 | tr '\n' ' '
-	)
-
-	local l=${dim[0]}
-	local t=${dim[1]}
-	# must be div by 2 or else...
-	w=$(( (dim[2] / 2) * 2 ))
-	h=$(( (dim[3] / 2) * 2 ))
-
-	echo "${w}x${h}+${l}+${t}"
-}
-
-active_window_id() {
-	xprop -root |
-	grep "_NET_ACTIVE_WINDOW(WINDOW)" |
-	cut -d# -f2
-}
-
-selected_window_id() {
-	xprop |
-	grep "WM_CLIENT_LEADER(WINDOW)" |
-	cut -d# -f2
-}
-
 stop_recording() {
 	killall -INT ffmpeg >/dev/null 2>&1
 }
@@ -124,9 +95,12 @@ while getopts ":D:t:r:q:og:wusm:and:ce:xh" option; do
 
 		# various ways to define capture region
 		g) capture_geometry=$OPTARG ;;
-		w) capture_geometry=$(xrect -id "$(selected_window_id)") ;;
-		u) capture_geometry=$(xrect -id "$(active_window_id)") ;;
-		s|m) capture_geometry=$(xrectsel) ;&  # TODO: dependency hurdle
+		w) capture_geometry=$(xwinrect -id "$(xprop-selected-window)") ;;
+		u) capture_geometry=$(xwinrect -id "$(xprop-active-window)") ;;
+		s|m)
+			select_region=1
+			# capture_geometry=$(xrectsel)
+			;&  # TODO: dependency hurdle
 
 		# region follows when $OPTARG pixels from edge
 		# same result: -m centered, -m 999999999
@@ -150,7 +124,7 @@ done && shift $((OPTIND - 1))
 
 # this isn't accurate when using multiple displays.
 # it gives the total of all displays, instead of the current one
-root_geometry=$(xrect -root)
+root_geometry=$(xwinrect -root)
 # image properties (mostly for formatting)
 if [[ -z $capture_geometry ]]; then
 	capture_geometry=$root_geometry
@@ -164,6 +138,9 @@ capture_left=${c%+*}
 capture_top=${c#*+}
 
 capture_options=(-y -f x11grab)
+if [[ -n $select_region ]]; then
+	capture_options+=(-select_region 1)
+fi
 if [[ -n $capture_follows_mouse ]]; then
 	capture_options+=(-follow_mouse "${pixels_from_edge}")
 fi

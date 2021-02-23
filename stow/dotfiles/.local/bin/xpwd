@@ -12,18 +12,6 @@ Usage: ${0##*/} [-h] [-cnw]
 icon_set=/usr/share/icons/gnome/32x32
 icon=$icon_set/actions/edit-paste.png
 
-active_window_id() {
-	xprop -root |
-	grep "_NET_ACTIVE_WINDOW(WINDOW)" |
-	cut -d# -f2 | tr -d '[:space:]'
-}
-
-selected_window_id() {
-	xprop |
-	grep "WM_CLIENT_LEADER(WINDOW)" |
-	cut -d# -f2 | tr -d '[:space:]'
-}
-
 tmux_session_id() {
 	local win_id=$1
 	tmux list-sessions -F '#{session_id}' |
@@ -50,7 +38,7 @@ unset use_notifications
 unset OPTIND
 while getopts ":hwcn" option; do
 	case $option in
-		w) win_id=$(selected_window_id) ;;
+		w) win_id=$(xprop-selected-window) ;;
 
 		c) copy_path_to_clipboard=1 ;;
 		n) use_notifications=1 ;;
@@ -60,7 +48,7 @@ while getopts ":hwcn" option; do
 	esac
 done && shift $((OPTIND - 1))
 
-[[ -z $win_id ]] && win_id=$(active_window_id)
+[[ -z $win_id ]] && win_id=$(xprop-active-window)
 
 if [[ -z $win_id ]]; then
 	message="no window found"

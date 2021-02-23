@@ -1,6 +1,1 @@
-gtk-theme-name = "Arc-Dark"
-gtk-icon-theme-name = "Arc"
-gtk-font-name = "DejaVu Sans 10"
-gtk-enable-event-sounds = 1
-gtk-enable-input-feedback-sounds = 1
-gtk-sound-theme-name = "freedesktop"
+.config/gtk-3.0/settings.ini
