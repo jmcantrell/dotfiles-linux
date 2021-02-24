@@ -37,6 +37,9 @@ XF86AudioMute
 XF86Audio{Raise,Lower}Volume
 	volume-{up,down}
 
+super + Escape
+	clipmenu
+
 # copy text snippets
 super + Delete
 	dmenu_snip -c
