@@ -51,9 +51,8 @@ nmap <C-s>h :save <C-g>h
 set home-page=https://duckduckgo.com
 set editor-command=gvim %s
 
-set download-path=~/Downloads
 set download-use-external=true
-set download-command=terminal -e download %s "$VIMB_DOWNLOAD_PATH"
+set download-command=terminal -e download %s
 
 set images=true
 set scripts=true
@@ -109,4 +108,4 @@ shortcut-add map=https://maps.google.com/maps?q=$0
 nmap sm :open map<Space>
 
 # download magnet links into torrent files
-handler-add magnet=terminal -e download %s "$VIMB_DOWNLOAD_PATH"
+handler-add magnet=terminal -e download %s

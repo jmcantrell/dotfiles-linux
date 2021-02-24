@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-# Return the latest minecraft version.
-
-url=https://launchermeta.mojang.com/mc/game/version_manifest.json
-
-curl -s $url | jq -r .latest.release

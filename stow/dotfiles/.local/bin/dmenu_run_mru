@@ -26,7 +26,7 @@ mru=$cache/run_mru
 touch "$mru"
 
 temp=$(mktemp -t "$me.XXXXXXXXXX")
-trap "rm -f '$temp'" INT TERM EXIT
+trap "rm -f $(printf "%q" "$temp")" INT TERM EXIT
 
 # rearranges the commands in $PATH,
 # with preference given to command history

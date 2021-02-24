@@ -7,7 +7,7 @@ notify-send DUNST_COMMAND_PAUSE
 
 # create obscured screenshot of desktop
 image=$(mktemp --suffix=.png)
-trap "rm -f '$image'" INT TERM EXIT
+trap "rm -f $(printf "%q" "$image")" INT TERM EXIT
 import -window root "$image"
 mogrify -scale 10% -scale 1000% "$image"  # pixelate
 # mogrify -blur '0x6' "$image"            # blur
