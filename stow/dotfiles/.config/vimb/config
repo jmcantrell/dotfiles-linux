@@ -49,8 +49,11 @@ cmap <C-g>h ~/
 nmap <C-s>h :save <C-g>h
 
 set home-page=https://duckduckgo.com
-set download-path=~/Downloads
 set editor-command=gvim %s
+
+set download-path=~/Downloads
+set download-use-external=true
+set download-command=terminal -e download %s "$VIMB_DOWNLOAD_PATH"
 
 set images=true
 set scripts=true
@@ -61,6 +64,7 @@ set webgl=true
 set webaudio=true
 set webinspector=true
 
+set dark-mode=true
 set smooth-scrolling=true
 set tabs-to-links=true
 set print-backgrounds=false
@@ -105,4 +109,4 @@ shortcut-add map=https://maps.google.com/maps?q=$0
 nmap sm :open map<Space>
 
 # download magnet links into torrent files
-handler-add magnet=aria2c-session -d ~/Downloads %s
+handler-add magnet=terminal -e download %s "$VIMB_DOWNLOAD_PATH"
