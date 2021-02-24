@@ -73,7 +73,7 @@ input=${input%%.}; input=${input%%;*}
 
 # if requested, run command in a terminal
 if [[ $term ]]; then
-	cmd=(terminal ${hold:+-hold} -e "${input//\~/$HOME}")
+	cmd=(terminal ${hold:+-hold} -e "$input")
 else
 	cmd=("$input")
 fi
