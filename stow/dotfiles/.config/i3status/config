@@ -13,35 +13,33 @@ order += "disk /home"
 order += "tztime pretty"
 
 window {
-	format = " {title} "
 	on_click 1 = "exec --no-startup-id terminal -e glances"
 }
 
 ethernet _first_ {
-	format_up = " en %ip "
-	format_down = " en down "
+	format_up = "en %ip"
+	format_down = "en down"
 	on_click 1 = "exec --no-startup-id terminal -e networkctl status"
 }
 
 wireless _first_ {
-	format_up = " %essid %ip "
-	format_down = " wl down "
+	format_up = "%essid %ip"
+	format_down = "wl down"
 	on_click 1 = "exec --no-startup-id terminal -e networkctl status"
 }
 
 dpms {
-	format = " {icon} "
 	icon_on = "dpms on"
 	icon_off = "dpms off"
 }
 
 disk "/home" {
-	format = " ~ %avail "
+	format = "~ %avail"
 	on_click 1 = "exec --no-startup-id terminal -e 'df --si | pager'"
 	on_click 3 = "exec --no-startup-id terminal -e 'ncdu ~'"
 }
 
 tztime pretty {
-	format = " %c "
+	format = "%c"
 	on_click 1 = "exec --no-startup-id terminal -e i3settz"
 }

@@ -205,6 +205,7 @@ bar {
 	modifier       $super
 	position       top
 	tray_output    primary
+	separator_symbol "  "
 
 	# mouse wheel over statusbar
 	bindsym button4 workspace prev_on_output
