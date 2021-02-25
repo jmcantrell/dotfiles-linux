@@ -37,8 +37,8 @@ bindsym shift+$super+j move down
 bindsym shift+$super+k move up
 bindsym shift+$super+l move right
 
-# traverse container hierarchy
 bindsym $super+a focus parent
+bindsym $super+z focus child
 
 # center floating window
 bindsym $super+c move absolute position center
@@ -234,3 +234,4 @@ for_window [class="(Xmessage|Zenity)"]          floating enable  # script dialog
 for_window [class="Pinentry"]                   floating enable
 for_window [class="System-config-printer.py"]   floating enable
 for_window [class="Pavucontrol"]                floating enable
+for_window [class="Blueman-manager"]            floating enable

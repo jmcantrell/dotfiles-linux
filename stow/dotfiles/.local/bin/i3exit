@@ -20,10 +20,10 @@ case ${1:-quit} in
 		systemctl hibernate
 		;;
 	reboot)
-		systemctl reboot
+		reboot
 		;;
 	poweroff)
-		systemctl poweroff
+		poweroff
 		;;
 	*)
 		echo "usage: ${0##*/} [quit|lock|suspend|hibernate|reboot|poweroff]" >&2
