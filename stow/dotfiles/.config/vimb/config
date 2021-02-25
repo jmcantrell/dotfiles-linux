@@ -12,9 +12,9 @@ imap <C-q> <Esc>:q<CR>
 nmap <F11> :set fullscreen!<CR>
 
 # familiar zooming
-nmap + zI
-nmap _ zO
-nmap = zz
+nmap = zI
+nmap - zO
+nmap 0 zz
 
 # open current page in chromium
 nmap go :sh! firefox $VIMB_URI<CR>

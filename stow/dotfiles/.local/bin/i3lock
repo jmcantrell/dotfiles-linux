@@ -9,8 +9,12 @@ notify-send DUNST_COMMAND_PAUSE
 image=$(mktemp --suffix=.png)
 trap "rm -f $(printf "%q" "$image")" INT TERM EXIT
 import -window root "$image"
-mogrify -scale 10% -scale 1000% "$image"  # pixelate
-# mogrify -blur '0x6' "$image"            # blur
+
+# pixelate
+mogrify -scale 10% -scale 1000% "$image"
+
+# blur
+# mogrify -blur '0x6' "$image"
 
 /usr/bin/i3lock -nt -p default -i "$image" "$@"
 

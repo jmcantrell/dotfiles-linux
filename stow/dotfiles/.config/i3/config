@@ -5,22 +5,19 @@ set $super mod4
 # exec without waiting
 set $fork exec --no-startup-id
 
-# border for new windows
-new_float  pixel 1
-new_window pixel 1
-
-hide_edge_borders smart
-
 # while holding floating_modifier:
 # left drag to move, right drag to resize
 floating_modifier $super
 
-# open new windows in a tab by default
-workspace_layout tabbed
-
-# vim semantics for splitting
+# create layout
 bindsym $super+s split v
 bindsym $super+v split h
+
+# change layout of container
+bindsym shift+$super+d layout default
+bindsym shift+$super+s layout stacking
+bindsym shift+$super+w layout tabbed
+bindsym shift+$super+x layout toggle
 
 # focus window
 bindsym $super+h focus left
@@ -46,20 +43,32 @@ bindsym $super+a focus parent
 # center floating window
 bindsym $super+c move absolute position center
 
-# move window to mouse pointer
-bindsym $super+m move position mouse
-
 # toggle focus between floating/tiling layer
 bindsym $super+space focus mode_toggle
 
 # toggle focus between scratchpad/tiling layer
-bindsym $super+Backspace scratchpad show
+bindsym $super+BackSpace scratchpad show
 
-# move all floating windows to the scratchpad
-bindsym $super+x [floating] move scratchpad
+# move between scratchpad/tiling layer
+bindsym shift+$super+BackSpace move scratchpad
+
+# new windows are not focused
+focus_on_window_activation urgent
 
 # focus urgent window
 bindsym $super+i [urgent=latest] focus
+
+# read 1 character and mark the current window with this character
+bindsym $super+m exec i3-input -F 'mark %s' -l 1 -P 'mark: '
+
+# remove mark from the current window 
+bindsym shift+$super+m [con_id="__focused__"] unmark
+
+# remove marks from all windows
+bindsym shift+$alt+$super+m unmark
+
+# read 1 character and go to the window with the character
+bindsym $super+g exec i3-input -F '[con_mark="%s"] focus' -l 1 -P 'goto: '
 
 # focus workspace
 bindsym $super+1   workspace number 1
@@ -91,12 +100,6 @@ bindsym shift+$super+n   move container to workspace next_on_output
 bindsym shift+$super+p   move container to workspace prev_on_output
 bindsym shift+$super+Tab move container to workspace back_and_forth
 
-# change layout of container
-bindsym shift+$super+d layout default
-bindsym shift+$super+s layout stacking
-bindsym shift+$super+w layout tabbed
-bindsym shift+$super+x layout toggle split
-
 # move container to output
 bindsym shift+$alt+$super+h move container to output left
 bindsym shift+$alt+$super+j move container to output down
@@ -115,15 +118,15 @@ bindsym shift+$super+space floating toggle
 # floating window will always be visible
 bindsym shift+$super+u sticky toggle
 
-# move between scratchpad/tiling layer
-bindsym shift+$super+Backspace move scratchpad
-
 # fullscreen for current and all displays
 bindsym      $alt+Return fullscreen toggle
 bindsym ctrl+$alt+Return fullscreen toggle global
 
 # toggle status
-bindsym $super+u bar mode toggle
+bindsym $super+y bar mode toggle
+
+# toggle window border
+bindsym $super+u border toggle
 
 # reload config
 bindsym shift+$super+c reload
@@ -191,20 +194,20 @@ client.background $dark
 
 #class                  border  bg      text  indicator child_border
 client.urgent           $bold   $urgent $bold $marker   $bold
-client.focused          $border $focus  $bold $marker   $focus
-client.focused_inactive $border $focus  $bold $border   $border
-client.unfocused        $border $dark   $text $border   $border
-client.placeholder      $border $dark   $text $border   $border
+client.focused          $focus  $focus  $bold $marker   $focus
+client.focused_inactive $border $border $bold $border   $border
+client.unfocused        $border $border $text $border   $border
+client.placeholder      $border $border $text $border   $border
 
 bar {
+	position top
+	hidden_state hide
+	modifier $super
 
 	binding_mode_indicator on
 
 	status_command py3status
-	hidden_state   hide
-	modifier       $super
-	position       top
-	tray_output    primary
+	tray_output primary
 	separator_symbol "  "
 
 	# mouse wheel over statusbar
@@ -212,7 +215,6 @@ bar {
 	bindsym button5 workspace next_on_output
 
 	colors {
-
 		background $dark
 		separator  $border
 		statusline $bold
@@ -222,9 +224,7 @@ bar {
 		active_workspace   $bold   $focus  $bold
 		focused_workspace  $bold   $focus  $bold
 		inactive_workspace $border $dark   $text
-
 	}
-
 }
 
 # windows that should float by default

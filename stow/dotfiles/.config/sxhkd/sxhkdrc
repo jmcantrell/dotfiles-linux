@@ -38,6 +38,9 @@ XF86Audio{Raise,Lower}Volume
 	volume-{up,down}
 
 super + Escape
+	terminal -e glances
+
+super + grave
 	clipmenu
 
 # copy text snippets
