@@ -17,7 +17,7 @@ bindsym $super+v split h
 bindsym shift+$super+d layout default
 bindsym shift+$super+s layout stacking
 bindsym shift+$super+w layout tabbed
-bindsym shift+$super+x layout toggle
+bindsym shift+$super+x layout toggle split
 
 # focus window
 bindsym $super+h focus left
