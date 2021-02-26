@@ -66,10 +66,6 @@ ctrl + alt + space
 ctrl + alt + shift + space
 	dmenu_pass -cg
 
-# start a magifier at 1:1 (+/- to zoom)
-super + equal
-	xzoom -mag 1
-
 # add an output oriented to the primary
 super + o; {h,j,k,l}
 	xrandr-orient {left-of,below,above,right-of}
