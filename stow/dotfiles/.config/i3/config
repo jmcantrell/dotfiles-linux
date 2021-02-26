@@ -200,7 +200,9 @@ client.unfocused        $border $border $text $border   $border
 client.placeholder      $border $border $text $border   $border
 
 bar {
-	position top
+	position bottom
+
+	mode hide
 	hidden_state hide
 	modifier $super
 
