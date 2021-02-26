@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+wakeup=/proc/acpi/wakeup
+
+devices=$(
+	grep -Ev '^[[:space:]]' "$wakeup" |
+	grep -E '^(EHC|XHC)' | cut -d' ' -f1 | tr -d '[:space:]'
+)
+
+{
+	echo "# Path Mode UID GID Age Argument"
+	echo "w $wakeup - - - - $(printf "%s" "${devices[@]}")"
+} | column -t | sudo tee /etc/tmpfiles.d/disable-usb-wake.conf
