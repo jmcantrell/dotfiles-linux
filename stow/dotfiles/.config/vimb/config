@@ -1,5 +1,3 @@
-nmap q <C-q>
-
 # similar to my vim
 nmap H ^
 nmap L $

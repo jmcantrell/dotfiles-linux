@@ -2,7 +2,7 @@
 XTerm*utf8:       1
 XTerm*locale:     true
 XTerm*loginShell: false
-XTerm*termName:   xterm-16color
+XTerm*termName:   xterm-256color
 
 ! enable alt keys in vim
 XTerm*metaSendsEscape: true
@@ -16,11 +16,10 @@ XTerm*jumpScroll:      true
 XTerm*multiScroll:     true
 XTerm*scrollKey:       true
 XTerm*fastScroll:      true
-XTerm*cursorUnderline: true
 XTerm*cursorBlink:     false
 
 ! keep n lines of scrollback
-XTerm*saveLines: 32768
+XTerm*saveLines: 100000000
 
 ! font face and default size (ctrl-0)
 XTerm*faceSize: 8
@@ -52,19 +51,19 @@ XTerm.VT100.printerCommand: cat - >~/`ts`.txt
 
 ! key mappings
 XTerm.VT100.Translations: #override \
-    Shift <Key> Home:   scroll-back(32768)   \n\
-    Shift <Key> Up:     scroll-back(1)       \n\
-    Shift <Key> Down:   scroll-forw(1)       \n\
-    Shift <Key> End:    scroll-forw(32768)   \n\
-    Ctrl Shift <Key> P: print-everything()   \n\
-    Ctrl Shift <Key> N: spawn-new-terminal() \n\
-    Ctrl <Key> 0:       set-vt-font(d)       \n\
-    Ctrl <Key> minus:   smaller-vt-font()    \n\
-    Ctrl <Key> equal:   larger-vt-font()     \n\
-    Ctrl <Btn5Down>:    smaller-vt-font()    \n\
-    Ctrl <Btn4Down>:    larger-vt-font()     \n\
+    Shift <Key> Home:   scroll-back(100000000) \n\
+    Shift <Key> Up:     scroll-back(1)         \n\
+    Shift <Key> Down:   scroll-forw(1)         \n\
+    Shift <Key> End:    scroll-forw(100000000) \n\
+    Ctrl Shift <Key> P: print-everything()     \n\
+    Ctrl Shift <Key> N: spawn-new-terminal()   \n\
+    Ctrl <Key> 0:       set-vt-font(d)         \n\
+    Ctrl <Key> minus:   smaller-vt-font()      \n\
+    Ctrl <Key> equal:   larger-vt-font()       \n\
+    Ctrl <Btn5Down>:    smaller-vt-font()      \n\
+    Ctrl <Btn4Down>:    larger-vt-font()       \n\
 
 ! base colors
 XTerm*background:  black
 XTerm*foreground:  white
-XTerm*cursorColor: yellow
+XTerm*cursorColor: white
