@@ -6,7 +6,6 @@
 # Optional command modifiers allow different ways to run commands.
 
 # These modifiers can be added to the end of commands:
-#  !  run command with sudo
 #  ;  run command in terminal
 #  .  run command in terminal (leave open)
 
