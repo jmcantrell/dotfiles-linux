@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-wakeup=/proc/acpi/wakeup
+# Disable the ability for USB devices to wake up the system.
+
+wakeup="/proc/acpi/wakeup"
 
 devices=$(
 	grep -Ev '^[[:space:]]' "$wakeup" |
