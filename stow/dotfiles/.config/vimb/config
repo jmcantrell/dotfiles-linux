@@ -49,8 +49,7 @@ nmap <C-s>h :save <C-g>h
 set home-page=https://duckduckgo.com
 set editor-command=gvim %s
 
-set download-use-external=true
-set download-command=terminal -e download %s
+set download-path=~/Downloads
 
 set images=true
 set scripts=true

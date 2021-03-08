@@ -61,7 +61,7 @@ bindsym $super+i [urgent=latest] focus
 # read 1 character and mark the current window with this character
 bindsym $super+m exec i3-input -F 'mark %s' -l 1 -P 'mark: '
 
-# remove mark from the current window 
+# remove mark from the current window
 bindsym shift+$super+m [con_id="__focused__"] unmark
 
 # remove marks from all windows
@@ -232,6 +232,7 @@ bar {
 # windows that should float by default
 for_window [window_role="(pop-up|task_dialog)"] floating enable
 for_window [title="Preferences$"]               floating enable
+for_window [class="(feh|Gifview|Display)"]      floating enable
 for_window [class="(Xmessage|Zenity)"]          floating enable  # script dialogs
 for_window [class="Pinentry"]                   floating enable
 for_window [class="System-config-printer.py"]   floating enable
