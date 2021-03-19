@@ -13,3 +13,7 @@ devices=$(
 	echo "# Path Mode UID GID Age Argument"
 	echo "w $wakeup - - - - $(printf "%s" "${devices[@]}")"
 } | column -t | sudo tee /etc/tmpfiles.d/disable-usb-wake.conf
+
+for device in "${devices[@]}"; do
+	echo "$device" | sudo tee "$wakeup"
+done

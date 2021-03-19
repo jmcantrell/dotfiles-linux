@@ -1,5 +1,0 @@
-# Enable visual effects for windows.
-
-exec picom &
-
-# vi:ft=sh

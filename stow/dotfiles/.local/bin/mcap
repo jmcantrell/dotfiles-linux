@@ -16,17 +16,23 @@ Usage:
     [-d delay_count] [-e command] [-D directory] [filename]
 
 Examples:
-    # capture a compressed recording of the desktop
-    $me -o
+    # capture a recording of the desktop
+    $me
 
     # end recording (if in background, ctrl-c otherwise)
     $me -x
 
     # select area to capture, notify, copy to clipboard
-    $me -snco
+    $me -snc
 
     # count to 3 first, then capture current window
-    $me -unco -d3
+    $me -unc -d3
+
+	# open the resulting file
+    $me -o
+
+    # execute a command for the resulting image
+    $me -e 'mplayer \$f'
 
 The first non-option argument is the output filename.
 If no filename is given, %Y-%m-%d_%H-%M-%S.gif will be used.
@@ -68,6 +74,10 @@ stop_recording() {
 	killall -INT ffmpeg >/dev/null 2>&1
 }
 
+has() {
+	which "$1" &>/dev/null
+}
+
 shutter_sound=camera-shutter
 start_sound=bell
 tick_sound=message-new-instant
@@ -76,12 +86,12 @@ directory=$PWD
 delay_count=0
 capture_filetype=gif
 video_quality=1  # 1 (best) to 31 (worst)
-unset use_optimization
 unset capture_seconds
 unset capture_geometry
 unset capture_follows_mouse
 unset use_audible_cues
 unset notify_on_capture
+unset open_after_capture
 unset copy_path_to_clipboard
 
 unset OPTIND
@@ -91,16 +101,12 @@ while getopts ":D:t:r:q:og:wusm:and:ce:xh" option; do
 		t) capture_seconds=$OPTARG ;;
 		r) capture_framerate=$OPTARG ;;
 		q) video_quality=$OPTARG ;;
-		o) use_optimization=1 ;;
 
 		# various ways to define capture region
 		g) capture_geometry=$OPTARG ;;
 		w) capture_geometry=$(xwinrect -id "$(xprop-selected-window)") ;;
 		u) capture_geometry=$(xwinrect -id "$(xprop-active-window)") ;;
-		s|m)
-			select_region=1
-			# capture_geometry=$(xrectsel)
-			;&  # TODO: dependency hurdle
+		s) capture_geometry=$(xrectsel) ;;
 
 		# region follows when $OPTARG pixels from edge
 		# same result: -m centered, -m 999999999
@@ -109,6 +115,7 @@ while getopts ":D:t:r:q:og:wusm:and:ce:xh" option; do
 		# might be suitable for another tool
 		a) use_audible_cues=1 ;;
 		n) notify_on_capture=1 ;;
+		o) open_after_capture=1 ;;
 		d) delay_count=$OPTARG ;;
 		c) copy_path_to_clipboard=1 ;;
 
@@ -126,7 +133,7 @@ done && shift $((OPTIND - 1))
 # it gives the total of all displays, instead of the current one
 root_geometry=$(xwinrect -root)
 # image properties (mostly for formatting)
-if [[ -z $capture_geometry ]]; then
+if [[ ! $capture_geometry ]]; then
 	capture_geometry=$root_geometry
 fi
 capture_size=${capture_geometry%%+*}
@@ -138,10 +145,7 @@ capture_left=${c%+*}
 capture_top=${c#*+}
 
 capture_options=(-y -f x11grab)
-if [[ -n $select_region ]]; then
-	capture_options+=(-select_region 1)
-fi
-if [[ -n $capture_follows_mouse ]]; then
+if [[ $capture_follows_mouse ]]; then
 	capture_options+=(-follow_mouse "${pixels_from_edge}")
 fi
 capture_options+=(-r "${capture_framerate:-8}" -s "$capture_size")
@@ -155,7 +159,7 @@ capture_file=${1:-$directory/%Y-%m-%d_%H-%M-%S.\$t}
 capture_file=$(capture_format "$capture_file")
 
 case $capture_filetype in
-	gif) capture_options+=(-pix_fmt rgb24) ;;
+	gif) capture_options+=(-pix_fmt rgb8) ;;
 	*) capture_options+=(-c:v libx264) ;;
 esac
 
@@ -167,53 +171,49 @@ if [[ -n $capture_seconds ]]; then
 	capture_options+=(-t "$capture_seconds")
 fi
 
-# some tools output a ton of garbage.
-# if debugging, comment out these braces
-{
+if [[ -n $use_audible_cues ]]; then
+	canberra-gtk-play -i $start_sound
+	for (( tick=1; tick <= delay_count; tick+=1 )); do
+		canberra-gtk-play -i $tick_sound
+	done
+fi
 
-	if [[ -n $use_audible_cues ]]; then
-		canberra-gtk-play -i $start_sound
-		for (( tick=1; tick <= delay_count; tick+=1 )); do
-			canberra-gtk-play -i $tick_sound
-		done
-	fi
+rm -f "$capture_file"
+mkdir -p "$(dirname "$capture_file")"
 
-	rm -f "$capture_file"
-	mkdir -p "$(dirname "$capture_file")"
+ffmpeg "${capture_options[@]}" "$capture_file"
 
-	ffmpeg "${capture_options[@]}" "$capture_file"
+if [[ ! -f $capture_file ]]; then
+	notify-send -u critical "screencast recording failed"
+	exit 1
+fi
 
-	if [[ ! -f $capture_file ]]; then
-		notify-send -u critical "screencast recording failed"
-		exit 1
-	fi
+case $capture_file in
+	*.gif) has gifsicle && gifsicle --batch --optimize=3 "$capture_file" ;;
+esac
 
-	if [[ -n $use_optimization ]]; then
-		case $capture_file in
-			*.gif) gifsicle --batch --optimize=3 "$capture_file" ;;
-		esac
-	fi
+capture_file=$(readlink -f "$capture_file")
 
-	capture_file=$(readlink -f "$capture_file")
+if [[ -n $copy_path_to_clipboard ]]; then
+	echo -n "$capture_file" | xsel -ib
+fi
 
-	if [[ -n $copy_path_to_clipboard ]]; then
-		echo -n "$capture_file" | xsel -ib
-	fi
+if [[ -n $notify_on_capture ]]; then
+	fs=$(du -h "$capture_file" | cut -f1)
+	info="<u>${capture_file/$HOME/\~}</u>, $fs, $capture_size"
+	notify-send "screencast captured" "$info"
+fi
 
-	if [[ -n $notify_on_capture ]]; then
-		fs=$(du -h "$capture_file" | cut -f1)
-		info="<u>${capture_file/$HOME/\~}</u>, $fs, $capture_size"
-		notify-send "screencast captured" "$info"
-	fi
-
-	if [[ -n $use_audible_cues ]]; then
-		canberra-gtk-play -i $shutter_sound
-	fi
-
-} >/dev/null 2>&1
+if [[ -n $use_audible_cues ]]; then
+	canberra-gtk-play -i $shutter_sound
+fi
 
 echo -n "$capture_file"
 
 if [[ -n $exec_command ]]; then
 	exec "$(capture_format "$exec_command")"
+fi
+
+if [[ -n $open_after_capture ]]; then
+	xdg-open "$capture_file"
 fi

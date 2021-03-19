@@ -16,18 +16,20 @@ Usage:
     [-e command] [-D directory] [filename]
 
 Examples:
-    # capture a compressed shot of the desktop, quietly
-    $me -o
+    # capture a shot of the desktop, quietly
+    $me
 
     # select area to capture, shutter, notify, copy to clipboard
-    $me -sncoa
+    $me -snca
 
     # count to 3 first, then capture current window
-    $me -uncoa -d3
+    $me -unca -d3
 
-    # edit/view the resulting image
+	# open the resulting file
+    $me -o
+
+    # execute a command for the resulting file
     $me -e 'gimp \$f'
-    $me -e 'feh \$f'
 
 The first non-option argument is the output filename.
 If no filename is given, %Y-%m-%d_%H-%M-%S.\$t will be used.
@@ -65,6 +67,10 @@ capture_format() {
 	date +"$text"  # handle date/time on the way out
 }
 
+has() {
+	which "$1" &>/dev/null
+}
+
 tick_sound=message-new-instant
 shutter_sound=camera-shutter
 
@@ -73,10 +79,10 @@ delay_count=0
 capture_filetype=png
 unset verbose
 unset capture_quality  # 1 (worst) to 100 (best)
-unset use_optimization
 unset capture_geometry
 unset use_audible_cues
 unset notify_on_capture
+unset open_after_capture
 unset copy_path_to_clipboard
 
 unset OPTIND
@@ -84,17 +90,17 @@ while getopts ":D:q:owusg:and:ce:h" option; do
 	case $option in
 		D) directory=$OPTARG ;;
 		q) capture_quality=$OPTARG ;;
-		o) use_optimization=1 ;;
 
 		# various ways to define capture region
 		w) capture_geometry=$(xwinrect -frame -id "$(xprop-selected-window)") ;;
 		u) capture_geometry=$(xwinrect -frame -id "$(xprop-active-window)") ;;
-		s) capture_geometry=$(xrectsel) ;;  # TODO: dependency hurdle
+		s) capture_geometry=$(xrectsel) ;;
 		g) capture_geometry=$OPTARG ;;
 
 		# might be suitable for another tool
 		a) use_audible_cues=1 ;;
 		n) notify_on_capture=1 ;;
+		o) open_after_capture=1 ;;
 		d) delay_count=$OPTARG ;;
 		c) copy_path_to_clipboard=1 ;;
 
@@ -111,7 +117,7 @@ done && shift $((OPTIND - 1))
 root_geometry=$(xwinrect -root)
 
 # image properties (mostly for formatting)
-if [[ -z $capture_geometry ]]; then
+if [[ ! $capture_geometry ]]; then
 	capture_geometry=$root_geometry
 fi
 capture_size=${capture_geometry%%+*}
@@ -131,56 +137,52 @@ capture_file=$(capture_format "$capture_file")
 
 # options for imagemagick
 import_options=(-window root)
-[[ -n $capture_geometry ]] && import_options+=(-crop "$capture_geometry")
-[[ -n $capture_quality ]] && import_options+=(-quality "$capture_quality")
+[[ $capture_geometry ]] && import_options+=(-crop "$capture_geometry")
+[[ $capture_quality ]] && import_options+=(-quality "$capture_quality")
 
-# some tools output a ton of garbage.
-# if debugging, comment out these braces
-{
+if [[ $use_audible_cues ]]; then
+	for (( tick=1; tick <= delay_count; tick+=1 )); do
+		canberra-gtk-play -i $tick_sound
+	done
+fi
 
-	if [[ -n $use_audible_cues ]]; then
-		for (( tick=1; tick <= delay_count; tick+=1 )); do
-			canberra-gtk-play -i $tick_sound
-		done
-	fi
+rm -f "$capture_file"
+mkdir -p "$(dirname "$capture_file")"
 
-	rm -f "$capture_file"
-	mkdir -p "$(dirname "$capture_file")"
+import "${import_options[@]}" "$capture_file"
 
-	import "${import_options[@]}" "$capture_file"
+if [[ ! -f $capture_file ]]; then
+	notify-send -u critical "screenshot capture failed"
+	exit 1
+fi
 
-	if [[ ! -f $capture_file ]]; then
-		notify-send -u critical "screenshot capture failed"
-		exit 1
-	fi
+case $capture_file in
+	*.png) has optipng && optipng "$capture_file" ;;
+	*.jpg) has jpegtran && jpegtran -optimize -copy none "$capture_file" ;;
+esac
 
-	if [[ -n $use_optimization ]]; then
-		case $capture_file in
-			*.png) optipng "$capture_file" ;;
-			*.jpg) jpegtran -optimize -copy none "$capture_file" ;;
-		esac
-	fi
+capture_file=$(readlink -f "$capture_file")
 
-	capture_file=$(readlink -f "$capture_file")
+if [[ $copy_path_to_clipboard ]]; then
+	echo -n "$capture_file" | xsel -ib
+fi
 
-	if [[ -n $copy_path_to_clipboard ]]; then
-		echo -n "$capture_file" | xsel -ib
-	fi
+if [[ $notify_on_capture ]]; then
+	fs=$(du -h "$capture_file" | cut -f1)
+	info="<u>${capture_file/$HOME/\~}</u>, $fs, $capture_size"
+	notify-send "screenshot captured" "$info"
+fi
 
-	if [[ -n $notify_on_capture ]]; then
-		fs=$(du -h "$capture_file" | cut -f1)
-		info="<u>${capture_file/$HOME/\~}</u>, $fs, $capture_size"
-		notify-send "screenshot captured" "$info"
-	fi
-
-	if [[ -n $use_audible_cues ]]; then
-		canberra-gtk-play -i $shutter_sound
-	fi
-
-} >/dev/null 2>&1
+if [[ $use_audible_cues ]]; then
+	canberra-gtk-play -i $shutter_sound
+fi
 
 echo -n "$capture_file"
 
-if [[ -n $exec_command ]]; then
+if [[ $exec_command ]]; then
 	exec "$(capture_format "$exec_command")"
+fi
+
+if [[ $open_after_capture ]]; then
+	xdg-open "$capture_file"
 fi
