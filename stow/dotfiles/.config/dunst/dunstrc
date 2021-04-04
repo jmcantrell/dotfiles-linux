@@ -25,7 +25,7 @@ indicate_hidden = yes
 # alignment of message text (left, right)
 alignment = left
 
-transparency = 30
+transparency = 0
 
 padding = 15
 horizontal_padding = 15
