@@ -170,9 +170,6 @@ mode "$mode_session" {
 }
 bindsym $super+q mode "$mode_session"
 
-# lock session
-bindsym ctrl+$alt+l $fork i3exit lock
-
 # send command to i3
 bindsym $super+semicolon exec i3-input -P:
 

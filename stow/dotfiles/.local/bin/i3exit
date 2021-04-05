@@ -7,16 +7,12 @@ case ${1:-quit} in
 		i3-msg exit
 		;;
 	lock)
-		i3lock &
+		lock &
 		;;
 	suspend)
-		i3lock &
-		sleep 2
 		systemctl suspend
 		;;
 	hibernate)
-		i3lock &
-		sleep 2
 		systemctl hibernate
 		;;
 	reboot)

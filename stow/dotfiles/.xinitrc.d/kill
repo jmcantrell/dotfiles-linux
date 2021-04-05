@@ -1,5 +1,0 @@
-# Kill x server with ctrl-alt-backspace.
-
-exec setxkbmap -option terminate:ctrl_alt_bksp &
-
-# vi:ft=sh

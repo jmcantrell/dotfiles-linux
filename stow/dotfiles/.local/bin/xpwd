@@ -62,9 +62,9 @@ fi
 cwd=$PWD
 win_pid=$(xprop -id "$win_id" | grep -m1 PID | cut -f3 -d' ')
 if [[ -n $win_pid ]]; then
-	for proc in $(pstree -lpA "$win_pid" | sed 's/-[-+]-/ /g' | head -n1); do
-		echo "$proc" >&2
+	readarray -t procs < <(pstree -lpA "$win_pid" | head -n1 | sed 's/-[-+]-/\n/g')
 
+	for proc in "${procs[@]}"; do
 		name=${proc%%(*}
 		pid=${proc//[^0-9]/}
 
@@ -72,8 +72,8 @@ if [[ -n $win_pid ]]; then
 		# cwd will be whatever it was when tmux was started.
 		# There could be multiple panes, each with its own pid.
 		case $name in
-			ranger)
-				# ranger usually has spawned processes, so stop here
+			ranger|firefox)
+				# has spawned processes, so stop here
 				break
 				;;
 			tmux)
@@ -83,7 +83,9 @@ if [[ -n $win_pid ]]; then
 				;;
 		esac
 	done
+
 	cwdlink=/proc/$pid/cwd
+
 	if [[ -e $cwdlink ]]; then
 		cwd=$(readlink "$cwdlink")
 	fi

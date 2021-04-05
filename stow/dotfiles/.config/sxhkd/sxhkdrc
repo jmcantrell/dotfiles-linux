@@ -1,15 +1,28 @@
+# lock the desktop session
+ctrl + alt + l
+	lock
+
+# reload this config file
+ctrl + shift + r
+	killall -USR1 sxhkd
+
+# run command (sorted by most recently used)
 alt + space
 	dmenu_run_mru
 
+# run last command from dmenu
 super + alt + space
 	dmenu_run_prev
 
+# open a terminal (in the working directory of the active window)
 super + Return
 	cd "$(xpwd)" && terminal
 
+# copy the working directory path of the active window
 super + d
 	xpwd -cn
 
+# copy the working directory path of the selected window
 super + alt + d
 	xpwd -cnw
 
@@ -19,9 +32,11 @@ super + b
 super + B
 	browser --incognito
 
+# open an editor (in the working directory of the active window)
 super + e
 	cd "$(xpwd)" && terminal -e editor
 
+# open a file manager (in the working directory of the active window)
 super + f
 	cd "$(xpwd)" && terminal -e ranger
 
@@ -31,21 +46,26 @@ super + {Home,End}
 super + {Prior,Next}
 	volume-{up,down}
 
-super + alt + {Prior,Next}
-	mpc -q {prev,next} && mpdnotify
-
-XF86Audio{Prev,Next}
-	mpc -q {prev,next} && mpdnotify
-
 XF86AudioMute
 	volume-mute
 
 XF86Audio{Raise,Lower}Volume
 	volume-{up,down}
 
+super + Pause
+	playerctl play-pause
+
+super + alt + {Prior,Next}
+	playerctl {previous,next}
+
+XF86Audio{Prev,Next}
+	playerctl {previous,next}
+
+# open a process manager
 super + Escape
 	terminal -e glances
 
+# select from previous items copied to the clipboard
 super + grave
 	clipmenu
 
@@ -88,7 +108,7 @@ super + alt + o
 super + Print; d
 	icap -ncoa -D ~/Media/screenshots
 
-# capture current window
+# capture active window
 super + Print; u
 	icap -ncoa -u -D ~/Media/screenshots
 
@@ -104,7 +124,7 @@ super + Print; s
 super + alt + Print; d
 	mcap -ncoa
 
-# record current window
+# record active window
 super + alt + Print; u
 	mcap -ncoa -u -D ~/Media/screencasts
 

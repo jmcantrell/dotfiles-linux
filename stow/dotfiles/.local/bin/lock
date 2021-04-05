@@ -16,7 +16,7 @@ mogrify -scale 10% -scale 1000% "$image"
 # blur
 # mogrify -blur '0x6' "$image"
 
-/usr/bin/i3lock -nt -p default -i "$image" "$@"
+i3lock -ntf -p default -i "$image" "$@"
 
 # enable notifications after unlocking
 notify-send DUNST_COMMAND_RESUME
