@@ -104,8 +104,8 @@ while getopts ":D:t:r:q:og:wusm:and:ce:xh" option; do
 
 		# various ways to define capture region
 		g) capture_geometry=$OPTARG ;;
-		w) capture_geometry=$(xwinrect -id "$(xprop-selected-window)") ;;
-		u) capture_geometry=$(xwinrect -id "$(xprop-active-window)") ;;
+		w) capture_geometry=$(xwinrect -id "$(selected-window)") ;;
+		u) capture_geometry=$(xwinrect -id "$(active-window)") ;;
 		s) capture_geometry=$(xrectsel) ;;
 
 		# region follows when $OPTARG pixels from edge

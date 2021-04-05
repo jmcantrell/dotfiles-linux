@@ -7,6 +7,12 @@ super + alt + space
 super + Return
 	cd "$(xpwd)" && terminal
 
+super + d
+	xpwd -cn
+
+super + alt + d
+	xpwd -cnw
+
 super + b
 	browser
 

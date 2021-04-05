@@ -92,8 +92,8 @@ while getopts ":D:q:owusg:and:ce:h" option; do
 		q) capture_quality=$OPTARG ;;
 
 		# various ways to define capture region
-		w) capture_geometry=$(xwinrect -frame -id "$(xprop-selected-window)") ;;
-		u) capture_geometry=$(xwinrect -frame -id "$(xprop-active-window)") ;;
+		w) capture_geometry=$(xwinrect -frame -id "$(selected-window)") ;;
+		u) capture_geometry=$(xwinrect -frame -id "$(active-window)") ;;
 		s) capture_geometry=$(xrectsel) ;;
 		g) capture_geometry=$OPTARG ;;
 

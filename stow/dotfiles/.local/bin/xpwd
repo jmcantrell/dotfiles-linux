@@ -38,7 +38,7 @@ unset use_notifications
 unset OPTIND
 while getopts ":hwcn" option; do
 	case $option in
-		w) win_id=$(xprop-selected-window) ;;
+		w) win_id=$(selected-window) ;;
 
 		c) copy_path_to_clipboard=1 ;;
 		n) use_notifications=1 ;;
@@ -48,7 +48,7 @@ while getopts ":hwcn" option; do
 	esac
 done && shift $((OPTIND - 1))
 
-[[ -z $win_id ]] && win_id=$(xprop-active-window)
+[[ -z $win_id ]] && win_id=$(active-window)
 
 if [[ -z $win_id ]]; then
 	message="no window found"
@@ -62,7 +62,9 @@ fi
 cwd=$PWD
 win_pid=$(xprop -id "$win_id" | grep -m1 PID | cut -f3 -d' ')
 if [[ -n $win_pid ]]; then
-	for proc in $(pstree -lpA "$win_pid" | sed 's/---/ /g'); do
+	for proc in $(pstree -lpA "$win_pid" | sed 's/-[-+]-/ /g' | head -n1); do
+		echo "$proc" >&2
+
 		name=${proc%%(*}
 		pid=${proc//[^0-9]/}
 
