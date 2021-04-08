@@ -62,7 +62,7 @@ fi
 cwd=$PWD
 win_pid=$(xprop -id "$win_id" | grep -m1 PID | cut -f3 -d' ')
 if [[ -n $win_pid ]]; then
-	readarray -t procs < <(pstree -lpA "$win_pid" | head -n1 | sed 's/-[-+]-/\n/g')
+	readarray -t procs < <(pstree -lpA "$win_pid" | head -n1 | sed 's/-+-.*$//' | sed 's/---/\n/g')
 
 	for proc in "${procs[@]}"; do
 		name=${proc%%(*}

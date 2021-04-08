@@ -36,6 +36,6 @@ disk "/home" {
 
 tztime pretty {
 	format = "%c"
-	on_click 1 = "exec --no-startup-id date +%c | xsel -ib"
+	on_click 1 = "exec --no-startup-id date --rfc-3339=seconds | xsel -ib"
 	on_click 3 = "exec --no-startup-id terminal -e i3settz"
 }

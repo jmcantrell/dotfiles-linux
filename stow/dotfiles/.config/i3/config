@@ -199,7 +199,7 @@ client.placeholder      $border $border $text $border   $border
 bar {
 	position bottom
 
-	mode hide
+	mode dock
 	hidden_state hide
 	modifier $super
 
