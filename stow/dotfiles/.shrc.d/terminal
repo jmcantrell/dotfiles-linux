@@ -1,5 +1,4 @@
-alias term='$TERMINAL'
-alias t=term
+alias t=terminal
 alias te='t -e'      # run command in terminal
 alias th='te -hold'  # same, but leave open after
 

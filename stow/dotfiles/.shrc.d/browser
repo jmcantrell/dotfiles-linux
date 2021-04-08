@@ -1,4 +1,3 @@
-alias browse='$BROWSER'
-alias b=browse
+alias b=browser
 
 # vi:ft=sh
