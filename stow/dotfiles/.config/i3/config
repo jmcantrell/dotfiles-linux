@@ -1,3 +1,7 @@
+# default windows have no title bar
+default_border pixel
+default_floating_border pixel
+
 # key modifier aliases
 set $alt   mod1
 set $super mod4
