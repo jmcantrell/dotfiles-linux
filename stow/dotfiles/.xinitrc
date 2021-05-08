@@ -4,6 +4,7 @@ export DESKTOP=i3
 export VISUAL=gvim
 export BROWSER=vimb
 export TERMINAL=xterm
+export TERMCMD=$TERMINAL
 
 for xresources in /etc/X11/xinit/.Xresources ~/.Xresources; do
 	test -f "$xresources" && xrdb -merge "$xresources"

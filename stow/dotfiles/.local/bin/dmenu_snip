@@ -20,12 +20,12 @@ snippetfiles() {
 # parse options
 action=show
 unset OPTIND
-while getopts ":hcetp" option; do
+while getopts ":hcets" option; do
 	case $option in
 		t) action="type" ;;
 		e) action="edit" ;;
 		c) action="copy" ;;
-		p) action="paste" ;;
+		s) action="save" ;;
 		h) echo "$usage" >&2; exit 0 ;;
 		*) echo "$usage" >&2; exit 1 ;;
 	esac
@@ -59,11 +59,11 @@ case $action in
 		mkdir -p "$snippets"
 		exec terminal -e editor "$snippet"
 		;;
-	paste)
+	save)
 		mkdir -p "$snippets"
 		text=$(xsel -ob)
 		echo "$text" >"$snippet"
-		title="snippet text for $name grabbed from clipboard"
+		title="snippet text for $name saved from clipboard"
 		notify-send "$title" "$text"
 		;;
 esac

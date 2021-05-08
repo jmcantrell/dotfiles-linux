@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if nordvpn status | sed 's/^[^a-z]*//i' | grep -i '^status:' | grep -qi disconnected; then
+    nordvpn connect
+else
+    nordvpn disconnect
+fi
