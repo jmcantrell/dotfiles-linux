@@ -7,7 +7,6 @@ general {
 
 order += "wireless _first_"
 order += "ethernet _first_"
-order += "path_exists vpn"
 order += "dpms"
 order += "disk /home"
 order += "load"
@@ -24,14 +23,6 @@ wireless _first_ {
 	format_up = "wl %essid %ip"
 	format_down = "wl down"
 	on_click 1 = "exec --no-startup-id terminal -e iwctl"
-}
-
-path_exists vpn {
-	path = "/proc/sys/net/ipv4/conf/nordlynx"
-	format = "%title on"
-	format_down = "%title off"
-	on_click 1 = "exec --no-startup-id nordvpn-toggle"
-	on_click 3 = "exec --no-startup-id terminal -e 'nordvpn status | pager'"
 }
 
 dpms {

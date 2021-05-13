@@ -1,0 +1,3 @@
+exec mullvad-vpn &
+
+# vi:ft=sh

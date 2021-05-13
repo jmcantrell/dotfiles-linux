@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if [[ -e /proc/sys/net/ipv4/conf/wg-mullvad ]]; then
+    mullvad disconnect
+else
+    mullvad connect
+fi
