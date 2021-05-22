@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-json=$(curl https://am.i.mullvad.net/json 2>/dev/null)
+json=$(curl https://am.i.mullvad.net/json 2>/dev/null) || {
+    echo "Status: unknown" >&2
+    exit 1
+}
 
 is() {
     jq -e "$@" <<<"$json" &>/dev/null
