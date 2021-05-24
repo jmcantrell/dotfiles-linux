@@ -201,7 +201,7 @@ client.unfocused        $border $border $text $border   $border
 client.placeholder      $border $border $text $border   $border
 
 bar {
-	position bottom
+	position top
 
 	mode dock
 	hidden_state hide
