@@ -9,5 +9,7 @@ volume=$(pamixer --get-volume)
 
 canberra-gtk-play -i audio-volume-change &
 
-notify-send -u low -i "$icon" "Volume Control" \
+notify-send -a notify-volume -u low -i "$icon" \
+	-h string:x-canonical-private-synchronous:volume \
+	"Volume Control" \
 	"volume: $volume%<br>muted: $muted"

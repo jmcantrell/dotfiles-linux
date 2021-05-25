@@ -237,7 +237,7 @@ for_window [window_role="task_dialog"]    floating enable
 for_window [window_role="toolbox_window"] floating enable
 
 for_window [title="Preferences$"]               floating enable
-for_window [class="(feh|Gifview|Display)"]      floating enable
+for_window [class="(feh|Gifview|Display|mpv)"]  floating enable
 for_window [class="(Xmessage|Zenity)"]          floating enable  # script dialogs
 for_window [class="Pinentry"]                   floating enable
 for_window [class="System-config-printer.py"]   floating enable
