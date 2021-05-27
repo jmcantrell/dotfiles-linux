@@ -11,7 +11,7 @@ alt + space
 	dmenu_run_mru
 
 # run last command from dmenu
-super + alt + space
+super + space
 	dmenu_run_prev
 
 # open a terminal (in the working directory of the active window)
@@ -19,11 +19,11 @@ super + Return
 	cd "$(xpwd)" && terminal
 
 # copy the working directory path of the active window
-super + d
+super + d; u
 	xpwd -cn
 
 # copy the working directory path of the selected window
-super + alt + d
+super + d; w
 	xpwd -cnw
 
 super + b
@@ -55,7 +55,7 @@ XF86Audio{Raise,Lower}Volume
 super + Pause
 	playerctl play-pause
 
-super + alt + {Prior,Next}
+super + {Left,Right}
 	playerctl {previous,next}
 
 XF86Audio{Prev,Next}
@@ -66,11 +66,11 @@ super + Escape
 	terminal -e glances
 
 # copy text snippets
-super + Delete
+super + Delete; c
 	dmenu_snip -c
 
 # edit text snippets
-super + alt + Delete
+super + Delete; e
 	dmenu_snip -e
 
 # create text snippet from clipboard
@@ -98,51 +98,51 @@ super + o; {d,c}
 	xrandr-{detect,clone}
 
 # remove all connected outputs
-super + alt + o
+super + o; q
 	xrandr-off
 
 # capture desktop
-super + Print; d
+super + Print; i; d
 	icap -ncoa -D ~/Media/screenshots
 
 # capture active window
-super + Print; u
+super + Print; i; u
 	icap -ncoa -u -D ~/Media/screenshots
 
 # capture selected window
-super + Print; w
+super + Print; i; w
 	icap -ncoa -w -D ~/Media/screenshots
 
 # capture selected region
-super + Print; s
+super + Print; i; s
 	icap -ncoa -s -D ~/Media/screenshots
 
 # record desktop
-super + alt + Print; d
-	mcap -ncoa
+super + Print; m; d
+	mcap -ncoa -D ~/Media/screencasts
 
 # record active window
-super + alt + Print; u
+super + Print; m; u
 	mcap -ncoa -u -D ~/Media/screencasts
 
 # record selected window
-super + alt + Print; w
+super + Print; m; w
 	mcap -ncoa -w -D ~/Media/screencasts
 
 # record selected region
-super + alt + Print; s
+super + Print; m; s
 	mcap -ncoa -s -D ~/Media/screencasts
 
 # record region around mouse
 # keep mouse in the center of the rectangle
-super + alt + Print; c
+super + Print; m; c
 	mcap -ncoa -m centered -D ~/Media/screencasts
 
 # record region around mouse
 # only move rectangle when mouse is 10-90 pixels from edge
-super + alt + Print; {1-9}
+super + Print; m; {1-9}
 	mcap -ncoa -m {1-9}0 -D ~/Media/screencasts
 
 # stop recording
-super + Pause
+super + Print; m; q
 	mcap -x
