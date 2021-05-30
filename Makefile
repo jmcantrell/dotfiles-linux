@@ -6,10 +6,13 @@ update:
 	git submodule foreach git checkout master
 	git submodule foreach git pull
 
+install: stow
+	rsync -avz ./copy/ ~
+
 stow:
-	stow --no-folding -d stow -t ~ -R dotfiles
+	stow --no-folding -d . -t ~ -R stow
 
 unstow:
-	stow --no-folding -d stow -t ~ -D dotfiles
+	stow --no-folding -d . -t ~ -D stow
 
 .PHONY: stow
