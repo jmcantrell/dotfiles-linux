@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# Add and edit vimb bookmarks.
+
+set -e
+
+config=${XDG_CONFIG_HOME:-$HOME/.config}
+bookmarks=$config/vimb/bookmark
+
+test $# -eq 0 && ${EDITOR:-vim} "$bookmarks"
+
+url=$1
+title=$2
+tags=$3
+
+# remove any previous entry
+sed -i "/^$url\b/d" "$bookmarks"
+
+# only add title and tags if they were given
+line=$url${title:+\t$title${tags:+\t$tags}}
+
+echo -e "$line" >>"$bookmarks"

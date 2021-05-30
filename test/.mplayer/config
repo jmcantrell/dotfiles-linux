@@ -1,0 +1,51 @@
+# stretch to fill screen in fullscreen
+zoom=yes
+
+nolirc=yes      # disable lirc
+nojoystick=yes  # disable joystick
+nortc=yes       # disable rtc (real time clock)
+
+# enable double buffer
+double=yes
+
+fontconfig=yes
+font="DejaVu Sans:style=Bold"
+
+utf8=yes
+unicode=yes
+slang=en,eng,english,English
+
+osd-duration=2000
+
+# find subtitle files (1: load all subs containing movie name)
+sub-fuzziness=1
+
+# resample the font alphamap (1: narrow black outline)
+ffactor=1
+
+# set subtitle position (100: as low as possible)
+subpos=100
+# set subtitle alignment at its position (2: bottom)
+subalign=2
+# set font size (1: proportional to movie height, 2: width)
+subfont-autoscale=2
+# set font blur radius (default: 2)
+subfont-blur=2.0
+# set font outline thickness (default: 2)
+subfont-outline=1.0
+# set autoscale coefficient (default: 5)
+subfont-text-scale=2
+# set font encoding
+subfont-encoding=unicode
+# set autoscale coefficient (default: 6)
+subfont-osd-scale=2
+
+# align subs (-1: as they want to align themselves)
+spualign=-1
+# anti-alias subs (4: best and slowest)
+spuaa=4
+# higher means more blur (default: 1.0)
+spugauss=1.0
+
+# defaults to /dev/dvd
+dvd-device=/dev/sr0

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# Wrapper for i3lock to define a lock image and disable dunst.
+
+# disable notifications while locked
+dunst_paused=$(dunstctl is-paused)
+dunstctl set-paused true
+
+# create obscured screenshot of desktop
+image=$(mktemp --suffix=.png)
+trap "rm -f $(printf "%q" "$image")" INT TERM EXIT
+import -window root "$image"
+
+# pixelate
+mogrify -scale 10% -scale 1000% "$image"
+
+# blur
+# mogrify -blur '0x6' "$image"
+
+i3lock -ntf -p default -i "$image" "$@"
+
+# enable notifications after unlocking
+dunstctl set-paused "$dunst_paused"

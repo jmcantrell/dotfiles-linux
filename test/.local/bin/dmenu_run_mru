@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+
+# Run commands with dmenu.
+
+# Shows the most recent $HISTSIZE commands first.
+# Optional command modifiers allow different ways to run commands.
+
+# These modifiers can be added to the end of commands:
+#  ;  run command in terminal
+#  .  run command in terminal (leave open)
+
+# Examples:
+#  top;             # runs `top` in a terminal
+#  cat ~/.profile.  # display ~/.profile in terminal (leave open)
+#  updatedb!        # runs `gksudo updatedb`
+#  parted!;         # runs `sudo parted` in a terminal
+#  parted!.         # same, but terminal stays open after
+
+histsize=${HISTSIZE:-100}
+
+me=${0##*/}
+cache=${XDG_CACHE_HOME:-$HOME/.cache}/dmenu
+mkdir -p "$cache"
+mru=$cache/run_mru
+touch "$mru"
+
+temp=$(mktemp -t "$me.XXXXXXXXXX")
+trap "rm -f $(printf "%q" "$temp")" INT TERM EXIT
+
+# rearranges the commands in $PATH,
+# with preference given to command history
+mru_path() {
+	cat "$mru"; dmenu_path | grep -vxF -f "$mru"
+}
+
+# add a command to the mru cache
+mru_add() {
+	local input=${1:?missing command}
+	{
+		echo "$input"
+		grep -vx "$input" "$mru"
+	} | head -n$histsize >"$temp"
+	mv -f "$temp" "$mru"
+}
+
+# get command from dmenu prompt
+input=$(mru_path | dmenu -i -p run "$@")
+
+# nothing was entered or selected
+[[ "$input" ]] || exit 1
+
+# add command to history
+mru_add "$input"
+
+# strip a modifier from a command
+# errors if no modifiers were found
+stripmod() {
+	local mod=${1:?missing modifier}
+	local input=${2:?missing command}
+	local suffix=${input: -1}
+	echo "${input%%$mod}"
+	[[ "$suffix" = "$mod" ]] || return 1
+}
+
+# detect and remove any modifiers
+unset term sudo hold
+input=$(stripmod "." "$input") && term=1 && hold=1
+input=$(stripmod ";" "$input") && term=1
+
+# if any modifiers are left, ignore them
+input=${input%%.}; input=${input%%;*}
+
+# if requested, run command in a terminal
+if [[ $term ]]; then
+	cmd=(terminal ${hold:+-hold} -e "$input")
+else
+	cmd=("$input")
+fi
+
+exec "${cmd[@]}"

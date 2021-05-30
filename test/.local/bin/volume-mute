@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Toggle audio mute and show a notification.
+
+pamixer --toggle-mute
+
+case "$(pamixer --get-mute)" in
+	true) icon=audio-volume-muted ;;
+	*) icon=audio-volume-high ;;
+esac
+
+icon=$icon notify-volume

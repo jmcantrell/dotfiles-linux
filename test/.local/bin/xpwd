@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+
+usage="
+Gets the working directory of the current window.
+
+Optional dependencies:
+xsel, notification daemon
+
+Usage: ${0##*/} [-h] [-cnw]
+"
+
+icon_set=/usr/share/icons/gnome/32x32
+icon=$icon_set/actions/edit-paste.png
+
+tmux_session_id() {
+	local win_id=$1
+	tmux list-sessions -F '#{session_id}' |
+	while read -r session_id; do
+		unset WINDOWID
+		eval "$(tmux showenv -t "$session_id" WINDOWID)"
+		session_win_id=0x$(printf "%x" "$WINDOWID")
+		if [[ $session_win_id == "$win_id" ]]; then
+			echo "$session_id"
+			return
+		fi
+	done
+	return 1
+}
+
+tmux_active_pane_pid() {
+	local session_id=$1
+	tmux list-panes -F '#{session_id} #{pane_active} #{pane_pid}' |
+	grep "^$session_id 1 " | head -n1 | awk '{print $NF}'
+}
+
+unset copy_path_to_clipboard
+unset use_notifications
+unset OPTIND
+while getopts ":hwcn" option; do
+	case $option in
+		w) win_id=$(selected-window) ;;
+
+		c) copy_path_to_clipboard=1 ;;
+		n) use_notifications=1 ;;
+
+		h) echo "$usage" >&2; exit 0 ;;
+		*) echo "$usage" >&2; exit 1 ;;
+	esac
+done && shift $((OPTIND - 1))
+
+[[ -z $win_id ]] && win_id=$(active-window)
+
+if [[ -z $win_id ]]; then
+	message="no window found"
+	echo "$message" >&2
+	if [[ -n $use_notifications ]]; then
+		notify-send -u critical "$message"
+	fi
+	exit 1
+fi
+
+cwd=$PWD
+win_pid=$(xprop -id "$win_id" | grep -m1 PID | cut -f3 -d' ')
+if [[ -n $win_pid ]]; then
+	readarray -t procs < <(pstree -lpA "$win_pid" | head -n1 | sed 's/-+-.*$//' | sed 's/---/\n/g')
+
+	for proc in "${procs[@]}"; do
+		name=${proc%%(*}
+		pid=${proc//[^0-9]/}
+
+		# If tmux is active in this window,
+		# cwd will be whatever it was when tmux was started.
+		# There could be multiple panes, each with its own pid.
+		case $name in
+			ranger|firefox)
+				# has spawned processes, so stop here
+				break
+				;;
+			tmux)
+				session_id=$(tmux_session_id "$win_id")
+				pid=$(tmux_active_pane_pid "$session_id")
+				break
+				;;
+		esac
+	done
+
+	cwdlink=/proc/$pid/cwd
+
+	if [[ -e $cwdlink ]]; then
+		cwd=$(readlink "$cwdlink")
+	fi
+fi
+
+if [[ -n $copy_path_to_clipboard ]]; then
+	echo "$cwd" | xsel -ib
+	if [[ -n $use_notifications ]]; then
+		notify-send -i "$icon" "Working directory copied to clipboard:" "$cwd"
+	fi
+fi
+
+echo -n "$cwd"

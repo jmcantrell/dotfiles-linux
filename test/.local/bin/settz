@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Select a timezone.
+
+tz=${1:-$(tzselect)}
+
+sudo ln -sf "/usr/share/zoneinfo/$tz" /etc/localtime
+which timedatectl && timedatectl set-timezone "$tz"

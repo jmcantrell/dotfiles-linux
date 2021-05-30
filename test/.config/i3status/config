@@ -1,0 +1,58 @@
+general {
+	interval = 5
+	colors = true
+	color_good = '#00ff00'
+	color_bad = '#ff0000'
+}
+
+order += "wireless _first_"
+order += "ethernet _first_"
+order += "dpms"
+order += "disk /home"
+order += "load"
+order += "cpu_usage"
+order += "memory"
+order += "tztime pretty"
+
+ethernet _first_ {
+	format_up = "en %ip"
+	format_down = "en down"
+}
+
+wireless _first_ {
+	format_up = "wl %essid %ip"
+	format_down = "wl down"
+	on_click 1 = "exec --no-startup-id terminal -e iwctl"
+}
+
+dpms {
+	icon_on = "dpms on"
+	icon_off = "dpms off"
+}
+
+disk "/home" {
+	format = "~ %avail"
+	on_click 1 = "exec --no-startup-id terminal -e 'df --si | pager'"
+	on_click 3 = "exec --no-startup-id terminal -e 'ncdu ~'"
+}
+
+load {
+	format = "load %1min %5min %15min"
+	on_click 1 = "exec --no-startup-id terminal -e top"
+}
+
+cpu_usage {
+	format = "cpu %usage"
+	on_click 1 = "exec --no-startup-id terminal -e glances"
+}
+
+memory {
+	format = "mem %available"
+	on_click 1 = "exec --no-startup-id terminal -e 'free -th | pager'"
+}
+
+tztime pretty {
+	format = "%c"
+	on_click 1 = "exec --no-startup-id date --rfc-3339=seconds | xsel -ib"
+	on_click 3 = "exec --no-startup-id terminal -e i3settz"
+}

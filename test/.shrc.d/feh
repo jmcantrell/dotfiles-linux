@@ -1,0 +1,18 @@
+# animate by default
+alias gifview='gifview -a'
+
+alias fehnew='feh --sort mtime'  # sort by newest
+alias fehold='fehnew --reverse'  # sort by oldest
+alias fehmin='feh --sort width'  # sort by smallest
+alias fehmax='fehmin --reverse'  # sort by largest
+
+# shuffled screensaver
+alias fehshuf='feh --recursive --randomize'
+
+# slideshow with some preset delays
+alias fehshow='feh --sort name --hide-pointer'
+for n in 3 5 10 20; do
+	alias fehshow$n="fehshow --slideshow-delay $n"
+done
+
+# vi:ft=sh

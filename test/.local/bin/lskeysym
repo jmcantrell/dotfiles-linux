@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# List keysyms available to x.
+
+grep "define XK_" /usr/include/X11/keysymdef.h |
+cut -d' ' -f2 | cut -c4- | grep -v '^$'

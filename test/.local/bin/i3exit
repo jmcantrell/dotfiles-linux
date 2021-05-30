@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+# Encapsulate various ways of leaving i3.
+
+case ${1:-quit} in
+	quit)
+		i3-msg exit
+		;;
+	lock)
+		lock &
+		;;
+	suspend)
+		systemctl suspend
+		;;
+	hibernate)
+		systemctl hibernate
+		;;
+	reboot)
+		reboot
+		;;
+	poweroff)
+		poweroff
+		;;
+	*)
+		echo "usage: ${0##*/} [quit|lock|suspend|hibernate|reboot|poweroff]" >&2
+		exit 1
+		;;
+esac

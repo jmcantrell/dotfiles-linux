@@ -1,0 +1,80 @@
+[global]
+# variables for format:
+# %a  appname
+# %s  summary
+# %b  body
+# %i  iconname (with path)
+# %I  iconname (without path)
+format = "<b>%s</b>\n%b"
+font = "DejaVu Sans Mono 8"
+ignore_newline = no
+allow_markup = yes
+
+# sort messages by urgency
+sort = yes
+
+icon_position = left
+max_icon_size = 32
+
+# display indicators for urls (U) and actions (A)
+show_indicators = no
+
+# show how many messages are currently hidden (because of geometry)
+indicate_hidden = yes
+
+# alignment of message text (left, right)
+alignment = left
+
+transparency = 0
+
+padding = 15
+horizontal_padding = 15
+
+# show age of message if older than this threshold (-1 to disable)
+show_age_threshold = 60
+
+# split long notifications into multiple lines
+word_wrap = yes
+
+# notifications are 3 lines and at the top left of the screen
+geometry = "0x3-10-10"
+
+# don't remove messages if the user is idle for longer than this
+# threshold (0 to disable)
+idle_threshold = 120
+
+# notificatons follow the keyboard focus
+follow = keyboard
+
+# notifications from history do not timeout
+sticky_history = yes
+
+# font decides the line height
+line_height = 0
+
+browser = browser
+dmenu = dmenu -p dunst
+
+[shortcuts]
+close = ctrl+space
+close_all = ctrl+shift+space
+history = ctrl+mod4+space
+
+[frame]
+width = 2
+color = "#ffffff"
+
+[urgency_low]
+background = "#008080"
+foreground = "#ffffff"
+timeout = 3
+
+[urgency_normal]
+background = "#800080"
+foreground = "#ffffff"
+timeout = 10
+
+[urgency_critical]
+background = "#800000"
+foreground = "#ffffff"
+timeout = 0

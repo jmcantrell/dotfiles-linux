@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+run() {
+    sudo iptables "$@"
+}
+
+reset_table() {
+    if [[ $1 ]]; then
+        run -t "$1" -F
+        run -t "$1" -X
+    else
+        run -F
+        run -X
+    fi
+}
+
+reset_table
+reset_table nat
+reset_table mangle
+reset_table raw
+reset_table security
+
+for chain in INPUT FORWARD OUTPUT; do
+    run -P "$chain" ACCEPT
+done

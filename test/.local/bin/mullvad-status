@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+json=$(curl https://am.i.mullvad.net/json 2>/dev/null) || {
+    echo "Status: unknown" >&2
+    exit 1
+}
+
+is() {
+    jq -e "$@" <<<"$json" &>/dev/null
+}
+
+get() {
+    jq -r "$@" <<<"$json"
+}
+
+entry() {
+    local name=$1; shift
+    echo -e "$name:\t$*"
+}
+
+if ! is '.mullvad_exit_ip'; then
+    echo "Status: disconnected" >&2
+    exit 1
+fi
+
+{
+    entry Status connected
+    entry Type "$(get ".mullvad_server_type")"
+    entry Address "$(get ".ip")"
+    entry Host "$(get ".mullvad_exit_ip_hostname")"
+    entry Blacklisted "$(get ".blacklisted.blacklisted")"
+    entry Country "$(get ".country")"
+    entry City "$(get ".city")"
+    entry Longitude "$(get ".longitude")"
+    entry Latitude "$(get ".latitude")"
+    entry Owner "$(get ".organization")"
+} | column -t -s $'\t' >&2

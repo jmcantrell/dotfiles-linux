@@ -1,0 +1,69 @@
+! shell settings
+XTerm*utf8:       1
+XTerm*locale:     true
+XTerm*loginShell: false
+XTerm*termName:   xterm-256color
+
+! enable alt keys in vim
+XTerm*metaSendsEscape: true
+XTerm*eightBitInput:   true
+XTerm*eightBitControl: false
+
+! interface tweaks
+XTerm*scrollBar:       false
+XTerm*scrollTtyOutput: false
+XTerm*jumpScroll:      true
+XTerm*multiScroll:     true
+XTerm*scrollKey:       true
+XTerm*fastScroll:      true
+XTerm*cursorBlink:     false
+
+! keep n lines of scrollback
+XTerm*saveLines: 100000000
+
+! font face and default size (ctrl-0)
+XTerm*faceSize: 8
+XTerm*faceName: Dejavu Sans Mono
+
+! font size increments (ctrl-minus, ctrl-equal)
+XTerm*faceSize1: 4
+XTerm*faceSize2: 6
+XTerm*faceSize3: 10
+XTerm*faceSize4: 12
+XTerm*faceSize5: 16
+XTerm*faceSize6: 20
+
+! clipboard integration
+XTerm*cutNewline:          false
+XTerm*trimSelection:       true
+XTerm*selectToClipboard:   true
+XTerm*highlightSelection:  true
+XTerm*disallowedWindowOps: SetXprop
+
+! select line without newline
+XTerm*on3Clicks: regex [^ \n]+
+
+! do not print graphic attributes
+XTerm.VT100.printAttributes: 0
+
+! print command saves to file
+XTerm.VT100.printerCommand: cat - >~/`ts`.txt
+
+! key mappings
+XTerm.VT100.Translations: #override \
+    Shift <Key> Home:   scroll-back(100000000) \n\
+    Shift <Key> Up:     scroll-back(1)         \n\
+    Shift <Key> Down:   scroll-forw(1)         \n\
+    Shift <Key> End:    scroll-forw(100000000) \n\
+    Ctrl Shift <Key> P: print-everything()     \n\
+    Ctrl Shift <Key> N: spawn-new-terminal()   \n\
+    Ctrl <Key> 0:       set-vt-font(d)         \n\
+    Ctrl <Key> minus:   smaller-vt-font()      \n\
+    Ctrl <Key> equal:   larger-vt-font()       \n\
+    Ctrl <Btn5Down>:    smaller-vt-font()      \n\
+    Ctrl <Btn4Down>:    larger-vt-font()       \n\
+
+! base colors
+XTerm*background:  black
+XTerm*foreground:  white
+XTerm*cursorColor: white

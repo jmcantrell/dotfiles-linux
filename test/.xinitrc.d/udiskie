@@ -1,0 +1,5 @@
+# Automatically mount removable media, such as CDs or flash drives.
+
+exec udiskie --automount --tray --notify &
+
+# vi:ft=sh

@@ -1,0 +1,108 @@
+# similar to my vim
+nmap H ^
+nmap L $
+
+# familiar quit
+nmap <C-q> :q<CR>
+imap <C-q> <Esc>:q<CR>
+
+# familiar fullscreen
+nmap <F11> :set fullscreen!<CR>
+
+# familiar zooming
+nmap = zI
+nmap - zO
+nmap 0 zz
+
+# open current page in chromium
+nmap go :sh! firefox $VIMB_URI<CR>
+nmap gO :sh! firefox --private-window $VIMB_URI<CR>
+
+# toggle private browsing
+nmap gp :set private-browsing!<CR>
+
+# tag search bookmarks
+nmap b :open !
+nmap B :tabopen !
+
+# add/remove bookmark
+nmap gb :bma<Space>
+nmap gB :bmr<CR>
+
+# edit bookmark file
+nmap ,b :sh! gvim ~/.config/vimb/bookmark<CR>
+
+# add/pop from reading list
+nmap Q  :qpop<CR>
+nmap gq :qpush<CR>
+nmap gQ :qunshift<CR>
+
+# edit reading list
+nmap ,q :sh! gvim ~/.config/vimb/queue<CR>
+
+# insert home path at command line
+cmap <C-g>h ~/
+
+# start save command with home path
+nmap <C-s>h :save <C-g>h
+
+set home-page=https://duckduckgo.com
+set editor-command=gvim %s
+
+set download-path=~/Downloads
+
+set images=true
+set scripts=true
+set plugins=true
+set cookie-accept=origin
+
+set webgl=true
+set webaudio=true
+set webinspector=true
+
+set dark-mode=true
+set smooth-scrolling=true
+set tabs-to-links=true
+set print-backgrounds=false
+set input-autohide=true
+
+set default-charset=utf-8
+set default-font=sans
+set monospace-font=monospace
+set serif-font=serif
+set sans-serif-font=sans-serif
+
+set font-size=16
+set monospace-font-size=16
+
+set input-css=font-family:monospace;font-size:8pt;background-color:black;color:white;
+set input-error-css=font-family:monospace;font-size:8pt;background-color:maroon;color:white;
+
+set completion-css=font-family:monospace;font-size:8pt;background-color:black;color:white
+set completion-hover-css=font-family:monospace;font-size:8pt;background-color:navy;color:white
+set completion-selected-css=font-family:monospace;font-size:8pt;background-color:purple;color:white
+
+set status-css=font-family:monospace;font-size:8pt;background-color:maroon;color:white
+set status-ssl-css=font-family:monospace;font-size:8pt;background-color:black;color:white
+set status-ssl-invalid-css=font-family:monospace;font-size:8pt;background-color:red;color:white
+
+# use duckduckgo when none given
+shortcut-default duck
+
+shortcut-add duck=https://duckduckgo.com/?q=$0
+nmap sd :open duck<Space>
+
+shortcut-add google=https://google.com/search?q=$0
+nmap sg :open google<Space>
+
+shortcut-add wikipedia=https://en.wikipedia.org/w/index.php?search=$0
+nmap sw :open wikipedia<Space>
+
+shortcut-add youtube=https://youtube.com/results?search_query=$0
+nmap sy :open youtube<Space>
+
+shortcut-add map=https://maps.google.com/maps?q=$0
+nmap sm :open map<Space>
+
+# download magnet links into torrent files
+handler-add magnet=terminal -e download %s
