@@ -1,69 +1,27 @@
 #!/usr/bin/env bash
 
 me=${0##*/}
-usage="Choose a snippet using dmenu.
-Usage: $me [-h]"
+usage="Interact with a snippet using dmenu.
+Usage: $me [-h] [-e|c|s|t]"
 
-snippets=$HOME/.config/snippets
-extension=txt
-
-snippetfiles() {
-	find "$snippets/" -type f -name "*.$extension" 2>/dev/null |
-	sort | while read -r snippetfile; do
-		local name=$snippetfile
-		name=${name#$snippets/}
-		name=${name%.$extension}
-		echo "$name"
-	done
-}
-
-# parse options
-action=show
 unset OPTIND
-while getopts ":hcets" option; do
+while getopts ":hecst" option; do
 	case $option in
-		t) action="type" ;;
+		e|c|s|t) snip_option=$option ;;&
 		e) action="edit" ;;
 		c) action="copy" ;;
 		s) action="save" ;;
+		t) action="type" ;;
 		h) echo "$usage" >&2; exit 0 ;;
 		*) echo "$usage" >&2; exit 1 ;;
 	esac
 done && shift $((OPTIND - 1))
 
-# choose snippet
-name=$(snippetfiles | dmenu -p "$action snippet")
+name=$(snip -l | dmenu -p "$action snippet")
 
-if ! test "$name"; then
-	echo "No snippet selected" >&2
+if [[ ! $name ]]; then
+	echo "ERROR: no snippet selected" >&2
 	exit 1
 fi
 
-snippet=$snippets/$name.$extension
-
-test -f "$snippet" && text=$(<"$snippet")
-
-case $action in
-	show)
-		echo "$text"
-		;;
-	copy)
-		echo "$text" | xsel -ib
-		title="snippet text for $name copied to clipboard:"
-		notify-send "$title" "$text"
-		;;
-	type)
-		xdotool type "$text"
-		;;
-	edit)
-		mkdir -p "$snippets"
-		exec terminal -e editor "$snippet"
-		;;
-	save)
-		mkdir -p "$snippets"
-		text=$(xsel -ob)
-		echo "$text" >"$snippet"
-		title="snippet text for $name saved from clipboard"
-		notify-send "$title" "$text"
-		;;
-esac
+snip -"$snip_option" "$name"
