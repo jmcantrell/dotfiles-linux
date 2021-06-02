@@ -1,5 +1,5 @@
 # lock the desktop session
-ctrl + alt + l
+ctrl + super + q
 	lock
 
 # reload this config file
