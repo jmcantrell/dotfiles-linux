@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-xprop |
-	grep "WM_CLIENT_LEADER(WINDOW)" |
-	cut -d# -f2 | tr -d '[:space:]'
-

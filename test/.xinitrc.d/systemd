@@ -1,3 +1,0 @@
-systemctl --user import-environment DISPLAY
-
-# vi:ft=sh

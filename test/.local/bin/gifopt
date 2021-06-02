@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-# Optimize an animated gif.
-
-gifsicle --batch --optimize=3 "$@"

@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-# Set desktop background to random image from a directory.
-
-backgrounds=${1:-$HOME/.local/share/backgrounds}
-
-setbg "$(randfile "$backgrounds")"

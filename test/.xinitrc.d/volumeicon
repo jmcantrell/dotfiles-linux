@@ -1,5 +1,0 @@
-# Interact with sound mixer through a tray icon.
-
-exec volumeicon &
-
-# vi:ft=sh

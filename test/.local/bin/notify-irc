@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-nick=${1:?missing nickname}
-message=${2:?missing message}
-
-icon=/usr/share/icons/hicolor/32x32/apps/weechat.png
-
-notify-send -i "$icon" "IRC Message" "$nick: $message"

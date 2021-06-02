@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-# Lower the audio volume a notch.
-
-volume-set -5

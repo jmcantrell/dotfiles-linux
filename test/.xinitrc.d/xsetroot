@@ -1,3 +1,0 @@
-exec xsetroot -solid black &
-
-# vi:ft=sh
