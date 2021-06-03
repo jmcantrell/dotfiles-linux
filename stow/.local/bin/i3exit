@@ -10,10 +10,10 @@ case ${1:-quit} in
 		lock &
 		;;
 	suspend)
-		systemctl suspend
+		suspend
 		;;
 	hibernate)
-		systemctl hibernate
+		hibernate
 		;;
 	reboot)
 		reboot
