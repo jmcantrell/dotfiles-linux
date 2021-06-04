@@ -1,7 +1,7 @@
 ! shell settings
 XTerm*utf8:       1
 XTerm*locale:     true
-XTerm*loginShell: false
+XTerm*loginShell: true
 XTerm*termName:   xterm-256color
 
 ! enable alt keys in vim
