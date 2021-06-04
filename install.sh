@@ -21,5 +21,9 @@ ln -svfT "/run/media/$USER" "$HOME/.local/media"
 
 rsync -avz ./copy/ "$HOME"
 
+grep "^XDG_" ~/.config/user-dirs.dirs | cut -d= -f1 | while read -r name; do
+    mkdir -p "$(xdg-user-dir "$name")"
+done
+
 # change shell to zsh
 [[ ${SHELL##*/} = zsh ]] || chsh -s /bin/zsh
