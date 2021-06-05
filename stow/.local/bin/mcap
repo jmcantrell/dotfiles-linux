@@ -82,7 +82,7 @@ shutter_sound=camera-shutter
 start_sound=bell
 tick_sound=message-new-instant
 
-directory=$PWD
+directory=$HOME/Media/Screencasts
 delay_count=0
 capture_filetype=gif
 video_quality=1  # 1 (best) to 31 (worst)

@@ -74,7 +74,7 @@ has() {
 tick_sound=message-new-instant
 shutter_sound=camera-shutter
 
-directory=$PWD
+directory=$HOME/Media/Screenshots
 delay_count=0
 capture_filetype=png
 unset verbose

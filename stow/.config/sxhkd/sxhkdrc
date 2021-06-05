@@ -103,45 +103,45 @@ super + o; q
 
 # capture desktop
 super + Print; i; d
-	icap -ncoa -D ~/Media/screenshots
+	icap -ncoa
 
 # capture active window
 super + Print; i; u
-	icap -ncoa -u -D ~/Media/screenshots
+	icap -ncoa -u
 
 # capture selected window
 super + Print; i; w
-	icap -ncoa -w -D ~/Media/screenshots
+	icap -ncoa -w
 
 # capture selected region
 super + Print; i; s
-	icap -ncoa -s -D ~/Media/screenshots
+	icap -ncoa -s
 
 # record desktop
 super + Print; m; d
-	mcap -ncoa -D ~/Media/screencasts
+	mcap -ncoa
 
 # record active window
 super + Print; m; u
-	mcap -ncoa -u -D ~/Media/screencasts
+	mcap -ncoa -u
 
 # record selected window
 super + Print; m; w
-	mcap -ncoa -w -D ~/Media/screencasts
+	mcap -ncoa -w
 
 # record selected region
 super + Print; m; s
-	mcap -ncoa -s -D ~/Media/screencasts
+	mcap -ncoa -s
 
 # record region around mouse
 # keep mouse in the center of the rectangle
 super + Print; m; c
-	mcap -ncoa -m centered -D ~/Media/screencasts
+	mcap -ncoa -m centered
 
 # record region around mouse
 # only move rectangle when mouse is 10-90 pixels from edge
 super + Print; m; {1-9}
-	mcap -ncoa -m {1-9}0 -D ~/Media/screencasts
+	mcap -ncoa -m {1-9}0
 
 # stop recording
 super + Print; m; q
