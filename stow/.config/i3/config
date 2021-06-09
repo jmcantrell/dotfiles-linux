@@ -1,5 +1,3 @@
-workspace_layout tabbed
-
 # default windows have no title bar
 default_border pixel
 default_floating_border pixel
