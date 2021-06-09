@@ -10,16 +10,16 @@ case ${1:-quit} in
 		lock &
 		;;
 	suspend)
-		suspend
+		systemctl suspend
 		;;
 	hibernate)
-		hibernate
+		systemctl hibernate
 		;;
 	reboot)
-		reboot
+		systemctl reboot
 		;;
 	poweroff)
-		poweroff
+		systemctl poweroff
 		;;
 	*)
 		echo "usage: ${0##*/} [quit|lock|suspend|hibernate|reboot|poweroff]" >&2
