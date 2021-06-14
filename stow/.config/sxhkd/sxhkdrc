@@ -30,7 +30,7 @@ super + b
 	browser
 
 super + B
-	browser --incognito
+	browser-private
 
 # open an editor (in the working directory of the active window)
 super + e

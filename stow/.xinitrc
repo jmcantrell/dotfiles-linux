@@ -2,8 +2,8 @@
 
 export DESKTOP=i3
 export VISUAL=gvim
-export BROWSER=vimb
-export TERMINAL=xterm
+export BROWSER=firefox
+export TERMINAL=alacritty
 export TERMCMD=$TERMINAL
 
 for xresources in /etc/X11/xinit/.Xresources ~/.Xresources; do
