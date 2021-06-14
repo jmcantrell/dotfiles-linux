@@ -17,7 +17,7 @@ ln -sfv /etc/ssl/certs/ca-certificates.crt ~/.local/etc/ssl/certs/ca-certificate
 # friendlier access to udiskie removable disks
 ln -svfT "/run/media/$USER" "$HOME/.local/media"
 
-rsync -avz ./copy/ "$HOME"
+rsync -av ./copy/ "$HOME"
 
 grep "^XDG_" ~/.config/user-dirs.dirs | cut -d= -f1 | while read -r name; do
     mkdir -p "$(xdg-user-dir "$name")"
