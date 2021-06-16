@@ -13,6 +13,9 @@ set $fork exec --no-startup-id
 # left drag to move, right drag to resize
 floating_modifier $super
 
+# kill focused window
+bindsym $super+q kill
+
 # create layout
 bindsym $super+s split v
 bindsym $super+v split h
@@ -44,16 +47,22 @@ bindsym shift+$super+l move right
 bindsym $super+a focus parent
 bindsym $super+z focus child
 
+# fullscreen for current and all displays
+bindsym       ctrl+$super+f fullscreen toggle
+bindsym shift+ctrl+$super+f fullscreen toggle global
+
 # center floating window
 bindsym $super+c move absolute position center
 
-# toggle focus between floating/tiling layer
-bindsym $alt+tab focus mode_toggle
+# focus/move between tiled/floating layer
+bindsym       $super+backslash focus mode_toggle
+bindsym shift+$super+backslash floating toggle
 
-# toggle focus between scratchpad/tiling layer
-bindsym $super+BackSpace scratchpad show
+# floating window will always be visible
+bindsym ctrl+$super+backslash sticky toggle
 
-# move between scratchpad/tiling layer
+# focus/move between tiled/scratchpad layer
+bindsym       $super+BackSpace scratchpad show
 bindsym shift+$super+BackSpace move scratchpad
 
 # new windows are not focused
@@ -62,17 +71,13 @@ focus_on_window_activation urgent
 # focus urgent window
 bindsym $super+i [urgent=latest] focus
 
-# read 1 character and mark the current window with this character
-bindsym $super+m exec i3-input -F 'mark %s' -l 1 -P 'mark: '
+# add/remove/clear marks
+bindsym            $super+m exec i3-input -F 'mark %s' -l 1 -P 'mark: '
+bindsym      shift+$super+m [con_id="__focused__"] unmark
+bindsym ctrl+shift+$super+m unmark
 
-# remove mark from the current window
-bindsym shift+$super+m [con_id="__focused__"] unmark
-
-# remove marks from all windows
-bindsym shift+$alt+$super+m unmark
-
-# read 1 character and go to the window with the character
-bindsym $super+g exec i3-input -F '[con_mark="%s"] focus' -l 1 -P 'goto: '
+# go to marked window
+bindsym $super+apostrophe exec i3-input -F '[con_mark="%s"] focus' -l 1 -P 'goto: '
 
 # focus workspace
 bindsym $super+1   workspace number 1
@@ -104,6 +109,9 @@ bindsym shift+$super+n   move container to workspace next_on_output
 bindsym shift+$super+p   move container to workspace prev_on_output
 bindsym shift+$super+Tab move container to workspace back_and_forth
 
+# rename the workspace (prefix with -9 to focus with super+0-9)
+bindsym $super+F2 exec i3-input -F 'rename workspace to "%s"' -P 'workspace name: '
+
 # move container to output
 bindsym shift+$alt+$super+h move container to output left
 bindsym shift+$alt+$super+j move container to output down
@@ -115,16 +123,6 @@ bindsym shift+ctrl+$super+h move workspace to output left
 bindsym shift+ctrl+$super+j move workspace to output down
 bindsym shift+ctrl+$super+k move workspace to output up
 bindsym shift+ctrl+$super+l move workspace to output right
-
-# toggle window between tiled and floating
-bindsym shift+$super+space floating toggle
-
-# floating window will always be visible
-bindsym shift+$super+u sticky toggle
-
-# fullscreen for current and all displays
-bindsym       ctrl+$super+f fullscreen toggle
-bindsym shift+ctrl+$super+f fullscreen toggle global
 
 # toggle status
 bindsym $super+y bar mode toggle
@@ -138,22 +136,23 @@ bindsym shift+$super+c reload
 # restart window manager
 bindsym shift+$super+r restart
 
-# kill focused window
-bindsym $super+q kill
-
-# resize window
 set $resize_px  40
 set $resize_ppt 4
+
 # grow edges
-bindsym $alt+h resize grow left  $resize_px px or $resize_ppt ppt
-bindsym $alt+j resize grow down  $resize_px px or $resize_ppt ppt
-bindsym $alt+k resize grow up    $resize_px px or $resize_ppt ppt
-bindsym $alt+l resize grow right $resize_px px or $resize_ppt ppt
+bindsym ctrl+$super+h resize grow left  $resize_px px or $resize_ppt ppt
+bindsym ctrl+$super+j resize grow down  $resize_px px or $resize_ppt ppt
+bindsym ctrl+$super+k resize grow up    $resize_px px or $resize_ppt ppt
+bindsym ctrl+$super+l resize grow right $resize_px px or $resize_ppt ppt
+
 # shrink edges
-bindsym shift+$alt+h resize shrink left  $resize_px px or $resize_ppt ppt
-bindsym shift+$alt+j resize shrink down  $resize_px px or $resize_ppt ppt
-bindsym shift+$alt+k resize shrink up    $resize_px px or $resize_ppt ppt
-bindsym shift+$alt+l resize shrink right $resize_px px or $resize_ppt ppt
+bindsym ctrl+$alt+$super+h resize shrink left  $resize_px px or $resize_ppt ppt
+bindsym ctrl+$alt+$super+j resize shrink down  $resize_px px or $resize_ppt ppt
+bindsym ctrl+$alt+$super+k resize shrink up    $resize_px px or $resize_ppt ppt
+bindsym ctrl+$alt+$super+l resize shrink right $resize_px px or $resize_ppt ppt
+
+# send command to i3
+bindsym $super+semicolon exec i3-input -P:
 
 # session commands
 set $mode_session session: (q)uit, (l)ock, (s)uspend, (h)ibernate, (r)eboot, (p)oweroff
@@ -172,13 +171,7 @@ mode "$mode_session" {
 	bindsym Return mode "default"
 	bindsym Escape mode "default"
 }
-bindsym $alt+$super+q mode "$mode_session"
-
-# send command to i3
-bindsym $super+semicolon exec i3-input -P:
-
-# rename the workspace (prefix with -9 to focus with super+0-9)
-bindsym $super+apostrophe exec i3-input -F 'rename workspace to "%s"' -P 'workspace name: '
+bindsym shift+$super+q mode "$mode_session"
 
 # used in status bar and dialogs
 font pango:Monospace Bold 8
