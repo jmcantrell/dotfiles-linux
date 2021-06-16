@@ -7,7 +7,7 @@ ctrl + shift + r
 	killall -USR1 sxhkd
 
 # run command (sorted by most recently used)
-alt + space
+super + space
 	dmenu_run_mru
 
 # run last command from dmenu
@@ -17,14 +17,6 @@ super + alt + space
 # open a terminal (in the working directory of the active window)
 super + Return
 	cd "$(xpwd)" && terminal
-
-# copy the working directory path of the active window
-super + d; u
-	xpwd -cn
-
-# copy the working directory path of the selected window
-super + d; w
-	xpwd -cnw
 
 super + b
 	browser
@@ -40,17 +32,17 @@ super + e
 super + f
 	cd "$(xpwd)" && terminal -e ranger
 
-super + {Home,End}
+super + {Up,Down}
+	volume-{up,down}
+
+super + alt + {Up,Down}
 	volume-{max,mute}
 
-super + {Prior,Next}
+XF86Audio{Raise,Lower}Volume
 	volume-{up,down}
 
 XF86AudioMute
 	volume-mute
-
-XF86Audio{Raise,Lower}Volume
-	volume-{up,down}
 
 super + Pause
 	playerctl play-pause
@@ -66,40 +58,44 @@ super + Escape
 	terminal -e glances
 
 # copy text snippets
-super + Delete; c
+super + Insert; c
 	dmenu_snip -c
 
 # edit text snippets
-super + Delete; e
+super + Insert; e
 	dmenu_snip -e
 
 # create text snippet from clipboard
-super + shift + Delete
+super + Insert; s
 	dmenu_snip -s
 
 # type text snippets
-super + Insert
+super + Insert; t
 	dmenu_snip -t
 
 # copy password
-ctrl + alt + space
+super + Delete; c
 	dmenu_pass -c
 
 # generate password
-ctrl + alt + shift + space
-	dmenu_pass -cg
+super + Delete; g
+	dmenu_pass -gc
+
+# copy the working directory path of the active window
+super + Home; u
+	xpwd -cn
+
+# copy the working directory path of the selected window
+super + Home; w
+	xpwd -cnw
 
 # add an output oriented to the primary
-super + o; {h,j,k,l}
+super + End; {h,j,k,l}
 	xrandr-orient {left-of,below,above,right-of}
 
-# automatically add outputs or mirror primary
-super + o; {d,c}
-	xrandr-{detect,clone}
-
-# remove all connected outputs
-super + o; q
-	xrandr-off
+# automatically add outputs, mirror primary, remove all
+super + End; {d,c,q}
+	xrandr-{detect,clone,off}
 
 # capture desktop
 super + Print; i; d

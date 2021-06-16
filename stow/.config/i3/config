@@ -48,7 +48,7 @@ bindsym $super+z focus child
 bindsym $super+c move absolute position center
 
 # toggle focus between floating/tiling layer
-bindsym $super+space focus mode_toggle
+bindsym $alt+tab focus mode_toggle
 
 # toggle focus between scratchpad/tiling layer
 bindsym $super+BackSpace scratchpad show
@@ -123,8 +123,8 @@ bindsym shift+$super+space floating toggle
 bindsym shift+$super+u sticky toggle
 
 # fullscreen for current and all displays
-bindsym      $alt+Return fullscreen toggle
-bindsym ctrl+$alt+Return fullscreen toggle global
+bindsym       ctrl+$super+f fullscreen toggle
+bindsym shift+ctrl+$super+f fullscreen toggle global
 
 # toggle status
 bindsym $super+y bar mode toggle
