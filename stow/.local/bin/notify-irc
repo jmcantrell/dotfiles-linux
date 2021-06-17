@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 
-nick=${1:?missing nickname}
-message=${2:?missing message}
+channel=${1:?missing channel}
+nick=${2:?missing nickname}
+message=${3:?missing message}
 
 icon=/usr/share/icons/hicolor/32x32/apps/weechat.png
 
-notify-send -i "$icon" "IRC Message" "$nick: $message"
+max_length=32
+if ((${#message} > max_length)); then
+    message="${message:0:$max_length}..."
+fi
+
+notify-send -i "$icon" "$channel" "$nick: $message"

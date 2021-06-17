@@ -69,7 +69,7 @@ bindsym shift+$super+BackSpace move scratchpad
 focus_on_window_activation urgent
 
 # focus urgent window
-bindsym $super+i [urgent=latest] focus
+bindsym $super+grave [urgent=latest] focus
 
 # add/remove/clear marks
 bindsym            $super+m exec i3-input -F 'mark %s' -l 1 -P 'mark: '
