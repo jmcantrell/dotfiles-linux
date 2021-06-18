@@ -14,16 +14,16 @@ background=$HOME/.config/background.png
 
 icon=/usr/share/icons/gnome/32x32/apps/preferences-desktop-wallpaper.png
 
-if test -f "$imagefile"; then
-	convert "$imagefile" "$background"
-	echo "$imagefile"
-	notify-send -u low -i "$icon" \
-		"Background Changed" "${imagefile/$HOME/\~}"
+if [[ -f $imagefile ]]; then
+    echo "$imagefile"
+    convert "$imagefile" "$background"
+    sudo cp "$background" /usr/share/backgrounds/lightdm-gtk-greeter
+    notify-send -u low -i "$icon" "Background Changed" "${imagefile/$HOME/\~}"
 fi
 
-if test -f "$background"; then
-	feh --bg-$stretch "$background"
+if [[ -f $background ]]; then
+    feh --bg-$stretch "$background"
 else
-	# if no background image, just set it to solid color
-	xsetroot -solid black
+    # if no background image, just set it to solid color
+    xsetroot -solid black
 fi

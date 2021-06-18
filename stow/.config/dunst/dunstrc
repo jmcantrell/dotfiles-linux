@@ -56,9 +56,8 @@ browser = browser
 dmenu = dmenu -p dunst
 
 [shortcuts]
-close = ctrl+space
-close_all = ctrl+shift+space
-history = ctrl+mod4+space
+close = ctrl+grave
+history = ctrl+shift+grave
 
 [frame]
 width = 2
