@@ -13,6 +13,7 @@ allow_markup = yes
 # sort messages by urgency
 sort = yes
 
+icon_path = /usr/share/icons/hicolor/32x32/apps
 icon_position = left
 max_icon_size = 32
 
