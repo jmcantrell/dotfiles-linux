@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -e
+
+ts=$(date +%s)
+tag=$1
+
+for name in @ @var @home; do
+    snapshot_dir=/.snapshots/$name
+    sudo mkdir -p "$snapshot_dir"
+    cd "$snapshot_dir"
+    sudo btrfs subvolume snapshot -r "/${name#@}" "$ts"
+    [[ $tag ]] && sudo ln -sfvT "$ts" "$tag"
+done
