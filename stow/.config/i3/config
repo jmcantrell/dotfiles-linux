@@ -55,15 +55,15 @@ bindsym shift+ctrl+$super+f fullscreen toggle global
 bindsym $super+c move absolute position center
 
 # focus/move between tiled/floating layer
-bindsym       $super+backslash focus mode_toggle
-bindsym shift+$super+backslash floating toggle
+bindsym       $super+BackSpace focus mode_toggle
+bindsym shift+$super+BackSpace floating toggle
 
 # floating window will always be visible
-bindsym ctrl+$super+backslash sticky toggle
+bindsym ctrl+$super+BackSpace sticky toggle
 
 # focus/move between tiled/scratchpad layer
-bindsym       $super+BackSpace scratchpad show
-bindsym shift+$super+BackSpace move scratchpad
+bindsym       $super+backslash scratchpad show
+bindsym shift+$super+backslash move scratchpad
 
 # new windows are not focused
 focus_on_window_activation urgent
