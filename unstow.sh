@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-stow --no-folding -d . -t ~ -D stow
+stow ${VERBOSE:+--verbose} --no-folding -d . -t ~ -D stow
