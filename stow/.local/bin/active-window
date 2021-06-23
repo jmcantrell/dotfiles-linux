@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Get the id of the active window.
+
 xprop -root |
 	grep "_NET_ACTIVE_WINDOW(WINDOW)" |
 	cut -d# -f2 | tr -d '[:space:]'
