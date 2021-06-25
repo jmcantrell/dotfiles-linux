@@ -32,8 +32,8 @@ dpms {
 
 disk "/home" {
 	format = "~ %avail"
-	on_click 1 = "exec --no-startup-id terminal -e 'df --si | pager'"
-	on_click 3 = "exec --no-startup-id terminal -e 'ncdu ~'"
+	on_click 1 = "exec --no-startup-id terminal --hold -e df --si"
+	on_click 3 = "exec --no-startup-id terminal -e ncdu ~"
 }
 
 load {
@@ -48,11 +48,11 @@ cpu_usage {
 
 memory {
 	format = "mem %available"
-	on_click 1 = "exec --no-startup-id terminal -e 'free -th | pager'"
+	on_click 1 = "exec --no-startup-id terminal --hold -e free -th"
 }
 
 tztime pretty {
 	format = "%c"
-	on_click 1 = "exec --no-startup-id date --rfc-3339=seconds | xsel -ib"
+	on_click 1 = "exec --no-startup-id date --rfc-3339=seconds | cbi"
 	on_click 3 = "exec --no-startup-id terminal -e i3settz"
 }
