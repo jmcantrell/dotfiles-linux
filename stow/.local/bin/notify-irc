@@ -3,8 +3,6 @@
 buffer=${1:?missing buffer}
 message=${2:?missing message}
 
-icon=/usr/share/icons/hicolor/32x32/apps/weechat.png
-
 canberra-gtk-play -i message-new-instant &
 
-notify-send -i "$icon" "$buffer" "$message"
+notify-send -i mail-unread "$buffer" "$message"
