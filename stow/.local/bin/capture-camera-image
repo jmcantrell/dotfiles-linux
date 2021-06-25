@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Default options:
+count=1            # single image
+delay=0            # skip countdown
+device=/dev/video0 # main webcam
+
+me=${0##*/}
+usage="Capture images from the camera.
+
+Usage: $me [-h] [-i DEVICE] [-n NUMBER] [-d NUMBER] FILENAME
+
+Options:
+    -h           show this help message
+    -i DEVICE    capture from DEVICE (default: $device)
+    -n NUMBER    capture NUMBER images (default: $count)
+    -d NUMBER    delay each capture by NUMBER seconds (default: $delay)
+
+Arguments:
+    FILENAME     output capture to FILENAME
+
+Examples:
+    $me selfie.png
+        Capture a single image from the default camera.
+
+    $me -n5 -d3 photo-booth-%s-\\\$n.png
+        Capture five images with a three second countdown on each.
+
+The output filename can include any format sequence accepted by date(1).
+Additionally, if capturing multiple images, \$n will be replaced with the image number.
+Format sequences like \$n may need to be escaped to prevent the shell from seeing it.
+"
+
+usage() {
+    echo "$usage" >&2
+    exit 0
+}
+
+die() {
+    echo "$me: $*" >&2
+    exit 1
+}
+
+unset OPTIND
+while getopts ":hi:n:d:" option; do
+    case $option in
+    h) usage ;;
+
+    i) device=$OPTARG ;;
+    n) count=$OPTARG ;;
+    d) delay=$OPTARG ;;
+
+    *) die "invalid option '$option'" ;;
+    esac
+done && shift $((OPTIND - 1))
+
+output=$1
+
+# Ensure options and arguments are valid:
+[[ $output ]] || die "missing output file"
+((count > 0)) || die "count must be a positive number"
+((delay >= 0)) || die "delay must be a non-negative number"
+
+# Ensure the file can be written:
+mkdir -p "$(dirname "$output")"
+
+# Convert path from relative to absolute:
+output=$(realpath "$output")
+
+# Substitute date format sequences:
+output=$(date +"$output")
+
+# Set up capture options:
+options=(-y -f v4l2 -i "$device" -frames:v 1)
+
+# Keep track of the outputs, to be used later on.
+declare -a outputs
+
+for n in $(seq -w 1 "$count"); do
+    # If requested, do an audible countdown (not precise):
+    if ((delay > 0)); then
+        for ((tick = 1; tick <= delay; tick += 1)); do
+            canberra-gtk-play -i message-new-instant &
+            sleep 1
+        done
+    fi
+
+    # Substitute the image number:
+    output_n=${output/\$n/$n}
+
+    # Perform the capture:
+    ffmpeg "${options[@]}" "$output_n"
+    optimize-images "$output_n" &
+    canberra-gtk-play -i camera-shutter &
+
+    # Output the path as each is captured,
+    # in case the parent process needs it or for a progress report.
+    echo "$output_n"
+
+    outputs+=("$output_n")
+done
+
+# Output shell-safe paths to the clipboard:
+printf "%q\n" "${outputs[@]}" | cbi
+
+# Let the user know that result is ready:
+if ((count > 1)); then
+    title="Captured $count Photos"
+else
+    title="Captured Photo"
+fi
+notify-send -i media-record "$title" "<u>${output/$HOME/\~}</u>" &
+
+# Open output file for review.
+xdg-open "${outputs[@]}" &

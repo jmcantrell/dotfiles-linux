@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Default options:
+device=/dev/video0 # main webcam
+
+me=${0##*/}
+usage="Capture input from a video device.
+
+Usage: $me [-h] [-x] [-i DEVICE] [-t NUMBER] [-d NUMBER] FILENAME
+
+Options:
+    -h           show this help message
+    -x           stop recording
+    -i DEVICE    capture from DEVICE (default: $device)
+    -t NUMBER    capture for NUMBER seconds (default: record indefinitely)
+    -d NUMBER    delay capture by NUMBER seconds (default: $delay)
+
+Arguments:
+    FILENAME     output capture to FILENAME
+
+Examples:
+    $me -d3 -t5 reaction.gif
+        Capture a five second animated gif after a three second countdown.
+
+The output filename can include any format sequence accepted by date(1).
+"
+
+pidfile=${XDG_CACHE_HOME:-$HOME/.cache}/$me/pid
+
+usage() {
+    echo "$usage" >&2
+    exit 0
+}
+
+die() {
+    echo "$me: $*" >&2
+    exit 1
+}
+
+stop_recording() {
+    [[ -f $pidfile ]] || die "nothing is recording"
+    pkill -INT -P "$(<"$pidfile")" ffmpeg
+    exit 0
+}
+
+unset OPTIND
+while getopts ":hxi:t:d:" option; do
+    case $option in
+    h) usage ;;
+
+    x) stop_recording ;;
+    i) device=$OPTARG ;;
+    t) duration=$OPTARG ;;
+    d) delay=$OPTARG ;;
+
+    *) die "invalid option '$option'" ;;
+    esac
+done && shift $((OPTIND - 1))
+
+output=$1
+
+# Ensure options and arguments are valid:
+[[ $output ]] || die "missing output file"
+((delay >= 0)) || die "delay must be a non-negative number"
+
+# Convert path from relative to absolute:
+output=$(realpath "$output")
+
+# Substitute date format sequences:
+output=$(date +"$output")
+
+# Ensure the file can be written:
+mkdir -p "$(dirname "$output")"
+
+# Set up options for capture:
+options=(-y -f v4l2 -i "$device" -f alsa -i default)
+[[ $duration ]] && options+=(-t "$duration")
+
+# Set up the pid file, so the capture can be stopped externally:
+mkdir -p "$(dirname "$pidfile")"
+echo "$$" >"$pidfile"
+trap "rm -f $(printf "%q" "$pidfile")" INT TERM EXIT
+
+# If requested, do an audible countdown (not precise):
+if ((delay > 0)); then
+    for ((tick = 1; tick <= delay; tick += 1)); do
+        canberra-gtk-play -i message-new-instant &
+        sleep 1
+    done
+fi
+
+# Perform the capture:
+ffmpeg "${options[@]}" "$output"
+optimize-images "$output" &
+canberra-gtk-play -i camera-shutter &
+
+# Output the full path:
+echo "$output"              # to stdout
+printf "%q" "$output" | cbi # to clipboard
+
+# Let the user know that result is ready:
+notify-send -i media-record "Captured Video" "<u>${output/$HOME/\~}</u>" &
+
+# Open file for review:
+xdg-open "$output" &

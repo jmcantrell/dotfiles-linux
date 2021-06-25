@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Default options:
+geometry=$(xwinrect -root) # entire desktop
+
+me=${0##*/}
+usage="Capture an image from the screen.
+
+Usage: $me [-h] [-g GEOMETRY] [-wus] FILENAME
+    
+Options:
+    -h             show this help message
+    -g GEOMETRY    restrict capture to GEOMETRY (default: $geometry)
+    -w             click to select a window to capture
+    -u             capture the current window
+    -s             drag to select a region to capture
+
+Arguments:
+    FILENAME       output capture to FILENAME
+
+Examples:
+    $me desktop.png
+        Capture the entire desktop.
+
+    $me -w window.png
+        Capture the selected window.
+
+The output filename can include any format sequence accepted by date(1).
+"
+
+usage() {
+    echo "$usage" >&2
+    exit 0
+}
+
+die() {
+    echo "$me: $*" >&2
+    exit 1
+}
+
+unset OPTIND
+while getopts ":hg:wus" option; do
+    case $option in
+    h) usage ;;
+
+    g) geometry=$OPTARG ;;
+    w) geometry=$(xwinrect -id "$(selected-window)") ;;
+    u) geometry=$(xwinrect -id "$(active-window)") ;;
+    s) geometry=$(xrectsel) ;;
+
+    *) die "invalid option '$option'" ;;
+    esac
+done && shift $((OPTIND - 1))
+
+output=$1
+
+# Ensure options and arguments are valid:
+[[ $output ]] || die "missing output file"
+
+# Convert path from relative to absolute:
+output=$(realpath "$output")
+
+# Substitute date format sequences:
+output=$(date +"$output")
+
+# Ensure file can be written:
+mkdir -p "$(dirname "$output")"
+
+# Perform the capture:
+import -window root -crop "$geometry" "$output"
+optimize-images "$output"
+canberra-gtk-play -i camera-shutter &
+
+# Output the full path:
+echo "$output"              # stdout
+printf "%q" "$output" | cbi # clipboard
+
+# Let the user know that result is ready:
+notify-send -i media-record "Captured Screenshot" "<u>${output/$HOME/\~}</u>" &
+
+# Open file for review:
+xdg-open "$output" &

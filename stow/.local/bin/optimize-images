@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Try to optimize various types of images with sensible defaults.
+
+set -e
+
+for file in "$@"; do
+    case $file in
+    *.png) optipng "$file" & ;;
+    *.gif) gifsicle --batch --optimize=3 "$file" & ;;
+    *.jpg) jpegtran -optimize -copy none -outfile "$file" "$file" & ;;
+    esac
+done
