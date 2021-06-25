@@ -86,8 +86,8 @@ trap "rm -f $(printf "%q" "$pidfile")" INT TERM EXIT
 # If requested, do an audible countdown (not precise):
 if ((delay > 0)); then
     for ((tick = 1; tick <= delay; tick += 1)); do
-        canberra-gtk-play -i message-new-instant &
         sleep 1
+        canberra-gtk-play -i message-new-instant &
     done
 fi
 
