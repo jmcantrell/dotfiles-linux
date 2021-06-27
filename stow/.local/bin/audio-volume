@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+# Set the audio volume and show a notification.
+
+set -e
+
+action=${1:?missing action}
+
+increment=5
+
+case $action in
+mute)
+    pamixer --toggle-mute
+    ;;
+down)
+    pamixer --decrease $increment
+    icon=audio-volume-low
+    ;;
+up)
+    pamixer --increase $increment
+    icon=audio-volume-medium
+    ;;
+max)
+    pamixer --set-volume 100
+    icon=audio-volume-high
+    ;;
+esac
+
+muted=$(pamixer --get-mute)
+volume=$(pamixer --get-volume)
+
+if [[ $action == mute && $muted == true ]]; then
+    icon="audio-volume-muted"
+else
+    icon="audio-volume-high"
+fi
+
+canberra-gtk-play -i audio-volume-change &
+
+notify-send -u low -i "${icon:-auto-volume-high}" \
+    -h string:x-canonical-private-synchronous:audio-volume \
+    "Volume Control" "Volume: $volume%<br>Muted: $muted"

@@ -33,16 +33,16 @@ super + f
 	cd "$(xpwd)" && terminal -e ranger
 
 super + {Up,Down}
-	volume-{up,down}
+	audio-volume {up,down}
 
 super + alt + {Up,Down}
-	volume-{max,mute}
+	audio-volume {max,mute}
 
 XF86Audio{Raise,Lower}Volume
-	volume-{up,down}
+	audio-volume {up,down}
 
 XF86AudioMute
-	volume-mute
+	audio-volume mute
 
 super + Pause
 	playerctl play-pause

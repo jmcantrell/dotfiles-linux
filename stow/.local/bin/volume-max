@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-# Set the volume to 100%.
-
-volume-set 100
