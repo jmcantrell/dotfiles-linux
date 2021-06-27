@@ -12,35 +12,38 @@ super + Return
 
 # run command (sorted by most recently used)
 super + space
-	dmenu-run-mru
+    rofi -show run
 
-# run last command from dmenu
-super + alt + space
-	dmenu-run-prev
+alt + Tab
+    rofi -show window
 
-# copy text snippets
+# copy snippet
 super + Insert; c
-	dmenu-snip -c
+	rofi-snip -c
 
-# edit text snippets
+# edit snippet
 super + Insert; e
-	dmenu-snip -e
+	rofi-snip -e
 
-# create text snippet from clipboard
+# create snippet from clipboard
 super + Insert; s
-	dmenu-snip -s
+	rofi-snip -s
 
-# type text snippets
+# type snippet
 super + Insert; t
-	dmenu-snip -t
+	rofi-snip -t
+
+# delete snippet
+super + Insert; Delete
+    rofi-snip -d
 
 # copy password
 super + Delete; c
-	dmenu-pass
+	rofi-pass
 
 # generate password
 super + Delete; g
-	dmenu-pass -g
+	rofi-pass -g
 
 super + b
 	browser

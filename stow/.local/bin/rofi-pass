@@ -3,6 +3,7 @@
 set -e
 
 length=16
+action="copy"
 
 me=${0##*/}
 usage="Use dmenu to interact with pass.
@@ -57,17 +58,15 @@ while getopts ":hgn:" option; do
     esac
 done && shift $((OPTIND - 1))
 
-name=$(pass_names | dmenu -p "$action password for")
+name=$(pass_names | rofi -dmenu -p "$action password for")
 
 if [[ $name ]]; then
-    case ${action:-copy} in
+    case $action in
     copy) pass -c "$name" ;;
     generate) pass generate -c -f "$name" "$length" ;;
     esac
 
-    if [[ $copy ]]; then
-        notify-send -i edit-copy \
-            "Password for $name Copied to Clipboard" \
-            "Self-destructing in <b>45</b> seconds..."
-    fi
+    notify-send -i edit-copy \
+        "Password for $name Copied to Clipboard" \
+        "Self-destructing in <b>45</b> seconds..."
 fi

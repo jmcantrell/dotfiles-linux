@@ -13,6 +13,7 @@ Options:
     -c    copy snippet to clipboard
     -s    save clipboard to snippet 
     -t    type snippet in active window
+    -d    delete snippet
 "
 
 usage() {
@@ -30,12 +31,13 @@ option_names["e"]="edit"
 option_names["c"]="copy"
 option_names["s"]="save"
 option_names["t"]="type"
+option_names["d"]="delete"
 
-while getopts ":hecst" option; do
+while getopts ":hecstd" option; do
 	case $option in
 		h) usage ;;
 
-		e|c|s|t) snip_option=$option ;;
+		e|c|s|t|d) snip_option=$option ;;
 
 		*) die "invalid option '$option'" ;;
 	esac
@@ -43,7 +45,7 @@ done && shift $((OPTIND - 1))
 
 [[ $snip_option ]] || die "no snippet action provided"
 
-name=$(snip -l | dmenu -p "${option_names[$snip_option]} snippet")
+name=$(snip -l | rofi -dmenu -p "${option_names[$snip_option]} snippet")
 
 [[ $name ]] || die "no snippet selected"
 

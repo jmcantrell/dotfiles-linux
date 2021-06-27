@@ -15,6 +15,7 @@ Options:
     -c NAME    copy snippet to clipboard
     -s NAME    save clipboard to snippet
     -t NAME    type snippet in active window
+    -d NAME    delete snippet
 "
 
 snippets_dir=${XDG_CONFIG_HOME:-$HOME/.config}/snip/snippets
@@ -29,82 +30,59 @@ die() {
     exit 1
 }
 
-get_snippet_file() {
-    local query=$1
-
-    [[ $query ]] || die "no snippet name provided"
-
-    for file in "$snippets_dir"/*; do
-        name=$(basename "$file")
-        if [[ "$name" == "$query" ]]; then
-            echo "$file"
-            return
-        fi
-    done
-
-    die "snippet '$name' not found"
-}
-
 list_snippets() {
     if [[ -d $snippets_dir ]]; then
         find "$snippets_dir" -type f -exec basename {} \;
     fi
 }
 
-print_snippet() {
-    local name=${1:?missing snippet name}
-    local file=$snippets_dir/$name
+snippet_file() {
+    echo "$snippets_dir/${1:?missing snippet name}"
+}
 
+snippet_file_required() {
+    local file
+    file=$(snippet_file "$1")
     [[ -f $file ]] || die "snippet '$name' not found"
+    echo "$file"
+}
 
-    cat "$(get_snippet_file "$1")"
+print_snippet() {
+    cat "$(snippet_file_required "$1")"
 }
 
 edit_snippet() {
-    local name=${1:?missing snippet name}
-    local file=$snippets_dir/$name
-
     mkdir -p "$snippets_dir"
-
-    exec "${VISUAL:-$EDITOR}" "$file"
+    exec "${VISUAL:-$EDITOR}" "$(snippet_file "$1")"
 }
 
 copy_snippet() {
-    local name=${1:?missing snippet name}
-    local file=$snippets_dir/$name
-
-    [[ -f $file ]] || die "snippet '$name' not found"
-
-    xsel --input --clipboard <"$file"
-
+    local name=$1
+    xsel --input --clipboard <"$(snippet_file_required "$name")"
     notify-send -i edit-copy \
         "Snippet Text for '$name' Copied to the Clipboard"
 }
 
 save_snippet() {
-    local name=${1:?missing snippet name}
-    local file=$snippets_dir/$name
-
+    local name=$1
     mkdir -p "$snippets_dir"
-
-    xsel --output --clipboard >"$file"
-
+    xsel --output --clipboard >"$(snippet_file "$name")"
     notify-send -i document-save \
         "Snippet Text for '$name' Saved from the Clipboard"
 }
 
 type_snippet() {
-    local name=${1:?missing snippet name}
-    local file=$snippets_dir/$name
+    xdotool type --clearmodifiers --delay 25 \
+        --file "$(snippet_file_required "$1")"
+}
 
-    [[ -f $file ]] || die "snippet '$name' not found"
-
-    xdotool type --clearmodifiers --delay 25 --file "$file"
+delete_snippet() {
+    rm -f "$(snippet_file_required "$1")"
 }
 
 (($# == 0)) && set -- -h
 
-while getopts ":hlp:e:c:s:t:" option; do
+while getopts ":hlp:e:c:s:t:d:" option; do
     case $option in
     h) usage ;;
 
@@ -114,6 +92,7 @@ while getopts ":hlp:e:c:s:t:" option; do
     c) copy_snippet "$OPTARG" ;;
     s) save_snippet "$OPTARG" ;;
     t) type_snippet "$OPTARG" ;;
+    d) delete_snippet "$OPTARG" ;;
 
     *) die "invalid option '$option'" ;;
     esac
