@@ -26,7 +26,9 @@ max)
     ;;
 esac
 
-muted=$(pamixer --get-mute)
+# Exit code corresponds to mute status.
+muted=$(pamixer --get-mute) || true
+
 volume=$(pamixer --get-volume)
 
 if [[ $action == mute && $muted == true ]]; then
