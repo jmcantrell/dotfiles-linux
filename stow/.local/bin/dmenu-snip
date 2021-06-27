@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+set -e
+
+me=${0##*/}
+usage="Interact with a snippet using dmenu.
+
+Usage: $me [-h] [-ecst]
+
+Options:
+    -h    show this help message
+    -e    edit snippet in preferred editor
+    -c    copy snippet to clipboard
+    -s    save clipboard to snippet 
+    -t    type snippet in active window
+"
+
+usage() {
+    echo "$usage" >&2
+    exit 0
+}
+
+die() {
+    echo "$me: $*" >&2
+    exit 1
+}
+
+declare -A option_names
+option_names["e"]="edit"
+option_names["c"]="copy"
+option_names["s"]="save"
+option_names["t"]="type"
+
+while getopts ":hecst" option; do
+	case $option in
+		h) usage ;;
+
+		e|c|s|t) snip_option=$option ;;
+
+		*) die "invalid option '$option'" ;;
+	esac
+done && shift $((OPTIND - 1))
+
+[[ $snip_option ]] || die "no snippet action provided"
+
+name=$(snip -l | dmenu -p "${option_names[$snip_option]} snippet")
+
+[[ $name ]] || die "no snippet selected"
+
+snip -"$snip_option" "$name"

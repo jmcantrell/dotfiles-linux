@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# Wrapper for i3lock to create a lock image and delay notifications.
+
+set -e
+
+dunst_paused=$(dunstctl is-paused)
+
+dunstctl set-paused true
+
+image=$(mktemp --suffix=.png)
+trap 'rm -f "$image"' INT TERM EXIT
+
+import -window root "$image"
+mogrify -blur '0x6' "$image"             # blur
+mogrify -scale 10% -scale 1000% "$image" # pixelate
+
+i3lock -ntf -p default -i "$image" "$@"
+
+dunstctl set-paused "$dunst_paused"

@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-buffer=${1:?missing buffer}
-message=${2:?missing message}
-
-canberra-gtk-play -i message-new-instant &
-
-notify-send -i mail-unread "$buffer" "$message"

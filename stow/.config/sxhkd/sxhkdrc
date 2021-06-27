@@ -1,22 +1,46 @@
-# lock the desktop session
-ctrl + super + q
-	lock
-
 # reload this config file
 ctrl + shift + r
 	killall -USR1 sxhkd
 
-# run command (sorted by most recently used)
-super + space
-	dmenu_run_mru
-
-# run last command from dmenu
-super + alt + space
-	dmenu_run_prev
+# lock the desktop session
+ctrl + super + q
+	xlock
 
 # open a terminal (in the working directory of the active window)
 super + Return
 	cd "$(xpwd)" && terminal
+
+# run command (sorted by most recently used)
+super + space
+	dmenu-run-mru
+
+# run last command from dmenu
+super + alt + space
+	dmenu-run-prev
+
+# copy text snippets
+super + Insert; c
+	dmenu-snip -c
+
+# edit text snippets
+super + Insert; e
+	dmenu-snip -e
+
+# create text snippet from clipboard
+super + Insert; s
+	dmenu-snip -s
+
+# type text snippets
+super + Insert; t
+	dmenu-snip -t
+
+# copy password
+super + Delete; c
+	dmenu-pass
+
+# generate password
+super + Delete; g
+	dmenu-pass -g
 
 super + b
 	browser
@@ -57,30 +81,6 @@ XF86Audio{Prev,Next}
 super + Escape
 	terminal -e glances
 
-# copy text snippets
-super + Insert; c
-	dmenu_snip -c
-
-# edit text snippets
-super + Insert; e
-	dmenu_snip -e
-
-# create text snippet from clipboard
-super + Insert; s
-	dmenu_snip -s
-
-# type text snippets
-super + Insert; t
-	dmenu_snip -t
-
-# copy password
-super + Delete; c
-	dmenu_pass -c
-
-# generate password
-super + Delete; g
-	dmenu_pass -gc
-
 # copy the working directory path of the active window
 super + Home; u
 	xpwd -cn
@@ -99,46 +99,62 @@ super + End; {d,c,q}
 
 # capture desktop
 super + Print; i; d
-	icap -ncoa
+    capture-desktop-image ~/'Desktop %c'.png
 
 # capture active window
 super + Print; i; u
-	icap -ncoa -u
+    capture-desktop-image -u ~/'Window %c'.png
 
 # capture selected window
 super + Print; i; w
-	icap -ncoa -w
+    capture-desktop-image -w ~/'Window %c'.png
 
 # capture selected region
 super + Print; i; s
-	icap -ncoa -s
+    capture-desktop-image -s ~/'Region %c'.png
 
 # record desktop
 super + Print; m; d
-	mcap -ncoa
+    capture-desktop-video ~/'Desktop %c'.gif
 
 # record active window
 super + Print; m; u
-	mcap -ncoa -u
+    capture-desktop-video -u ~/'Desktop %c'.gif
 
 # record selected window
 super + Print; m; w
-	mcap -ncoa -w
+    capture-desktop-video -w ~/'Desktop %c'.gif
 
 # record selected region
 super + Print; m; s
-	mcap -ncoa -s
+    capture-desktop-video -s ~/'Desktop %c'.gif
 
 # record region around mouse
 # keep mouse in the center of the rectangle
 super + Print; m; c
-	mcap -ncoa -m centered
+    capture-desktop-video -m centered ~/'Desktop %c'.gif
 
 # record region around mouse
 # only move rectangle when mouse is 10-90 pixels from edge
 super + Print; m; {1-9}
-	mcap -ncoa -m {1-9}0
+    capture-desktop-video -m {1-9}0 ~/'Desktop %c'.gif
 
 # stop recording
 super + Print; m; q
-	mcap -x
+    capture-desktop-video -x
+
+# capture series of photos
+super + Print; c; b
+    capture-camera-image -n5 -d3 ~/'Photo Booth %c ($n)'.png
+
+# capture photo
+super + Print; c; p
+    capture-camera-image -d3 ~/'Selfie %c'.png
+
+# capture video log
+super + Print; c; v
+    capture-camera-image -d3 ~/'Log %c'.mp4
+
+# stop recording
+super + Print; c; q
+    capture-camera-image -x

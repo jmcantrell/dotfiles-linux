@@ -2,12 +2,9 @@
 
 # Enable any connected outputs.
 
-outputs() {
-	xrandr | grep '\bconnected\b' | cut -d' ' -f1
-}
+set -e
 
-outputs | while read -r output; do
-	xrandr --output "$output" --auto "$@"
-done
+xrandr | grep '\bconnected\b' | cut -d' ' -f1 |
+    xargs -r -I{} xrandr --output "{}" --auto "$@"
 
 setbg

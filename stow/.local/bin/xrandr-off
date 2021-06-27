@@ -2,15 +2,12 @@
 
 # Disconnect any external outputs.
 
-primary=$(xrandr-primary) || exit 1
+set -e
 
-outputs() {
-	xrandr | grep -E '\b(dis)?connected\b' |
-	cut -d' ' -f1 | grep -v "^$primary\b"
-}
+primary=$(xrandr-primary)
 
-outputs | while read -r output; do
-	xrandr --output "$output" --off "$@"
-done
+xrandr | grep -E '\b(dis)?connected\b' |
+    cut -d' ' -f1 | grep -v "^$primary\b" |
+    xargs -r -I{} xrandr --output "{}" --off "$@"
 
 setbg

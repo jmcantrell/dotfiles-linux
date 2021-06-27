@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if [[ $DISPLAY && $VISUAL ]]; then
+    exec "$VISUAL" "$@"
+else
+    exec editor "$@"
+fi

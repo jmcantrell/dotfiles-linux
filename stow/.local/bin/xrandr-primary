@@ -3,30 +3,15 @@
 # Set the primary output, and ensure save it.
 # Usage: xrandr-primary [output]
 
-config=${XDG_CONFIG_HOME:-$HOME/.config}
-
-primary() {
-	local primary=$(xrandr | grep '\bprimary\b' | cut -d' ' -f1)
-	test "$primary" || return 1
-	echo "$primary"
-}
-
-outputs() {
-	xrandr | grep '\bconnected\b' | cut -d' ' -f1
-}
+set -e
 
 output=$1
-# none given, so just show current
-test "$output" || primary && exit
 
-entry="
-[Desktop Entry]
-Type=Application
-Name=Set Primary Display
-Exec=xrandr --output '$output' --primary
-"
-autostart=$config/autostart
-mkdir -p "$autostart"
-echo "$entry" >"$autostart"/xrandr-primary.desktop
+if [[ ! $output ]]; then
+	xrandr | grep '\bprimary\b' | cut -d' ' -f1
+	exit 0
+fi
 
-xrandr --output "$output" --primary
+xinitrc=$HOME/.xinitrc.d/xrandr-primary
+echo "xrandr --output '$output' --primary &" >"$xinitrc"
+sh "$xinitrc"

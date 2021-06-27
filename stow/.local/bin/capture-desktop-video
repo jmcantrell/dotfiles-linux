@@ -2,9 +2,8 @@
 
 set -e
 
-# Default options:
-delay=0                    # skip countdown
-geometry=$(xwinrect -root) # entire desktop
+delay=0
+geometry=$(xwinrect -root)
 
 me=${0##*/}
 usage="Capture motion from the screen.
@@ -39,7 +38,7 @@ Examples:
 The output filename can include any format sequence accepted by date(1).
 "
 
-pidfile=${XDG_CACHE_HOME:-$HOME/.cache}/$me/pid
+pid_file=${XDG_CACHE_HOME:-$HOME/.cache}/$me/pid
 
 usage() {
     echo "$usage" >&2
@@ -52,12 +51,11 @@ die() {
 }
 
 stop_recording() {
-    [[ -f $pidfile ]] || die "nothing is recording"
-    pkill -INT -P "$(<"$pidfile")" ffmpeg
+    [[ -f $pid_file ]] || die "nothing is recording"
+    pkill -INT -P "$(<"$pid_file")" ffmpeg
     exit 0
 }
 
-unset OPTIND
 while getopts ":hwusg:m:d:t:x" option; do
     case $option in
     h) usage ;;
@@ -67,7 +65,7 @@ while getopts ":hwusg:m:d:t:x" option; do
     s) geometry=$(xrectsel) ;;
     g) geometry=$OPTARG ;;
 
-    # Region follows when $OPTARG pixels from edge.
+    # Region follows when n pixels from edge.
     # These have the same result: -m centered, -m 999999999
     m)
         follow_mouse=1
@@ -86,32 +84,23 @@ done && shift $((OPTIND - 1))
 
 output=$1
 
-# Ensure options and arguments are valid:
 [[ $output ]] || die "missing output file"
 ((delay >= 0)) || die "delay must be a non-negative number"
 
-# Convert path from relative to absolute:
-output=$(realpath "$output")
-
-# Substitute date format sequences:
 output=$(date +"$output")
-
-# Ensure file can be written:
+output=$(realpath "$output")
 mkdir -p "$(dirname "$output")"
 
-# Parse geometry string:
 size=${geometry%%+*}
 top_left=${geometry#*+}
 left=${top_left%+*}
 top=${top_left#*+}
 
-# Set up options for capture:
 options=(-y -f x11grab -s "$size" -i "${DISPLAY}+${left%+*},${top#*+}")
 [[ $follow_mouse ]] && options+=(-follow_mouse "${pixels_from_edge}")
 options+=(-f alsa -i default)
 [[ $duration ]] && options+=(-t "$duration")
 
-# If requested, do an audible countdown:
 if ((delay > 0)); then
     for ((tick = 1; tick <= delay; tick += 1)); do
         canberra-gtk-play -i message-new-instant &
@@ -119,22 +108,16 @@ if ((delay > 0)); then
     done
 fi
 
-# Set up the pid file, so the capture can be stopped externally:
-mkdir -p "$(dirname "$pidfile")"
-echo "$$" >"$pidfile"
-trap "rm -f $(printf "%q" "$pidfile")" INT TERM EXIT
+mkdir -p "$(dirname "$pid_file")"
+echo "$$" >"$pid_file"
+trap 'rm -f "$pid_file"' INT TERM EXIT
 
-# Perform the capture:
 ffmpeg "${options[@]}" "$output"
-optimize-images "$output"
 canberra-gtk-play -i camera-shutter &
 
-# Output the full path:
-echo "$output"              # stdout
-printf "%q" "$output" | cbi # clipboard
+echo -n "$output"
+xsel -ib <<<"$output"
 
-# Let the user know that result is ready:
 notify-send -i media-record "Captured Screencast" "<u>${output/$HOME/\~}</u>" &
 
-# Open file for review:
 xdg-open "$output" &

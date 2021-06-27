@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+
+set -e
+
+me=${0##*/}
+usage="Interact with text snippets.
+
+Usage: $me [-h] [-l] [-pecst NAME]
+
+Options:
+    -h         show this help message
+    -l         list snippets
+    -p NAME    print snippet to stdout
+    -e NAME    edit snippet in preferred editor
+    -c NAME    copy snippet to clipboard
+    -s NAME    save clipboard to snippet
+    -t NAME    type snippet in active window
+"
+
+snippets_dir=${XDG_CONFIG_HOME:-$HOME/.config}/snip/snippets
+
+usage() {
+    echo "$usage" >&2
+    exit 0
+}
+
+die() {
+    echo "$me: $*" >&2
+    exit 1
+}
+
+get_snippet_file() {
+    local query=$1
+
+    [[ $query ]] || die "no snippet name provided"
+
+    for file in "$snippets_dir"/*; do
+        name=$(basename "$file")
+        if [[ "$name" == "$query" ]]; then
+            echo "$file"
+            return
+        fi
+    done
+
+    die "snippet '$name' not found"
+}
+
+list_snippets() {
+    if [[ -d $snippets_dir ]]; then
+        find "$snippets_dir" -type f -exec basename {} \;
+    fi
+}
+
+print_snippet() {
+    local name=${1:?missing snippet name}
+    local file=$snippets_dir/$name
+
+    [[ -f $file ]] || die "snippet '$name' not found"
+
+    cat "$(get_snippet_file "$1")"
+}
+
+edit_snippet() {
+    local name=${1:?missing snippet name}
+    local file=$snippets_dir/$name
+
+    mkdir -p "$snippets_dir"
+
+    exec "${VISUAL:-$EDITOR}" "$file"
+}
+
+copy_snippet() {
+    local name=${1:?missing snippet name}
+    local file=$snippets_dir/$name
+
+    [[ -f $file ]] || die "snippet '$name' not found"
+
+    xsel --input --clipboard <"$file"
+
+    notify-send -i edit-copy \
+        "Snippet Text for '$name' Copied to the Clipboard"
+}
+
+save_snippet() {
+    local name=${1:?missing snippet name}
+    local file=$snippets_dir/$name
+
+    mkdir -p "$snippets_dir"
+
+    xsel --output --clipboard >"$file"
+
+    notify-send -i document-save \
+        "Snippet Text for '$name' Saved from the Clipboard"
+}
+
+type_snippet() {
+    local name=${1:?missing snippet name}
+    local file=$snippets_dir/$name
+
+    [[ -f $file ]] || die "snippet '$name' not found"
+
+    xdotool type --clearmodifiers --delay 25 --file "$file"
+}
+
+(($# == 0)) && set -- -h
+
+while getopts ":hlp:e:c:s:t:" option; do
+    case $option in
+    h) usage ;;
+
+    l) list_snippets ;;
+    p) print_snippet "$OPTARG" ;;
+    e) edit_snippet "$OPTARG" ;;
+    c) copy_snippet "$OPTARG" ;;
+    s) save_snippet "$OPTARG" ;;
+    t) type_snippet "$OPTARG" ;;
+
+    *) die "invalid option '$option'" ;;
+    esac
+done && shift $((OPTIND - 1))

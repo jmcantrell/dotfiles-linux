@@ -6,8 +6,8 @@ set -e
 
 for file in "$@"; do
     case $file in
-    *.png) optipng "$file" & ;;
-    *.gif) gifsicle --batch --optimize=3 "$file" & ;;
-    *.jpg) jpegtran -optimize -copy none -outfile "$file" "$file" & ;;
+    *.png) optipng -out "$file" "$file" ;;
+    *.gif) gifsicle --batch --optimize=3 -o "$file" "$file" ;;
+    *.jpg) jpegtran -optimize -copy none -outfile "$file" "$file" ;;
     esac
 done

@@ -1,101 +1,133 @@
 #!/usr/bin/env bash
 
+set -e
+
+me=${0##*/}
 usage="
-Gets the working directory of the current window.
+Gets the working directory of a window.
 
-Optional dependencies:
-xsel, notification daemon
+Usage: $me [-h] [-cnw] [WINDOW_ID]
 
-Usage: ${0##*/} [-h] [-cnw]
+Options:
+    -h    show this help message
+    -c    copy the path to the clipboard
+    -n    notify the user about the copy
+    -w    click to select the window to use
+
+Arguments:
+    WINDOW_ID    id of a window to use (e.g. 0x1234567)
+
+If no window is selected with -w or WINDOW_ID, then the current window is used.
 "
 
-icon_set=/usr/share/icons/gnome/32x32
-icon=$icon_set/actions/edit-paste.png
+usage() {
+    echo "$usage" >&2
+    exit 0
+}
+
+die() {
+    echo "$me: $*" >&2
+    exit 1
+}
+
+tmux_window_id() {
+    local session_id=${1:?missing session id}
+
+    tmux showenv -t "$session_id" WINDOWID |
+        awk -F= '{print $2}' | tr -d '[:space:]' |
+        xargs -r -I{} printf "0x%x" "{}"
+}
 
 tmux_session_id() {
-    local win_id=$1
-    tmux list-sessions -F '#{session_id}' |
-        while read -r session_id; do
-            unset WINDOWID
-            eval "$(tmux showenv -t "$session_id" WINDOWID)"
-            session_win_id=0x$(printf "%x" "$WINDOWID")
-            if [[ $session_win_id == "$win_id" ]]; then
-                echo "$session_id"
-                return
-            fi
-        done
+    local window_id=$1
+
+    readarray -t session_ids < <(tmux list-sessions -F '#{session_id}')
+
+    for session_id in "${session_ids[@]}"; do
+        if [[ "$(tmux_window_id "$session_id")" == "$window_id" ]]; then
+            echo "$session_id"
+            return 0
+        fi
+    done
+
     return 1
 }
 
 tmux_active_pane_pid() {
-    local session_id=$1
+    local window_id=${1:?missing window id}
+    local session_id
+
+    session_id=$(tmux_session_id "$window_id")
+
     tmux list-panes -F '#{session_id} #{pane_active} #{pane_pid}' |
-        grep "^$session_id 1 " | head -n1 | awk '{print $NF}'
+        grep -m1 "^$session_id 1 " |
+        awk '{print $NF}' | tr -d '[:space:]'
 }
 
-unset copy_path_to_clipboard
-unset use_notifications
-unset OPTIND
 while getopts ":hwcn" option; do
     case $option in
-    w) win_id=$(selected-window) ;;
+    h) usage ;;
 
+    w) window_id=$(selected-window) ;;
     c) copy_path_to_clipboard=1 ;;
     n) use_notifications=1 ;;
 
-    h)
-        echo "$usage" >&2
-        exit 0
-        ;;
-    *)
-        echo "$usage" >&2
-        exit 1
-        ;;
+    *) die "invalid option '$option'" ;;
     esac
 done && shift $((OPTIND - 1))
 
-[[ -z $win_id ]] && win_id=$(active-window)
+[[ $window_id ]] || window_id=$1
+[[ $window_id ]] || window_id=$(active-window)
+[[ $window_id ]] || die "no window provided"
 
-if [[ -z $win_id ]]; then
-    message="no window found"
-    echo "$message" >&2
-    if [[ -n $use_notifications ]]; then
-        notify-send -u critical "$message"
-    fi
-    exit 1
-fi
+cwd=$HOME # fallback
 
-cwd=$PWD
-win_pid=$(xprop -id "$win_id" | grep -m1 PID | cut -f3 -d' ')
-if [[ -n $win_pid ]]; then
-    readarray -t procs < <(pstree -lpAT "$win_pid" | head -n1 | sed 's/-+-.*$//' | sed 's/---/\n/g' | tac)
+window_pid=$(
+    xprop -id "$window_id" | grep -m1 PID |
+        awk -F= '{print $2}' | tr -d '[:space:]'
+)
 
-    for proc in "${procs[@]}"; do
-        name=${proc%%(*}
-        pid=${proc//[^0-9]/}
+if [[ $window_pid ]]; then
+    readarray -t lines < <(
+        pstree --long --show-pids --ascii --hide-threads "$window_pid" |
+            head -n1 |
+            sed 's/-+-.*$//' |                           # ignore branches
+            sed 's/---/\n/g' |                           # one process per line
+            sed 's/^\(.*\)(\([[:digit:]]\+\))$/\1=\2/' | # separate name and pid
+            tac                                          # order processes by depth
+    )
 
+    for line in "${lines[@]}"; do
+        name=${line%%=*}
+        pid=${line##*=}
+
+        case $name in
         # If tmux is active in this window,
         # cwd will be whatever it was when tmux was started.
-        # There could be multiple panes, each with its own pid.
-        if [[ $name == tmux ]]; then
-            session_id=$(tmux_session_id "$win_id")
-            pid=$(tmux_active_pane_pid "$session_id")
+        # There could be multiple panes, each with its own pid and cwd.
+        tmux*) pid=$(tmux_active_pane_pid "$window_id") ;;
+
+        # Vim uses xclip to interact with the clipboard.
+        # It will be the innermost process, and encountered first.
+        # Its working directory is meaningless, so skip it.
+        xclip) continue ;;
+        esac
+
+        cwd_link=/proc/$pid/cwd
+        [[ -e $cwd_link ]] || continue
+
+        possible_cwd=$(readlink "$cwd_link")
+        if [[ -d $possible_cwd ]]; then
+            cwd=$possible_cwd
+            break
         fi
-
-        cwdlink=/proc/$pid/cwd
-
-        [[ -e $cwdlink ]] || continue
-
-        cwd=$(readlink "$cwdlink")
-
-        [[ -d $cwd ]] && break
     done
 fi
 
 if [[ -n $copy_path_to_clipboard ]]; then
-    echo "$cwd" | xsel -ib
+    xsel -ib <<<"$cwd"
     if [[ -n $use_notifications ]]; then
-        notify-send -i "$icon" "Working directory copied to clipboard:" "$cwd"
+        notify-send -i edit-copy "Working directory copied to clipboard:" "$cwd"
     fi
 fi
 

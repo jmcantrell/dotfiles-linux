@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-# Convert given images into an animated gif.
-# Usage: mkgif <gif> [image...]
-
-convert -verbose \
-	-layers -delay 15 -loop 0 \
-	-resize 500 OptimizeTransparency "$@"

@@ -3,5 +3,6 @@
 # Get the id of the active window.
 
 xprop -root |
-	grep "_NET_ACTIVE_WINDOW(WINDOW)" |
-	cut -d# -f2 | tr -d '[:space:]'
+    grep "_NET_ACTIVE_WINDOW(WINDOW)" |
+    awk -F'#' '{print $2}' |
+    tr -d '[:space:]'

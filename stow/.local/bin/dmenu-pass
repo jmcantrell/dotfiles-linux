@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+set -e
+
+length=16
+
+me=${0##*/}
+usage="Use dmenu to interact with pass.
+
+Usage: $me [-h] [-g] [-n NUMBER]
+
+Options:
+    -h           show this help message
+    -g           generate a new password
+    -n NUMBER    generated password will be NUMBER characters (default: $length)
+
+Examples:
+    $me
+        Choose a password.
+
+    $me -g
+        Choose a password (new or existing) and (re)generate it.
+
+In all cases, the chosen password is copied to the clipboard.
+"
+
+pass_dir=${PASSWORD_STORE_DIR:-$HOME/.password-store}
+
+usage() {
+    echo "$usage" >&2
+    exit 0
+}
+
+die() {
+    echo "$me: $*" >&2
+    exit 1
+}
+
+pass_names() {
+    readarray -t files < <(find -L "$pass_dir" -type f -name "*.gpg" | sort)
+
+    for file in "${files[@]}"; do
+        name=${file#$pass_dir/}
+        name=${name%.gpg}
+        echo "$name"
+    done
+}
+
+while getopts ":hgn:" option; do
+    case $option in
+    h) usage ;;
+
+    g) action="generate" ;;
+    n) length=$OPTARG ;;
+
+    *) die "invalid option '$option'" ;;
+    esac
+done && shift $((OPTIND - 1))
+
+name=$(pass_names | dmenu -p "$action password for")
+
+if [[ $name ]]; then
+    case ${action:-copy} in
+    copy) pass -c "$name" ;;
+    generate) pass generate -c -f "$name" "$length" ;;
+    esac
+
+    if [[ $copy ]]; then
+        notify-send -i edit-copy \
+            "Password for $name Copied to Clipboard" \
+            "Self-destructing in <b>45</b> seconds..."
+    fi
+fi

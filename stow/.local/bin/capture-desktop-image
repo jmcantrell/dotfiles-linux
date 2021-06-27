@@ -2,8 +2,7 @@
 
 set -e
 
-# Default options:
-geometry=$(xwinrect -root) # entire desktop
+geometry=$(xwinrect -root)
 
 me=${0##*/}
 usage="Capture an image from the screen.
@@ -40,7 +39,6 @@ die() {
     exit 1
 }
 
-unset OPTIND
 while getopts ":hg:wus" option; do
     case $option in
     h) usage ;;
@@ -56,29 +54,18 @@ done && shift $((OPTIND - 1))
 
 output=$1
 
-# Ensure options and arguments are valid:
 [[ $output ]] || die "missing output file"
 
-# Convert path from relative to absolute:
+mkdir -p "$(dirname "$output")"
 output=$(realpath "$output")
-
-# Substitute date format sequences:
 output=$(date +"$output")
 
-# Ensure file can be written:
-mkdir -p "$(dirname "$output")"
-
-# Perform the capture:
 import -window root -crop "$geometry" "$output"
-optimize-images "$output"
 canberra-gtk-play -i camera-shutter &
 
-# Output the full path:
-echo "$output"              # stdout
-printf "%q" "$output" | cbi # clipboard
+echo -n "$output"
+xsel -ib <<<"$output"
 
-# Let the user know that result is ready:
 notify-send -i media-record "Captured Screenshot" "<u>${output/$HOME/\~}</u>" &
 
-# Open file for review:
 xdg-open "$output" &

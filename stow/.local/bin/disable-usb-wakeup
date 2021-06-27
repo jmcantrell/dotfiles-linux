@@ -2,25 +2,23 @@
 
 # Disable the ability for USB devices to wake up the system.
 
+set -e
+
 wakeup="/proc/acpi/wakeup"
-service=/etc/systemd/system/disable-usb-wakeup.service
+service="/etc/systemd/system/disable-usb-wakeup.service"
 
-devices=$(
-	grep -Ev '^[[:space:]]' "$wakeup" |
-	grep -E '^(EHC|XHC)' | cut -d' ' -f1 | tr -d '[:space:]'
-)
+devices=$(grep -Ev '^[[:space:]]' "$wakeup" | grep -E '^(EHC|XHC)' | awk '{print $1}')
+devices=$(printf "%s" "${devices[@]}")
 
-arg=$(printf "%s" "${devices[@]}")
-
-echo "
+sudo tee "$service" >/dev/null <<-EOF
 [Unit]
 Description=Disable ACPI wakeup by USB devices
 
 [Service]
-ExecStart=/bin/bash -c \"echo $arg >> /proc/acpi/wakeup\"
+ExecStart=/bin/bash -c \"echo $devices >>/proc/acpi/wakeup\"
 
 [Install]
 WantedBy=multi-user.target
-" | sudo tee "$service"
+EOF
 
 sudo systemctl enable --now "$(basename "$service")"

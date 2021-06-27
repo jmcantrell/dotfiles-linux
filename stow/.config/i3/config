@@ -157,17 +157,13 @@ bindsym $super+semicolon exec i3-input -P:
 # session commands
 set $mode_session session: (q)uit, (l)ock, (s)uspend, (h)ibernate, (r)eboot, (p)oweroff
 mode "$mode_session" {
-	# exit window manager
-	bindsym q $fork i3exit quit, mode "default"
-	# lock screen
-	bindsym l $fork i3exit lock, mode "default"
-	# lock screen, then suspend/hibernate
-	bindsym s $fork i3exit suspend,   mode "default"
-	bindsym h $fork i3exit hibernate, mode "default"
-	# reboot/poweroff
-	bindsym r $fork i3exit reboot,   mode "default"
-	bindsym p $fork i3exit poweroff, mode "default"
-	# exit mode
+	bindsym q $fork i3-msg exit,         mode "default"
+	bindsym l $fork xlock,               mode "default"
+	bindsym s $fork systemctl suspend,   mode "default"
+	bindsym h $fork systemctl hibernate, mode "default"
+	bindsym r $fork systemctl reboot,    mode "default"
+	bindsym p $fork systemctl poweroff,  mode "default"
+
 	bindsym Return mode "default"
 	bindsym Escape mode "default"
 }

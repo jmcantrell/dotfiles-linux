@@ -2,6 +2,8 @@
 
 # Remove all browser cache files for vimb.
 
+set -e
+
 cache=${XDG_CACHE_HOME:-$HOME/.cache}
 config=${XDG_CONFIG_HOME:-$HOME/.config}
 

@@ -2,6 +2,7 @@
 
 # Set all connected outputs to mirror primary.
 
-primary=$(xrandr-primary) || exit 1
+set -e
 
+primary=$(xrandr-primary)
 xrandr-detect --same-as "$primary" "$@"

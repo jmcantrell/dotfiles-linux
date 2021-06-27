@@ -23,7 +23,7 @@ XTerm*saveLines: 100000000
 
 ! font face and default size (ctrl-0)
 XTerm*faceSize: 8
-XTerm*faceName: Dejavu Sans Mono
+XTerm*faceName: Monospace
 
 ! font size increments (ctrl-minus, ctrl-equal)
 XTerm*faceSize1: 4

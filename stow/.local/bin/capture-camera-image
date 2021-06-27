@@ -2,10 +2,9 @@
 
 set -e
 
-# Default options:
-count=1            # single image
-delay=0            # skip countdown
-device=/dev/video0 # main webcam
+count=1
+delay=0
+device=/dev/video0
 
 me=${0##*/}
 usage="Capture images from the camera.
@@ -43,7 +42,6 @@ die() {
     exit 1
 }
 
-unset OPTIND
 while getopts ":hi:n:d:" option; do
     case $option in
     h) usage ;;
@@ -58,28 +56,19 @@ done && shift $((OPTIND - 1))
 
 output=$1
 
-# Ensure options and arguments are valid:
 [[ $output ]] || die "missing output file"
 ((count > 0)) || die "count must be a positive number"
 ((delay >= 0)) || die "delay must be a non-negative number"
 
-# Ensure the file can be written:
+output=$(date +"$output")
+output=$(realpath "$output")
 mkdir -p "$(dirname "$output")"
 
-# Convert path from relative to absolute:
-output=$(realpath "$output")
-
-# Substitute date format sequences:
-output=$(date +"$output")
-
-# Set up capture options:
 options=(-y -f v4l2 -i "$device" -frames:v 1)
 
-# Keep track of the outputs, to be used later on.
 declare -a outputs
 
 for n in $(seq -w 1 "$count"); do
-    # If requested, do an audible countdown (not precise):
     if ((delay > 0)); then
         for ((tick = 1; tick <= delay; tick += 1)); do
             sleep 1
@@ -87,25 +76,22 @@ for n in $(seq -w 1 "$count"); do
         done
     fi
 
-    # Substitute the image number:
     output_n=${output/\$n/$n}
 
-    # Perform the capture:
     ffmpeg "${options[@]}" "$output_n"
-    optimize-images "$output_n" &
     canberra-gtk-play -i camera-shutter &
-
-    # Output the path as each is captured,
-    # in case the parent process needs it or for a progress report.
-    echo "$output_n"
 
     outputs+=("$output_n")
 done
 
-# Output shell-safe paths to the clipboard:
-printf "%q\n" "${outputs[@]}" | cbi
+if ((${#outputs[@]} == 1)); then
+    echo -n "${outputs[0]}"
+    xsel -ib <<<"${outputs[0]}"
+else
+    printf "%s\n" "${outputs[@]}"
+    printf "%s\n" "${outputs[@]}" | xsel -ib
+fi
 
-# Let the user know that result is ready:
 if ((count > 1)); then
     title="Captured $count Photos"
 else
@@ -113,5 +99,4 @@ else
 fi
 notify-send -i media-record "$title" "<u>${output/$HOME/\~}</u>" &
 
-# Open output file for review.
 xdg-open "${outputs[@]}" &

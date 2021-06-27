@@ -2,6 +2,8 @@
 
 # Display battery warnings and hibernate when almost empty.
 
+set -e
+
 battery_num=0
 low_percent=25
 critical_percent=15
@@ -22,7 +24,7 @@ if [[ $state == Discharging ]]; then
         notify-send -u critical -i battery-empty \
             "Battery Almost Empty: $percent%" \
             "Hibernating in $hibernate_delay seconds..."
-        sleep "$hibernate_delay" #&& i3exit hibernate
+        sleep "$hibernate_delay" && systemctl hibernate
     elif ((percent <= critical_percent)); then
         notify-send -u critical -i battery-caution \
             "Battery Critical: $percent%" \

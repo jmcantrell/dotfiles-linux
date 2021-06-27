@@ -2,7 +2,9 @@
 
 # Select a timezone.
 
+set -e
+
 tz=${1:-$(tzselect)}
 
 sudo ln -sf "/usr/share/zoneinfo/$tz" /etc/localtime
-which timedatectl && timedatectl set-timezone "$tz"
+timedatectl set-timezone "$tz"

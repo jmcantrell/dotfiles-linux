@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-# Command abstraction for pasting text from the clipboard.
-
-[[ $DISPLAY ]] || exit 0
-
-xsel -ob
