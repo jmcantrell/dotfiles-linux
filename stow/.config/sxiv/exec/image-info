@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+set -e
+
+s="  "
+
+file=$(basename "$1")
+geometry=$(identify -format "%wx%h" "$1[0]")
+size=$(du -Hh "$1" | cut -f1)
+
+echo "${file}${s}${geometry}${s}${size}"
