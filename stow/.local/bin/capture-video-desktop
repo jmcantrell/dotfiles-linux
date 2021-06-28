@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+
+set -e
+
+delay=${DELAY:-1}
+file_type=${FILE_TYPE:-mp4}
+padding=${PADDING:-centered}
+
+me=${0##*/}
+usage="Capture video of the desktop.
+
+Usage: $me [OPTIONS] [FILE | stop]
+    
+Options:
+    -h           show this help message
+    -u           capture the current window
+    -w           click to select a window to capture
+    -s           drag to select a region to capture
+    -m           drag to size a viewport that follows the mouse
+
+Arguments:
+    FILE         output capture to FILE
+    stop         stop recording
+
+Environment Variables:
+    DELAY        number of seconds to delay capture (default: $delay)
+    DURATION     number of seconds to record (default: record indefinitely)
+    PADDING      number of pixels to pad region used with -m (default: $padding)
+    FILE_TYPE    extension to use for output file name (default: $file_type)
+"
+
+while getopts ":huwsm" option; do
+    case $option in
+    h)
+        echo "$usage" >&2
+        exit 0
+        ;;
+
+    u)
+        name="window"
+        geometry=$(xwinrect -id "$(active-window)")
+        ;;
+
+    w)
+        name="window"
+        geometry=$(xwinrect -id "$(selected-window)")
+        ;;
+
+    s)
+        name="region"
+        geometry=$(xrectsel)
+        ;;
+
+    m)
+        name="region"
+        follow_mouse=1
+        geometry=$(xrectsel)
+        ;;
+
+    *)
+        echo "invalid option '$option'" >&2
+        exit 1
+        ;;
+    esac
+done && shift $((OPTIND - 1))
+
+ffmpeg_stdin=$XDG_RUNTIME_DIR/$me-ffmpeg-stdin
+
+if [[ $1 == stop ]]; then
+    [[ -f $ffmpeg_stdin ]] && echo "q" >>"$ffmpeg_stdin"
+    exit 0
+fi
+
+file=${1:-$(xdg-user-dir VIDEOS)/desktop-${name:+$name-}$(date +%s).$file_type}
+mkdir -p "$(dirname "$file")"
+
+options=(-hide_banner -loglevel error)
+options+=(-y -f x11grab)
+
+options+=(-draw_mouse 0)
+[[ $follow_mouse ]] && options+=(-follow_mouse "$padding")
+
+[[ ! $geometry ]] && geometry=$(xwinrect -root)
+
+size=${geometry%%+*}
+top_left=${geometry#*+}
+left=${top_left%+*}
+top=${top_left#*+}
+options+=(-s "$size" -i "${DISPLAY}+${left%+*},${top#*+}")
+
+options+=(-f alsa -i default)
+
+[[ $DURATION ]] && options+=(-t "$DURATION")
+
+canberra-gtk-play -l "$delay" -i message-new-instant
+
+touch "$ffmpeg_stdin"
+trap 'rm -f "$ffmpeg_stdin"' INT TERM EXIT
+ffmpeg "${options[@]}" "$file" <"$ffmpeg_stdin"
+
+canberra-gtk-play -i camera-shutter &
+notify-send -i media-record "Captured Screencast" "<u>${file/$HOME/\~}</u>" &
+
+echo "$file"

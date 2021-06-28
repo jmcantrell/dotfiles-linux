@@ -51,11 +51,9 @@ super + b
 super + B
 	browser-private
 
-# open an editor (in the working directory of the active window)
 super + e
 	cd "$(xpwd)" && terminal -e editor
 
-# open a file manager (in the working directory of the active window)
 super + f
 	cd "$(xpwd)" && terminal -e ranger
 
@@ -100,64 +98,62 @@ super + End; {h,j,k,l}
 super + End; {d,c,q}
 	xrandr-{detect,clone,off}
 
-# capture desktop
+# capture images
+
 super + Print; i; d
-    capture-desktop-image ~/'Desktop %c'.png
+    capture-image-desktop
 
-# capture active window
 super + Print; i; u
-    capture-desktop-image -u ~/'Window %c'.png
+    capture-image-desktop -u # active window
 
-# capture selected window
 super + Print; i; w
-    capture-desktop-image -w ~/'Window %c'.png
+    capture-image-desktop -w # selected window
 
-# capture selected region
 super + Print; i; s
-    capture-desktop-image -s ~/'Region %c'.png
+    capture-image-desktop -s # selected region
 
-# record desktop
-super + Print; m; d
-    capture-desktop-video ~/'Desktop %c'.gif
+super + Print; i; c
+    capture-image-camera
 
-# record active window
-super + Print; m; u
-    capture-desktop-video -u ~/'Desktop %c'.gif
+# capture videos
 
-# record selected window
-super + Print; m; w
-    capture-desktop-video -w ~/'Desktop %c'.gif
+super + Print; v; d
+    capture-video-desktop
 
-# record selected region
-super + Print; m; s
-    capture-desktop-video -s ~/'Desktop %c'.gif
+super + Print; v; u
+    capture-video-desktop -u # active window
 
-# record region around mouse
-# keep mouse in the center of the rectangle
-super + Print; m; c
-    capture-desktop-video -m centered ~/'Desktop %c'.gif
+super + Print; v; w
+    capture-video-desktop -w # selected window
 
-# record region around mouse
-# only move rectangle when mouse is 10-90 pixels from edge
-super + Print; m; {1-9}
-    capture-desktop-video -m {1-9}0 ~/'Desktop %c'.gif
+super + Print; v; s
+    capture-video-desktop -s # selected region
 
-# stop recording
-super + Print; m; q
-    capture-desktop-video -x
+super + Print; v; m
+    capture-video-desktop -m # region follows mouse
 
-# capture series of photos
-super + Print; c; b
-    capture-camera-image -n5 -d3 ~/'Photo Booth %c ($n)'.png
+super + Print; v; c
+    capture-video-camera
 
-# capture photo
-super + Print; c; p
-    capture-camera-image -d3 ~/'Selfie %c'.png
+# capture gifs
 
-# capture video log
-super + Print; c; v
-    capture-camera-image -d3 ~/'Log %c'.mp4
+super + Print; g; d
+    capture-gif-desktop
 
-# stop recording
-super + Print; c; q
-    capture-camera-image -x
+super + Print; g; u
+    capture-gif-desktop -u # active window
+
+super + Print; g; w
+    capture-gif-desktop -w # selected window
+
+super + Print; g; s
+    capture-gif-desktop -s # selected region
+
+super + Print; g; m
+    capture-gif-desktop -m # region follows mouse
+
+super + Print; g; c
+    capture-gif-camera
+
+super + Print; q
+    capture-video-stop

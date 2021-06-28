@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+capture-video-camera stop &
+capture-video-desktop stop &

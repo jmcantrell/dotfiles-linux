@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+set -e
+
+file_type=${FILE_TYPE:-png}
+
+me=${0##*/}
+usage="Capture an image of the desktop.
+
+Usage: $me [OPTIONS] [FILE]
+
+Options:
+    -h           show this help message
+    -u           capture the current window
+    -w           click to select a window to capture
+    -s           drag to select a region to capture
+
+Arguments:
+    FILE         output capture to FILE
+
+Environment Variables:
+    FILE_TYPE    extension to use for capture file name (default: $file_type)
+"
+
+while getopts ":huws" option; do
+    case $option in
+    h)
+        echo "$usage" >&2
+        exit 0
+        ;;
+
+    u)
+        name="window"
+        geometry=$(xwinrect -id "$(active-window)")
+        ;;
+
+    w)
+        name="window"
+        geometry=$(xwinrect -id "$(selected-window)")
+        ;;
+
+    s)
+        name="region"
+        geometry=$(xrectsel)
+        ;;
+
+    *)
+        echo "invalid option '$option'"
+        exit 1
+        ;;
+    esac
+done && shift $((OPTIND - 1))
+
+file=${1:-$(xdg-user-dir PICTURES)/desktop-${name:+$name-}$(date +%s).$file_type}
+mkdir -p "$(dirname "$file")"
+
+options=(-window root)
+
+[[ $geometry ]] && options+=(-crop "$geometry")
+
+import "${options[@]}" "$file"
+
+canberra-gtk-play -i camera-shutter &
+notify-send -i media-record "Captured Screenshot" "<u>${file/$HOME/\~}</u>" &
+
+echo "$file"

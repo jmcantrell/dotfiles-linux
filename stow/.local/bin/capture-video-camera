@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+set -e
+
+delay=${DELAY:-3}
+device=${DEVICE:-/dev/video0}
+file_type=${FILE_TYPE:-mp4}
+
+me=${0##*/}
+usage="Capture video from a camera.
+
+Usage: $me [OPTIONS] [FILE | stop]
+    
+Options:
+    -h           show this help message
+
+Arguments:
+    FILE         output capture to FILE
+    stop         stop recording
+
+Environment Variables:
+    DELAY        number of seconds to delay capture (default: $delay)
+    DEVICE       video device to use for capture (default: $device) 
+    FILE_TYPE    extension to use for capture file name (default: $file_type)
+"
+
+while getopts ":h" option; do
+    case $option in
+    h)
+        echo "$usage" >&2
+        exit 0
+        ;;
+
+    *)
+        echo "invalid option '$option'" >&2
+        exit 1
+        ;;
+    esac
+done && shift $((OPTIND - 1))
+
+ffmpeg_stdin=$XDG_RUNTIME_DIR/$me-ffmpeg-stdin
+
+if [[ $1 == stop ]]; then
+    [[ -f $ffmpeg_stdin ]] && echo "q" >>"$ffmpeg_stdin"
+    exit 0
+fi
+
+file=${1:-$(xdg-user-dir PICTURES)/camera-$(date +%s).$file_type}
+mkdir -p "$(dirname "$file")"
+
+options=(-hide_banner -loglevel error)
+options+=(-y -f v4l2 -i "$device" -f alsa -i default)
+
+[[ $DURATION ]] && options+=(-t "$DURATION")
+
+canberra-gtk-play -l "$delay" -i message-new-instant
+
+touch "$ffmpeg_stdin"
+trap 'rm -f "$ffmpeg_stdin"' INT TERM EXIT
+ffmpeg "${options[@]}" "$file" <"$ffmpeg_stdin"
+
+canberra-gtk-play -i camera-shutter &
+notify-send -i media-record "Captured Video" "<u>${file/$HOME/\~}</u>" &
+
+echo "$file"
