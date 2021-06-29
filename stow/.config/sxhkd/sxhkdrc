@@ -1,61 +1,63 @@
-# reload this config file
 ctrl + shift + r
 	killall -USR1 sxhkd
 
-# lock the desktop session
-ctrl + super + q
-	xlock
-
-# open a terminal (in the working directory of the active window)
-super + Return
-	cd "$(xpwd)" && terminal
-
-# run command (sorted by most recently used)
 super + space
     rofi -show run
 
 alt + Tab
     rofi -show window
 
-# copy snippet
-super + Insert; c
-	rofi-snip -c
+ctrl + super + q
+	xlock
 
-# edit snippet
-super + Insert; e
-	rofi-snip -e
+super + Escape
+	terminal -e glances
 
-# create snippet from clipboard
-super + Insert; s
-	rofi-snip -s
+# Launch apps in working directory of active window:
 
-# type snippet
-super + Insert; t
-	rofi-snip -t
-
-# delete snippet
-super + Insert; Delete
-    rofi-snip -d
-
-# copy password
-super + Delete; c
-	rofi-pass
-
-# generate password
-super + Delete; g
-	rofi-pass -g
-
-super + b
-	browser
-
-super + B
-	browser-private
+super + Return
+	cd "$(xpwd)" && terminal
 
 super + e
 	cd "$(xpwd)" && terminal -e editor
 
 super + f
 	cd "$(xpwd)" && terminal -e ranger
+
+# Copy path of working directory:
+
+super + Home; u
+	xpwd -cn # active window
+
+super + Home; w
+	xpwd -cnw # selected window
+
+# Text snippets manager:
+
+super + Insert; c
+	rofi-snip -c # copy to clipboard
+
+super + Insert; e
+	rofi-snip -e # open in editor
+
+super + Insert; s
+	rofi-snip -s # save from clipboard
+
+super + Insert; t
+	rofi-snip -t # type in active window
+
+super + Insert; Delete
+    rofi-snip -d # delete
+
+# Password manager:
+
+super + Delete; c
+	rofi-pass # copy
+
+super + Delete; g
+	rofi-pass -g # generate and copy
+
+# Audio controls:
 
 super + {Up,Down}
 	audio-volume {up,down}
@@ -69,6 +71,8 @@ XF86Audio{Raise,Lower}Volume
 XF86AudioMute
 	audio-volume mute
 
+# Media controls:
+
 super + Pause
 	playerctl play-pause
 
@@ -78,27 +82,25 @@ super + {Left,Right}
 XF86Audio{Prev,Next}
 	playerctl {previous,next}
 
-# open a process manager
-super + Escape
-	terminal -e glances
+# Connect displays:
 
-# copy the working directory path of the active window
-super + Home; u
-	xpwd -cn
-
-# copy the working directory path of the selected window
-super + Home; w
-	xpwd -cnw
-
-# add an output oriented to the primary
+# Add the display oriented to the primary.
 super + End; {h,j,k,l}
 	xrandr-orient {left-of,below,above,right-of}
 
-# automatically add outputs, mirror primary, remove all
-super + End; {d,c,q}
-	xrandr-{detect,clone,off}
+# Add with default orientation.
+super + End; d
+	xrandr-detect
 
-# capture images
+# Mirror the primary display.
+super + End; c
+	xrandr-clone
+
+# Disconnect non-primary displays.
+super + End; q
+	xrandr-off
+
+# Capture images:
 
 super + Print; i; d
     capture-image-desktop
@@ -115,7 +117,7 @@ super + Print; i; s
 super + Print; i; c
     capture-image-camera
 
-# capture videos
+# Capture videos:
 
 super + Print; v; d
     capture-video-desktop
@@ -135,10 +137,10 @@ super + Print; v; m
 super + Print; v; c
     capture-video-camera
 
-# capture gifs
+# Capture animated gifs:
 
 super + Print; g; d
-    capture-gif-desktop
+    capture-gif-desktop # whole desktop
 
 super + Print; g; u
     capture-gif-desktop -u # active window
