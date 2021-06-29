@@ -23,6 +23,7 @@ Environment Variables:
     FILE_TYPE   extension to use for output file name (default: $file_type)
 "
 
+unset OPTIND OPTARG
 while getopts ":h" option; do
     case $option in
     h)

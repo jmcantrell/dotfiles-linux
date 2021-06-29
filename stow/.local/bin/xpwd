@@ -64,6 +64,7 @@ tmux_active_pane_pid() {
         awk '{print $NF}' | tr -d '[:space:]'
 }
 
+unset OPTIND OPTARG
 while getopts ":hwcn" option; do
     case $option in
     h) usage ;;

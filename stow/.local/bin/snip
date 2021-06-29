@@ -82,6 +82,7 @@ delete_snippet() {
 
 (($# == 0)) && set -- -h
 
+unset OPTIND OPTARG
 while getopts ":hlp:e:c:s:t:d:" option; do
     case $option in
     h) usage ;;

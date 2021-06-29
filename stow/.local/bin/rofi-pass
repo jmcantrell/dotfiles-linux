@@ -47,6 +47,7 @@ pass_names() {
     done
 }
 
+unset OPTIND OPTARG
 while getopts ":hgn:" option; do
     case $option in
     h) usage ;;

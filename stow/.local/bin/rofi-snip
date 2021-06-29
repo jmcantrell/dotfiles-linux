@@ -33,6 +33,7 @@ option_names["s"]="save"
 option_names["t"]="type"
 option_names["d"]="delete"
 
+unset OPTIND OPTARG
 while getopts ":hecstd" option; do
 	case $option in
 		h) usage ;;

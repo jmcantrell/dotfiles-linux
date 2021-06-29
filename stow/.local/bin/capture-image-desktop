@@ -22,6 +22,7 @@ Environment Variables:
     FILE_TYPE    extension to use for capture file name (default: $file_type)
 "
 
+unset OPTIND OPTARG
 while getopts ":huws" option; do
     case $option in
     h)

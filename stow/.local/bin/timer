@@ -32,6 +32,7 @@ die() {
 
 unset name
 
+unset OPTIND OPTARG
 while getopts ":hn:" option; do
     case $option in
     h) usage ;;
