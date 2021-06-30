@@ -47,10 +47,10 @@ XTerm*on5Clicks:  line
 XTerm*printAttributes: 0
 
 ! print command saves to file
-XTerm*printerCommand: cat - >~/xterm-`date +%s`.txt
+XTerm.VT100.printerCommand: cat - >~/xterm-`date +%s`.txt
 
 ! key mappings
-XTerm*Translations: #override \
+XTerm.VT100.Translations: #override \
     Shift <Key> Home:   scroll-back(100000000) \n\
     Shift <Key> Up:     scroll-back(1)         \n\
     Shift <Key> Down:   scroll-forw(1)         \n\
