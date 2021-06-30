@@ -1,7 +1,5 @@
-! shell settings
-XTerm*utf8:       1
+XTerm*utf8:       true
 XTerm*locale:     true
-XTerm*loginShell: true
 XTerm*termName:   xterm-256color
 
 ! enable alt keys in vim
@@ -47,7 +45,7 @@ XTerm*on3Clicks: regex [^ \n]+
 XTerm.VT100.printAttributes: 0
 
 ! print command saves to file
-XTerm.VT100.printerCommand: cat - >~/`ts`.txt
+XTerm.VT100.printerCommand: cat - >~/xterm-`date +%s`.txt
 
 ! key mappings
 XTerm.VT100.Translations: #override \
