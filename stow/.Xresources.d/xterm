@@ -38,23 +38,25 @@ XTerm*selectToClipboard:   true
 XTerm*highlightSelection:  true
 XTerm*disallowedWindowOps: SetXprop
 
-! select line without newline
+XTerm*on2Clicks: word
 XTerm*on3Clicks: regex [^ \n]+
+XTerm*on4Clicks: line
 
 ! do not print graphic attributes
-XTerm.VT100.printAttributes: 0
+XTerm*printAttributes: 0
 
 ! print command saves to file
-XTerm.VT100.printerCommand: cat - >~/xterm-`date +%s`.txt
+XTerm*printerCommand: cat - >~/xterm-`date +%s`.txt
 
 ! key mappings
-XTerm.VT100.Translations: #override \
+XTerm*Translations: #override \
     Shift <Key> Home:   scroll-back(100000000) \n\
     Shift <Key> Up:     scroll-back(1)         \n\
     Shift <Key> Down:   scroll-forw(1)         \n\
     Shift <Key> End:    scroll-forw(100000000) \n\
     Ctrl Shift <Key> P: print-everything()     \n\
     Ctrl Shift <Key> N: spawn-new-terminal()   \n\
+    Ctrl Shift <Key> H: set-altscreen(toggle)  \n\
     Ctrl <Key> 0:       set-vt-font(d)         \n\
     Ctrl <Key> minus:   smaller-vt-font()      \n\
     Ctrl <Key> equal:   larger-vt-font()       \n\
