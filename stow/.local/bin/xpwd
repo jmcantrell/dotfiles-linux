@@ -64,6 +64,10 @@ tmux_active_pane_pid() {
         awk '{print $NF}' | tr -d '[:space:]'
 }
 
+window_id=
+copy_path_to_clipboard=
+use_notifications=
+
 unset OPTIND OPTARG
 while getopts ":hwcn" option; do
     case $option in
@@ -77,9 +81,11 @@ while getopts ":hwcn" option; do
     esac
 done && shift $((OPTIND - 1))
 
-[[ $window_id ]] || window_id=$1
-[[ $window_id ]] || window_id=$(active-window)
-[[ $window_id ]] || die "no window provided"
+if (($# == 0)); then
+    window_id=$(active-window)
+else
+    window_id=$1
+fi
 
 cwd=$HOME # fallback
 
@@ -125,9 +131,9 @@ if [[ $window_pid ]]; then
     done
 fi
 
-if [[ -n $copy_path_to_clipboard ]]; then
+if [[ $copy_path_to_clipboard ]]; then
     xsel -ib <<<"$cwd"
-    if [[ -n $use_notifications ]]; then
+    if [[ $use_notifications ]]; then
         notify-send -i edit-copy "Working directory copied to clipboard:" "$cwd"
     fi
 fi
