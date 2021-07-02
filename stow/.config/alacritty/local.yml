@@ -1,6 +1,0 @@
-font:
-  size: 8.0
-
-key_bindings:
-  - { key: Insert, mods: Control, action: Copy }
-  - { key: Insert, mods: Shift, action: Paste }

@@ -7,4 +7,3 @@ set -euo pipefail
 export FILE_TYPE=gif
 file=$(capture-video-desktop "$@")
 gifsicle --batch --optimize 3 "$file"
-

@@ -1,4 +1,4 @@
-# Restores the desktop image from last session.
+# Restore the desktop image from last session.
 
 exec setbg &
 

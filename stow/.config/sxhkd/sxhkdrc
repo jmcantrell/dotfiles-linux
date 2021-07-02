@@ -1,3 +1,4 @@
+# Reload configuration.
 ctrl + shift + r
 	killall -USR1 sxhkd
 
@@ -13,6 +14,16 @@ ctrl + super + q
 super + Escape
 	terminal -e glances
 
+super + equal
+    rofi -show calc
+
+super + i
+    rofimoji --action copy
+
+# Copy the path of the active window.
+super + Home
+    xpwd -cn
+
 # Launch apps in working directory of active window:
 
 super + Return
@@ -23,14 +34,6 @@ super + e
 
 super + f
 	cd "$(xpwd)" && terminal -e ranger
-
-# Copy path of working directory:
-
-super + Home; u
-	xpwd -cn # active window
-
-super + Home; w
-	xpwd -cnw # selected window
 
 # Text snippets manager:
 

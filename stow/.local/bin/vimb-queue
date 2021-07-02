@@ -2,13 +2,11 @@
 
 # Add an url to the vimb queue.
 
-set -e
+set -euo pipefail
 
 url=${1:?missing url}
 
 queue=${XDG_CONFIG_HOME:-$HOME/.config}/vimb/queue
 
 mkdir -p "$(dirname "$queue")"
-
-# only add if not already added
-grep -q "^$url$" "$queue" || echo "$url" >>"$queue"
+grep -wq "$url" "$queue" || echo "$url" >>"$queue"

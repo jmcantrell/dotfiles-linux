@@ -5,14 +5,14 @@ set -euo pipefail
 readarray -t files
 
 case $1 in
-    "Delete") trash-put "${files[@]}" ;;
-    "C-w") setbg "${files[0]}" ;;
-    "C-c") realpath "${files[@]}" | xsel -ib ;;
-    "C-e") gimp -ad "${files[@]}" ;;
-    "C-p") krita "${files[@]}" ;;
-    "C-r")
-        for file in "${files[@]}"; do
-            convert -rotate 90 "$file" "$file"
-        done
-        ;;
+"Delete") trash-put "${files[@]}" ;;
+"C-w") setbg "${files[0]}" ;;
+"C-c") realpath "${files[@]}" | xsel -ib ;;
+"C-e") gimp -ad "${files[@]}" ;;
+"C-p") krita "${files[@]}" ;;
+"C-r")
+    for file in "${files[@]}"; do
+        convert -rotate 90 "$file" "$file"
+    done
+    ;;
 esac
