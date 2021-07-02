@@ -2,7 +2,7 @@
 
 # Set the audio volume and show a notification.
 
-set -e
+set -euo pipefail
 
 action=${1:?missing action}
 

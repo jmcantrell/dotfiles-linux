@@ -1,6 +1,8 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-set -e
+# Capture an animated gif from the main camera.
+
+set -euo pipefail
 
 export FILE_TYPE=gif
 file=$(capture-video-camera "$@")

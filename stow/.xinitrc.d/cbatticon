@@ -1,4 +1,4 @@
-# Enable a tray icon to show battery notifications.
+# A tray icon to show battery notifications.
 
 battery=/sys/class/power_supply/BAT0
 

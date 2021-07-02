@@ -2,13 +2,13 @@
 
 # Add and edit vimb bookmarks.
 
-set -e
+set -euo pipefail
 
 bookmarks=${XDG_CONFIG_HOME:-$HOME/.config}/vimb/bookmark
 
 mkdir -p "$(dirname "$bookmarks")"
 
-(( $# == 0 )) && "$EDITOR" "$bookmarks"
+(($# == 0)) && "$EDITOR" "$bookmarks"
 
 url=${1:?missing url}
 title=$2

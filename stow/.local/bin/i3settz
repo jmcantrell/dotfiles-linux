@@ -1,5 +1,8 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # When setting the timezone from the statusbar, be sure to update it.
 
-settz "$@" && i3-msg restart
+set -euo pipefail
+
+settz "$@"
+i3-msg restart

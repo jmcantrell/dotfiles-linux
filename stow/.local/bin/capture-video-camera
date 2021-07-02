@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 delay=${DELAY:-3}
 device=${DEVICE:-/dev/video0}

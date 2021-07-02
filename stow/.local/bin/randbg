@@ -1,5 +1,7 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Set desktop background to random image from a directory.
+
+set -euo pipefail
 
 setbg "$(find "${1:-$HOME/.local/share/backgrounds}" -type f | shuf -n1)"

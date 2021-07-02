@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# set desktop background to the given image
+# Set the desktop background to the given image.
 
-set -e
+set -euo pipefail
 
 image=$1
 background=$HOME/.config/background.png

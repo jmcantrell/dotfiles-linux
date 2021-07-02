@@ -2,12 +2,12 @@
 
 # Get the geometry of the selected window.
 
-set -e
+set -euo pipefail
 
 readarray -t dimensions < <(
-	xwininfo "$@" |
-	grep -Ei "^ *(absolute upper-left [xy]|width|height)" |
-	cut -d: -f2 | tr -d ' '
+    xwininfo "$@" |
+        grep -Ei "^ *(absolute upper-left [xy]|width|height)" |
+        cut -d: -f2 | tr -d ' '
 )
 
 left=${dimensions[0]}

@@ -3,13 +3,13 @@
 # Set the primary output, and ensure save it.
 # Usage: xrandr-primary [output]
 
-set -e
+set -euo pipefail
 
 output=$1
 
 if [[ ! $output ]]; then
-	xrandr | grep '\bprimary\b' | cut -d' ' -f1
-	exit 0
+    xrandr | grep '\bprimary\b' | cut -d' ' -f1
+    exit 0
 fi
 
 xinitrc=$HOME/.xinitrc.d/xrandr-primary

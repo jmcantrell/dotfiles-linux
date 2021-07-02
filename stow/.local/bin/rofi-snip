@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 me=${0##*/}
 usage="Interact with a snippet using dmenu.
@@ -35,13 +35,13 @@ option_names["d"]="delete"
 
 unset OPTIND OPTARG
 while getopts ":hecstd" option; do
-	case $option in
-		h) usage ;;
+    case $option in
+    h) usage ;;
 
-		e|c|s|t|d) snip_option=$option ;;
+    e | c | s | t | d) snip_option=$option ;;
 
-		*) die "invalid option '$option'" ;;
-	esac
+    *) die "invalid option '$option'" ;;
+    esac
 done && shift $((OPTIND - 1))
 
 [[ $snip_option ]] || die "no snippet action provided"

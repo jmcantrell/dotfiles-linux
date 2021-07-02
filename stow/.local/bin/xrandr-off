@@ -2,7 +2,7 @@
 
 # Disconnect any external outputs.
 
-set -e
+set -euo pipefail
 
 primary=$(xrandr-primary)
 

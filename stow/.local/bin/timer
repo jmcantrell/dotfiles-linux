@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 me=${0##*/}
 usage="Sound an alarm after a specified amount of time.
@@ -30,13 +30,15 @@ die() {
     exit 1
 }
 
-unset name
+name=""
 
 unset OPTIND OPTARG
 while getopts ":hn:" option; do
     case $option in
     h) usage ;;
+
     n) name=$OPTARG ;;
+
     *) die "invalid option '$option'" ;;
     esac
 done && shift $((OPTIND - 1))

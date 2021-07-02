@@ -2,7 +2,7 @@
 
 # Take a timestamped btrfs snapshot with an optional tag.
 
-set -e
+set -euo pipefail
 
 ts=$(date +%s)
 tag=$1

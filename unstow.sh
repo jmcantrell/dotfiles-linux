@@ -1,5 +1,5 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 stow ${VERBOSE:+--verbose} --no-folding -d . -t ~ -D stow

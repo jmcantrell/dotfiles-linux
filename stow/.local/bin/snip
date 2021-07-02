@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 me=${0##*/}
 usage="Interact with text snippets.

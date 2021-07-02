@@ -1,6 +1,8 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Get the id of the active window.
+
+set -euo pipefail
 
 xprop -root |
     grep "_NET_ACTIVE_WINDOW(WINDOW)" |

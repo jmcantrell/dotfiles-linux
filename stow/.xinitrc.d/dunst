@@ -1,3 +1,5 @@
+# A notification daemon.
+
 dunst &
 
 # vi:ft=sh
