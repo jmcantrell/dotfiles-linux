@@ -35,8 +35,8 @@
     # Sort messages by urgency.
     sort = yes
 
-    # Display indicators for URLs (U) and actions (A).
-    show_indicators = yes
+    # Disable indicators for URLs (U) and actions (A).
+    show_indicators = no
 
     # Show age of message if older than n seconds.
     show_age_threshold = 60 # -1 to disable
@@ -62,13 +62,9 @@
     # Browser to use for URL actions.
     browser = browser
 
-    # Command to use for context choices.
-    dmenu = rofi -dmenu -p dunst
-
 [shortcuts]
     close = ctrl+grave
     history = ctrl+shift+grave
-    context = ctrl+alt+grave
 
 [frame]
     width = 2
