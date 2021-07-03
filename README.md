@@ -7,7 +7,7 @@ My configuration files and scripts common to all Linux distributions.
 Clone this repository:
 
 ```
-$ git clone https://github.com/jmcantrell/dotfiles-linux.git ~/.dotfiles-linux
+$ git clone git@github.com:jmcantrell/dotfiles-linux.git ~/.dotfiles-linux
 $ cd ~/.dotfiles-linux
 ```
 
