@@ -11,8 +11,8 @@ mkdir -p "$(dirname "$bookmarks")"
 (($# == 0)) && "$EDITOR" "$bookmarks"
 
 url=${1:?missing url}
-title=$2
-tags=$3
+title=${2:-}
+tags=${3:-}
 
 sed -i "/^$url\b/d" "$bookmarks"
 echo -e "$url${title:+\t$title${tags:+\t$tags}}" >>"$bookmarks"

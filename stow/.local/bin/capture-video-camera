@@ -24,18 +24,21 @@ Environment Variables:
     FILE_TYPE    extension to use for capture file name (default: $file_type)
 "
 
+usage() {
+    echo "$usage" >&2
+    exit 0
+}
+
+die() {
+    echo "$me: $*" >&2
+    exit 1
+}
+
 unset OPTIND OPTARG
 while getopts ":h" option; do
     case $option in
-    h)
-        echo "$usage" >&2
-        exit 0
-        ;;
-
-    *)
-        echo "invalid option '$option'" >&2
-        exit 1
-        ;;
+    h) usage ;;
+    *) die "invalid option '$option'" ;;
     esac
 done && shift $((OPTIND - 1))
 
@@ -52,7 +55,7 @@ mkdir -p "$(dirname "$file")"
 options=(-hide_banner -loglevel error)
 options+=(-y -f v4l2 -i "$device" -f alsa -i default)
 
-[[ $DURATION ]] && options+=(-t "$DURATION")
+[[ -n $DURATION ]] && options+=(-t "$DURATION")
 
 canberra-gtk-play -l "$delay" -i message-new-instant
 

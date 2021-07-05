@@ -67,16 +67,13 @@ tmux_active_pane_pid() {
 window_id=
 copy_path_to_clipboard=
 use_notifications=
-
 unset OPTIND OPTARG
 while getopts ":hwcn" option; do
     case $option in
     h) usage ;;
-
     w) window_id=$(selected-window) ;;
     c) copy_path_to_clipboard=1 ;;
     n) use_notifications=1 ;;
-
     *) die "invalid option '$option'" ;;
     esac
 done && shift $((OPTIND - 1))

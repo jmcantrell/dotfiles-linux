@@ -37,17 +37,15 @@ unset OPTIND OPTARG
 while getopts ":hecstd" option; do
     case $option in
     h) usage ;;
-
     e | c | s | t | d) snip_option=$option ;;
-
     *) die "invalid option '$option'" ;;
     esac
 done && shift $((OPTIND - 1))
 
-[[ $snip_option ]] || die "no snippet action provided"
+[[ -z $snip_option ]] && die "no snippet action provided"
 
 name=$(snip -l | rofi -dmenu -p "${option_names[$snip_option]} snippet")
 
-[[ $name ]] || die "no snippet selected"
+[[ -z $name ]] && die "no snippet selected"
 
 snip -"$snip_option" "$name"

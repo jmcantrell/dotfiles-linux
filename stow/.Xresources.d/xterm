@@ -1,6 +1,6 @@
-XTerm*utf8:       true
-XTerm*locale:     true
-XTerm*termName:   xterm-256color
+XTerm*utf8:     true
+XTerm*locale:   true
+XTerm*termName: xterm-256color
 
 ! enable alt keys in vim
 XTerm*metaSendsEscape: true
@@ -38,10 +38,10 @@ XTerm*selectToClipboard:   true
 XTerm*highlightSelection:  true
 XTerm*disallowedWindowOps: SetXprop
 
-XTerm*on2Clicks:  regex [^/@ \n]+
-XTerm*on3Clicks:  regex [^ \n]+
-XTerm*on4Clicks:  regex [^#$%uu]+
-XTerm*on5Clicks:  line
+XTerm*on2Clicks: regex [^/@ \n]+
+XTerm*on3Clicks: regex [^ \n]+
+XTerm*on4Clicks: regex [^#$%uu]+
+XTerm*on5Clicks: line
 
 ! do not print graphic attributes
 XTerm*printAttributes: 0

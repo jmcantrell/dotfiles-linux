@@ -4,10 +4,10 @@
 
 set -euo pipefail
 
-cache=${XDG_CACHE_HOME:-$HOME/.cache}
-config=${XDG_CONFIG_HOME:-$HOME/.config}
+cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}
+config_dir=${XDG_CONFIG_HOME:-$HOME/.config}
 
 killall vimb
 
-rm -rfv "$cache"/vimb
-rm -fv "$config"/vimb/{closed,command,cookies,history,hsts,search}
+rm -rfv "$cache_dir"/vimb
+rm -fv "$config_dir"/vimb/{closed,command,cookies,history,hsts,search}

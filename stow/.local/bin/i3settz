@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# When setting the timezone from the statusbar, be sure to update it.
+# When setting the timezone from the statusbar, be sure to let i3 know.
 
 set -euo pipefail
 

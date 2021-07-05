@@ -1,6 +1,6 @@
+#!/usr/bin/env sh
+
 # Inform systemd of current display.
 # This allows user services to run commands that need DISPLAY.
 
 exec systemctl --user import-environment DISPLAY &
-
-# vi:ft=sh

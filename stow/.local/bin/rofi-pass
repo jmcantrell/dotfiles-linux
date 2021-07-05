@@ -51,17 +51,15 @@ unset OPTIND OPTARG
 while getopts ":hgn:" option; do
     case $option in
     h) usage ;;
-
     g) action="generate" ;;
     n) length=$OPTARG ;;
-
     *) die "invalid option '$option'" ;;
     esac
 done && shift $((OPTIND - 1))
 
 name=$(pass_names | rofi -dmenu -p "$action password for")
 
-if [[ $name ]]; then
+if [[ -n $name ]]; then
     case $action in
     copy) pass -c "$name" ;;
     generate) pass generate -c -f "$name" "$length" ;;

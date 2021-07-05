@@ -22,33 +22,33 @@ Environment Variables:
     FILE_TYPE    extension to use for capture file name (default: $file_type)
 "
 
+usage() {
+    echo "$usage" >&2
+    exit 0
+}
+
+die() {
+    echo "$me: $*" >&2
+    exit 1
+}
+
 unset OPTIND OPTARG
 while getopts ":huws" option; do
     case $option in
-    h)
-        echo "$usage" >&2
-        exit 0
-        ;;
-
+    h) usage ;;
     u)
         name="window"
         geometry=$(xwinrect -id "$(active-window)")
         ;;
-
     w)
         name="window"
         geometry=$(xwinrect -id "$(selected-window)")
         ;;
-
     s)
         name="region"
         geometry=$(xrectsel)
         ;;
-
-    *)
-        echo "invalid option '$option'"
-        exit 1
-        ;;
+    *) die "invalid option '$option'" ;;
     esac
 done && shift $((OPTIND - 1))
 
@@ -57,7 +57,7 @@ mkdir -p "$(dirname "$file")"
 
 options=(-window root)
 
-[[ $geometry ]] && options+=(-crop "$geometry")
+[[ -n $geometry ]] && options+=(-crop "$geometry")
 
 import "${options[@]}" "$file"
 

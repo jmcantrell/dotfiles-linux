@@ -5,7 +5,7 @@ set -euo pipefail
 readarray -t files
 
 case $1 in
-"Delete") trash-put "${files[@]}" ;;
+"Delete") trash "${files[@]}" ;;
 "C-w") setbg "${files[0]}" ;;
 "C-c") realpath "${files[@]}" | xsel -ib ;;
 "C-e") gimp -ad "${files[@]}" ;;

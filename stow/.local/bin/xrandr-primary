@@ -5,7 +5,7 @@
 
 set -euo pipefail
 
-output=${1:-""}
+output=${1:-}
 
 if [[ -z $output ]]; then
     xrandr | grep '\bprimary\b' | cut -d' ' -f1

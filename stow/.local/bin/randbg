@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # Set desktop background to random image from a directory.
+# Usage: randbg [DIRECTORY]
 
 set -euo pipefail
 

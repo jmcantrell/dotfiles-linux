@@ -59,21 +59,18 @@ edit_snippet() {
 copy_snippet() {
     local name=$1
     xsel --input --clipboard <"$(snippet_file_required "$name")"
-    notify-send -i edit-copy \
-        "Snippet Text for '$name' Copied to the Clipboard"
+    notify-send -i edit-copy "Snippet Text for '$name' Copied to the Clipboard"
 }
 
 save_snippet() {
     local name=$1
     mkdir -p "$snippets_dir"
     xsel --output --clipboard >"$(snippet_file "$name")"
-    notify-send -i document-save \
-        "Snippet Text for '$name' Saved from the Clipboard"
+    notify-send -i document-save "Snippet Text for '$name' Saved from the Clipboard"
 }
 
 type_snippet() {
-    xdotool type --clearmodifiers --delay 25 \
-        --file "$(snippet_file_required "$1")"
+    xdotool type --clearmodifiers --delay 25 --file "$(snippet_file_required "$1")"
 }
 
 delete_snippet() {
@@ -86,7 +83,6 @@ unset OPTIND OPTARG
 while getopts ":hlp:e:c:s:t:d:" option; do
     case $option in
     h) usage ;;
-
     l) list_snippets ;;
     p) print_snippet "$OPTARG" ;;
     e) edit_snippet "$OPTARG" ;;
@@ -94,7 +90,6 @@ while getopts ":hlp:e:c:s:t:d:" option; do
     s) save_snippet "$OPTARG" ;;
     t) type_snippet "$OPTARG" ;;
     d) delete_snippet "$OPTARG" ;;
-
     *) die "invalid option '$option'" ;;
     esac
 done && shift $((OPTIND - 1))

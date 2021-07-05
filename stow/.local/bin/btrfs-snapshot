@@ -4,8 +4,8 @@
 
 set -euo pipefail
 
+tag=${1:-}
 ts=$(date +%s)
-tag=$1
 
 for name in @ @var @home; do
     snapshot_dir=/.snapshots/$name
@@ -14,6 +14,6 @@ for name in @ @var @home; do
 
     sudo btrfs subvolume snapshot -r "/${name#@}" "$ts"
 
-    [[ $tag ]] && sudo ln -sfvT "$ts" "$tag"
+    [[ -n $tag ]] && sudo ln -sfvT "$ts" "$tag"
     sudo ln -sfvT "$ts" latest
 done
