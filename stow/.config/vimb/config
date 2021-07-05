@@ -32,11 +32,11 @@ nmap ,q :sh! gvim ~/.config/vimb/queue<CR>
 # Start save command with download path.
 nmap <C-s> :save ~/Downloads/
 
+set download-path=~/Downloads
+
 set home-page=https://duckduckgo.com
 
 set editor-command=visual %s
-
-set download-path=~/Downloads
 
 set images=true
 set scripts=true
@@ -87,5 +87,3 @@ nmap sy :open youtube<Space>
 
 shortcut-add map=https://maps.google.com/maps?q=$0
 nmap sm :open map<Space>
-
-handler-add magnet=terminal -e download %s
