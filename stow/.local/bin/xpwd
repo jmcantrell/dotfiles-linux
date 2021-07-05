@@ -81,11 +81,7 @@ while getopts ":hwcn" option; do
     esac
 done && shift $((OPTIND - 1))
 
-if (($# == 0)); then
-    window_id=$(active-window)
-else
-    window_id=$1
-fi
+window_id=${1:-$(active-window)}
 
 cwd=$HOME # fallback
 
