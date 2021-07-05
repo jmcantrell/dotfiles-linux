@@ -1,5 +1,5 @@
 # A notification daemon.
 
-dunst &
+exec dunst &
 
 # vi:ft=sh
