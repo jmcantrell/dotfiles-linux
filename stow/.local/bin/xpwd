@@ -127,9 +127,9 @@ if [[ $window_pid ]]; then
     done
 fi
 
-if [[ $copy_path_to_clipboard ]]; then
+if [[ -n $copy_path_to_clipboard ]]; then
     xsel -ib <<<"$cwd"
-    if [[ $use_notifications ]]; then
+    if [[ -n $use_notifications ]]; then
         notify-send -i edit-copy "Working directory copied to clipboard:" "$cwd"
     fi
 fi
