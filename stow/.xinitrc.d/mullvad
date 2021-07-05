@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-
 # A tray icon for Mullvad VPN.
 
 which mullvad-vpn &>/dev/null && exec mullvad-vpn &
+
+# vi:ft=sh

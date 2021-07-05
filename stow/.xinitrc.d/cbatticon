@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 # A tray icon to show battery notifications.
 
 battery=/sys/class/power_supply/BAT0
@@ -7,3 +5,5 @@ battery=/sys/class/power_supply/BAT0
 if [[ -d $battery ]]; then
     exec cbatticon -n -c notify-battery -l 20 -r 5 -x "terminal -hold -e cat '$battery/uevent'" &
 fi
+
+# vi:ft=sh

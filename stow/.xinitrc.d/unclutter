@@ -1,5 +1,5 @@
-#!/usr/bin/env sh
-
 # Hide the mouse cursor while typing.
 
 exec unclutter &
+
+# vi:ft=sh

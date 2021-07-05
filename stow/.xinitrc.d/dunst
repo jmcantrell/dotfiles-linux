@@ -1,5 +1,5 @@
-#!/usr/bin/env sh
-
 # A notification daemon.
 
 exec dunst &
+
+# vi:ft=sh
