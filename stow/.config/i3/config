@@ -148,13 +148,12 @@ bindsym $super+semicolon exec i3-input -P:
 # Menu to interact with the system.
 set $mode_session session: (q)uit, (l)ock, (s)uspend, (h)ibernate, (r)eboot, (p)oweroff
 mode "$mode_session" {
-	bindsym q $fork i3-msg exit,         mode "default"
-	bindsym l $fork xlock,               mode "default"
-	bindsym s $fork systemctl suspend,   mode "default"
-	bindsym h $fork systemctl hibernate, mode "default"
-	bindsym r $fork systemctl reboot,    mode "default"
-	bindsym p $fork systemctl poweroff,  mode "default"
-
+	bindsym q $fork i3-msg exit,           mode "default"
+	bindsym l $fork loginctl lock-session, mode "default"
+	bindsym s $fork systemctl suspend,     mode "default"
+	bindsym h $fork systemctl hibernate,   mode "default"
+	bindsym r $fork systemctl reboot,      mode "default"
+	bindsym p $fork systemctl poweroff,    mode "default"
 	bindsym Return mode "default"
 	bindsym Escape mode "default"
 }

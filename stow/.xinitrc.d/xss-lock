@@ -1,0 +1,5 @@
+# Lock the display when idle or suspending.
+
+xss-lock --transfer-sleep-lock -- xlock &
+
+# vi:ft=sh
