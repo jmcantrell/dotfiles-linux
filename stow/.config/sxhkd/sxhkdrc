@@ -20,6 +20,10 @@ super + equal
 super + i
     rofimoji --action copy
 
+# Open whatever is on the clipboard.
+super + o
+    xdg-open "$(xsel -ob)"
+
 # Copy the path of the active window.
 super + Home
     xpwd -cn
