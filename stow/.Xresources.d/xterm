@@ -2,6 +2,10 @@ XTerm*utf8:     true
 XTerm*locale:   true
 XTerm*termName: xterm-256color
 
+! disable alt-enter key
+! fullscreen still allowed by window manager
+XTerm*fullscreen: never
+
 ! enable alt keys in vim
 XTerm*metaSendsEscape: true
 XTerm*eightBitInput:   true
@@ -63,7 +67,7 @@ XTerm.VT100.Translations: #override \
     Ctrl <Key> equal:   larger-vt-font()       \n\
     Ctrl <Btn5Down>:    smaller-vt-font()      \n\
     Ctrl <Btn4Down>:    larger-vt-font()       \n\
-    Alt <Key>Return:    ignore()               \n\
+
 
 ! base colors
 XTerm*background:  black
