@@ -48,7 +48,7 @@
     sticky_history = yes
 
     # Allows parameter to -i to be just a name instead of a path.
-    icon_path = /usr/share/icons/gnome/32x32/status/:/usr/share/icons/gnome/32x32/devices/:/usr/share/icons/gnome/32x32/actions/:/usr/share/icons/gnome/32x32/apps/
+    icon_path = /usr/share/icons/gnome/32x32/status/:/usr/share/icons/gnome/32x32/devices/:/usr/share/icons/gnome/32x32/actions/:/usr/share/icons/gnome/32x32/apps/:/usr/share/icons/hicolor/32x32/apps/
 
     # Position the icon to the left of the text.
     icon_position = left
