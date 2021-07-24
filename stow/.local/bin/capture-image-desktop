@@ -57,7 +57,7 @@ mkdir -p "$(dirname "$file")"
 
 options=(-window root)
 
-[[ -n $geometry ]] && options+=(-crop "$geometry")
+[[ -v geometry ]] && options+=(-crop "$geometry")
 
 import "${options[@]}" "$file"
 
