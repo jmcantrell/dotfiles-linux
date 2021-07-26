@@ -5,4 +5,5 @@
 
 set -euo pipefail
 
-setbg "$(find "${1:-$HOME/.local/share/backgrounds}" -type f | shuf -n1)"
+backgrounds=$(xdg-user-dir PICTURES)/backgrounds
+setbg "$(find "${1:-$backgrounds}" -type f | shuf -n1)"
