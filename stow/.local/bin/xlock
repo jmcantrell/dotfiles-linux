@@ -27,13 +27,13 @@ mogrify -scale 10% -scale 1000% "$image" # pixelate
 locker=(i3lock -nft -p default -i "$image")
 trap 'pkill -x -P $$ ${locker[0]}' INT TERM
 
-# This branch only occurs when using xss-lock and only during suspend.
 if [[ -v XSS_SLEEP_LOCK_FD && -e /dev/fd/$XSS_SLEEP_LOCK_FD ]]; then
-    "${locker[@]}" "$@" {XSS_SLEEP_LOCK_FD}<&- & # background locker process
-    exec {XSS_SLEEP_LOCK_FD}<&-                  # continue suspend
-    wait -f                                      # wait for locker to close
+    "${locker[@]}" {XSS_SLEEP_LOCK_FD}<&- &
+    exec {XSS_SLEEP_LOCK_FD}<&-
 else
-    "${locker[@]}" "$@"
+    "${locker[@]}" &
 fi
+
+wait -f
 
 dunstctl set-paused "$dunst_paused"

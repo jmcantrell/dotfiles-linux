@@ -1,5 +1,0 @@
-# A window compositor.
-
-exec picom &
-
-# vi:ft=sh
