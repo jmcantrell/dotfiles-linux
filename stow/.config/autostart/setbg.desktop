@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=setbg
+Comment=Set the background image
+Exec=setbg
+Type=Application

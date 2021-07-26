@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=systemd-display
+Comment=Inform systemd of the current display
+Exec=systemctl --user import-environment DISPLAY
+Type=Application

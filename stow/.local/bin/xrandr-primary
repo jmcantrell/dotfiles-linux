@@ -8,10 +8,21 @@ set -euo pipefail
 output=${1:-}
 
 if [[ -z $output ]]; then
-    xrandr | grep '\bprimary\b' | cut -d' ' -f1
+    xrandr | grep -w primary | cut -d' ' -f1
     exit 0
 fi
 
-xinitrc=$HOME/.xinitrc.d/xrandr-primary
-echo "xrandr --output '$output' --primary &" >"$xinitrc"
-sh "$xinitrc"
+autostart=${XDG_CONFIG_HOME:-$HOME/.config}/autostart/xrandr-primary.desktop
+exec_cmd=(xrandr --output "$output" --primary)
+
+mkdir -p "$(dirname "$autostart")"
+
+cat >"$autostart" <<-EOF
+[Desktop Entry]
+Name=${0##*/}
+Comment=Set the primary display
+Exec=${exec_cmd[*]}
+Type=Application
+EOF
+
+exec "${exec_cmd[@]}" &

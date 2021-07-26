@@ -1,5 +1,0 @@
-# Restore the desktop image from last session.
-
-exec setbg &
-
-# vi:ft=sh

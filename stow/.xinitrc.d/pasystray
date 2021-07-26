@@ -1,5 +1,0 @@
-# Interact with sound mixer through a tray icon.
-
-exec pasystray &
-
-# vi:ft=sh

@@ -1,5 +1,0 @@
-# Listen for keyboard shortcuts and execute associated commands.
-
-exec sxhkd &
-
-# vi:ft=sh

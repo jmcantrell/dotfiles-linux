@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=xss-lock
+Comment=Lock the desktop session on idle or sleep
+Exec=xss-lock --transfer-sleep-lock -- xlock
+Type=Application

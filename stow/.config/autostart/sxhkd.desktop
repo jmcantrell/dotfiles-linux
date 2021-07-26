@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=sxhkd
+Comment=Define keyboard shortcuts
+Exec=sxhkd
+Type=Application
