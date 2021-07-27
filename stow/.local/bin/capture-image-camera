@@ -47,11 +47,11 @@ mkdir -p "$(dirname "$file")"
 options=(-hide_banner -loglevel error)
 options+=(-y -f v4l2 -i "$device" -frames:v 1)
 
-canberra-gtk-play -l "$delay" -i message-new-instant
+canberra-gtk-play -l "$delay" -i message
 
 ffmpeg "${options[@]}" "$file"
 
-canberra-gtk-play -i camera-shutter &
+canberra-gtk-play -i screen-capture &
 notify-send -i media-record "Captured Photo" "<u>${file/$HOME/\~}</u>" &
 
 echo "$file"

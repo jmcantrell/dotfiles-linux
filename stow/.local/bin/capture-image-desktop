@@ -61,7 +61,7 @@ options=(-window root)
 
 import "${options[@]}" "$file"
 
-canberra-gtk-play -i camera-shutter &
+canberra-gtk-play -i screen-capture &
 notify-send -i media-record "Captured Screenshot" "<u>${file/$HOME/\~}</u>" &
 
 echo "$file"

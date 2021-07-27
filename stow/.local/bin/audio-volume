@@ -20,7 +20,7 @@ muted=$(pamixer --get-mute) || true # -e will cause exit otherwise
 
 volume=$(pamixer --get-volume)
 
-canberra-gtk-play -i audio-volume-change &
+canberra-gtk-play -i message &
 
 icon="audio-volume-high"
 [[ $muted == true ]] && icon="audio-volume-muted"

@@ -57,13 +57,13 @@ options+=(-y -f v4l2 -i "$device" -f alsa -i default)
 
 [[ -n $DURATION ]] && options+=(-t "$DURATION")
 
-canberra-gtk-play -l "$delay" -i message-new-instant
+canberra-gtk-play -l "$delay" -i message
 
 touch "$ffmpeg_stdin"
 trap 'rm -f "$ffmpeg_stdin"' INT TERM EXIT
 ffmpeg "${options[@]}" "$file" <"$ffmpeg_stdin"
 
-canberra-gtk-play -i camera-shutter &
+canberra-gtk-play -i screen-capture &
 notify-send -i media-record "Captured Video" "<u>${file/$HOME/\~}</u>" &
 
 echo "$file"
