@@ -9,7 +9,6 @@ order += "wireless _first_"
 order += "ethernet _first_"
 order += "dpms"
 order += "disk /home"
-order += "load"
 order += "cpu_usage"
 order += "memory"
 order += "tztime pretty"
@@ -22,7 +21,8 @@ ethernet _first_ {
 wireless _first_ {
 	format_up = "wl %essid %ip"
 	format_down = "wl down"
-	on_click 1 = "exec --no-startup-id terminal -e iwctl"
+	on_click 1 = "exec --no-startup-id terminal -hold -e systemctl status iwd.service"
+	on_click 3 = "exec --no-startup-id terminal -e iwctl"
 }
 
 dpms {
@@ -36,14 +36,9 @@ disk "/home" {
 	on_click 3 = "exec --no-startup-id terminal -e ncdu ~"
 }
 
-load {
-	format = "load %1min %5min %15min"
-	on_click 1 = "exec --no-startup-id terminal -e top"
-}
-
 cpu_usage {
 	format = "cpu %usage"
-	on_click 1 = "exec --no-startup-id terminal -e glances"
+	on_click 1 = "exec --no-startup-id terminal -e top"
 }
 
 memory {
@@ -53,6 +48,6 @@ memory {
 
 tztime pretty {
 	format = "%c"
-	on_click 1 = "exec --no-startup-id date --rfc-3339=seconds | cbi"
-	on_click 3 = "exec --no-startup-id terminal -e i3settz"
+	on_click 1 = "exec --no-startup-id terminal -e i3settz"
+	on_click 3 = "exec --no-startup-id date --rfc-3339=seconds | xsel -ib"
 }
