@@ -78,7 +78,9 @@ while getopts ":hwcn" option; do
     esac
 done && shift $((OPTIND - 1))
 
-window_id=${1:-$(active-window)}
+if [[ -z $window_id ]]; then
+    window_id=${1:-$(active-window)}
+fi
 
 cwd=$HOME # fallback
 
@@ -87,7 +89,7 @@ window_pid=$(
         awk -F= '{print $2}' | tr -d '[:space:]'
 )
 
-if [[ $window_pid ]]; then
+if [[ -n $window_pid ]]; then
     readarray -t lines < <(
         pstree --long --show-pids --ascii --hide-threads "$window_pid" |
             head -n1 |
