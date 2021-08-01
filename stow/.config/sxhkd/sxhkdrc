@@ -11,9 +11,6 @@ alt + Tab
 ctrl + super + q
 	xlock
 
-super + Escape
-	terminal -e glances
-
 super + equal
     rofi -show calc
 
