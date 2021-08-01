@@ -3,7 +3,7 @@
     follow = keyboard
 
     # Notifications are max 3 lines and at the bottom right.
-    geometry = "0x3-10-10"
+    geometry = "300x3-10-10"
 
     # Show a progress bar with the option: -h int:value:<n>
     progress_bar = true
