@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+for family in ip ip6 inet arp bridge; do
+    readarray -t tables < <(
+        sudo nft list tables "$family" |
+            grep -w table |
+            awk '{print $3}'
+    )
+
+    for table in "${tables[@]}"; do
+        readarray -t chains < <(
+            sudo nft list table "$family" "$table" |
+                grep -w chain |
+                awk '{print $2}'
+        )
+
+        for chain in "${chains[@]}"; do
+            echo "flushing chain: $chain" >&2
+            sudo nft flush chain "$family" "$table" "$chain"
+            sudo nft delete chain "$family" "$table" "$chain"
+        done
+
+        echo "flushing table: $table" >&2
+        sudo nft flush table "$family" "$table"
+        sudo nft delete table "$family" "$table"
+    done
+done
