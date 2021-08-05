@@ -12,6 +12,6 @@ sudo ufw allow llmnr
 sudo gpasswd -a "$USER" video
 
 sudo gpasswd -a "$USER" locate
-updatedb
+sudo updatedb
 
 sudo chsh -s /bin/zsh "$USER"
