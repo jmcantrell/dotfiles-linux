@@ -37,18 +37,18 @@ name=$(device_name "$id")
 conf=/etc/X11/xorg.conf.d/99-touchpad-$id.conf
 
 sudo tee "$conf" >/dev/null <<-EOF
-Section \"InputClass\"
-	Identifier \"touchpad\"
-	MatchProduct \"$name\"
-	Driver \"libinput\"
-	Option \"AccelSpeed\"          \"1\"
-	Option \"DisableWhileTyping\"  \"on\"
-	Option \"HorizontalScrolling\" \"on\"
-	Option \"NaturalScrolling\"    \"on\"
-	Option \"ScrollMethod\"        \"twofinger\"
-	Option \"Tapping\"             \"on\"
-	Option \"TappingButtonMap\"    \"lrm\"
-	Option \"TappingDrag\"         \"on\"
+Section "InputClass"
+	Identifier "touchpad"
+	MatchProduct "$name"
+	Driver "libinput"
+	Option "AccelSpeed"          "1"
+	Option "DisableWhileTyping"  "on"
+	Option "HorizontalScrolling" "on"
+	Option "NaturalScrolling"    "on"
+	Option "ScrollMethod"        "twofinger"
+	Option "Tapping"             "on"
+	Option "TappingButtonMap"    "lrm"
+	Option "TappingDrag"         "on"
 EndSection
 EOF
 
