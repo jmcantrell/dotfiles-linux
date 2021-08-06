@@ -7,15 +7,14 @@ set -euo pipefail
 wakeup="/proc/acpi/wakeup"
 service="/etc/systemd/system/disable-usb-wakeup.service"
 
-devices=$(grep -Ev '^[[:space:]]' "$wakeup" | grep -E '^(EHC|XHC)' | awk '{print $1}')
-devices=$(printf "%s" "${devices[@]}")
+devices=$(grep -v '^[[:space:]]' "$wakeup" | grep '^[EX]HC' | awk '{print $1}' | tr -d '[:space:]')
 
 sudo tee "$service" >/dev/null <<-EOF
 [Unit]
 Description=Disable ACPI wakeup by USB devices
 
 [Service]
-ExecStart=/bin/bash -c \"echo $devices >>/proc/acpi/wakeup\"
+ExecStart=/bin/bash -c "echo $devices >>/proc/acpi/wakeup"
 
 [Install]
 WantedBy=multi-user.target
