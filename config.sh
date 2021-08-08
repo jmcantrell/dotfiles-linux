@@ -2,12 +2,6 @@
 
 set -euo pipefail
 
-sudo ufw enable
-sudo ufw default deny
-sudo ufw allow ssh
-sudo ufw allow mdns
-sudo ufw allow llmnr
-
 # Needed to change screen brightness.
 sudo gpasswd -a "$USER" video
 
