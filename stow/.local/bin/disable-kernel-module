@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# Disable a kernel module.
+
+set -euo pipefail
+
+mod_name=$1
+
+if ! modprobe --show --quiet "$mod_name"; then
+    echo "invalid module: $mod_name" >&2
+    exit 1
+fi
+
+# Ensure that the module is not loaded during boot.
+conf_file=/etc/modprobe.d/disable-"$mod_name".conf
+sudo tee "$conf_file" >/dev/null <<<"blacklist $mod_name"
+
+# If the module is loaded, unload it.
+if lsmod | grep -wq "^$mod_name"; then
+    sudo rmmod -v "$mod_name"
+fi
