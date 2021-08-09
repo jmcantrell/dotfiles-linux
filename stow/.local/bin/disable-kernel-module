@@ -16,6 +16,6 @@ conf_file=/etc/modprobe.d/disable-"$mod_name".conf
 sudo tee "$conf_file" >/dev/null <<<"blacklist $mod_name"
 
 # If the module is loaded, unload it.
-if lsmod | grep -wq "^$mod_name"; then
+if grep -wq "^$mod_name" /proc/modules; then
     sudo rmmod -v "$mod_name"
 fi
