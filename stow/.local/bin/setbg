@@ -5,7 +5,7 @@
 set -eu
 
 image=${1:-}
-background=$HOME/.config/background.png
+background=${XDG_CONFIG_HOME:-$HOME/.config}/background.png
 
 if [[ -f $image ]]; then
     convert "$image" "$background"
