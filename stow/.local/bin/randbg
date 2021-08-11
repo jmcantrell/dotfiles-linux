@@ -3,7 +3,7 @@
 # Set desktop background to random image from a directory.
 # Usage: randbg [DIRECTORY]
 
-set -euo pipefail
+set -eu
 
 backgrounds=$(xdg-user-dir PICTURES)/backgrounds
 setbg "$(find "${1:-$backgrounds}" -type f | shuf -n1)"

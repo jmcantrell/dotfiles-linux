@@ -2,6 +2,6 @@
 
 # Get the id of the selected window.
 
-set -euo pipefail
+set -eu
 
 xwininfo | grep -i "window id:" | cut -d' ' -f4

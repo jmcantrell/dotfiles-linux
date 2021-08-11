@@ -2,7 +2,7 @@
 
 # Persist settings for a touchpad.
 
-set -euo pipefail
+set -eu
 
 device_name() {
     xinput --list --name-only "${1:?missing device id}"

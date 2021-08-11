@@ -2,7 +2,7 @@
 
 # Set all connected outputs to mirror primary.
 
-set -euo pipefail
+set -eu
 
 primary=$(xrandr-primary)
 xrandr-detect --same-as "$primary" "$@"

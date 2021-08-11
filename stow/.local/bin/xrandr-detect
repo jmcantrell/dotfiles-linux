@@ -2,7 +2,7 @@
 
 # Enable any connected outputs.
 
-set -euo pipefail
+set -eu
 
 xrandr | grep '\bconnected\b' | cut -d' ' -f1 |
     xargs -r -I{} xrandr --output "{}" --auto "$@"

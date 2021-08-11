@@ -2,7 +2,7 @@
 
 # Add and edit vimb bookmarks.
 
-set -euo pipefail
+set -eu
 
 bookmarks=${XDG_CONFIG_HOME:-$HOME/.config}/vimb/bookmark
 

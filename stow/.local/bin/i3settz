@@ -2,7 +2,7 @@
 
 # When setting the timezone from the statusbar, be sure to let i3 know.
 
-set -euo pipefail
+set -eu
 
 settz "$@"
 i3-msg restart

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -eu
 
 for family in ip ip6 inet arp bridge; do
     readarray -t tables < <(

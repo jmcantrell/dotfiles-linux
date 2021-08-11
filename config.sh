@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -eu
 
 # Needed to change screen brightness.
 sudo gpasswd -a "$USER" video

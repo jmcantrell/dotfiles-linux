@@ -2,7 +2,7 @@
 
 # Select a timezone.
 
-set -euo pipefail
+set -eu
 
 tz=${1:-$(tzselect)}
 

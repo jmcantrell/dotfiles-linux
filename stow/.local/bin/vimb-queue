@@ -2,7 +2,7 @@
 
 # Add an url to the vimb queue.
 
-set -euo pipefail
+set -eu
 
 url=${1:?missing url}
 

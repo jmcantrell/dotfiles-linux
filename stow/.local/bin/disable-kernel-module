@@ -2,7 +2,7 @@
 
 # Disable a kernel module.
 
-set -euo pipefail
+set -eu
 
 mod_name=$1
 

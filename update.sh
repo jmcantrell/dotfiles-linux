@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -eu
 
 git pull origin master

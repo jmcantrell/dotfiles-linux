@@ -2,7 +2,7 @@
 
 # Capture an animated gif of the desktop.
 
-set -euo pipefail
+set -eu
 
 export FILE_TYPE=gif
 file=$(capture-video-desktop "$@")

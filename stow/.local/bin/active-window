@@ -2,7 +2,7 @@
 
 # Get the id of the active window.
 
-set -euo pipefail
+set -eu
 
 xprop -root |
     grep "_NET_ACTIVE_WINDOW(WINDOW)" |

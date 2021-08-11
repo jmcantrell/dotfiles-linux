@@ -2,7 +2,7 @@
 
 # Disable the ability for USB devices to wake up the system.
 
-set -euo pipefail
+set -eu
 
 wakeup="/proc/acpi/wakeup"
 service="/etc/systemd/system/disable-usb-wakeup.service"

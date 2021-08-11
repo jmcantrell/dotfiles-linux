@@ -2,7 +2,7 @@
 
 # Wrapper for i3lock to create a lock image and delay notifications.
 
-set -euo pipefail
+set -eu
 
 dunst_paused=$(dunstctl is-paused)
 

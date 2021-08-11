@@ -2,7 +2,7 @@
 
 # Get the geometry of the selected window.
 
-set -euo pipefail
+set -eu
 
 readarray -t dimensions < <(
     xwininfo "$@" |

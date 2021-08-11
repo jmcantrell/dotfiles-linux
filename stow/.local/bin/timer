@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -eu
 
 me=${0##*/}
 usage="Sound an alarm after a specified amount of time.

@@ -2,7 +2,7 @@
 
 # Display battery warnings and hibernate when almost empty.
 
-set -euo pipefail
+set -eu
 
 battery_num=0
 low_percent=25

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -eu
 
 delay=${DELAY:-1}
 file_type=${FILE_TYPE:-mp4}

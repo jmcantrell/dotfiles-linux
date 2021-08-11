@@ -2,7 +2,7 @@
 
 # Set the desktop background to the given image.
 
-set -euo pipefail
+set -eu
 
 image=${1:-}
 background=$HOME/.config/background.png

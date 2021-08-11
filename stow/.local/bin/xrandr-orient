@@ -3,7 +3,7 @@
 # Enable and set an output to be oriented relative to primary.
 # Usage: xrandr-orient <edge>
 
-set -euo pipefail
+set -eu
 
 primary=$(xrandr-primary)
 
