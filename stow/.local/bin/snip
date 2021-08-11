@@ -90,6 +90,6 @@ while getopts ":hlp:e:c:s:t:d:" option; do
     s) save_snippet "$OPTARG" ;;
     t) type_snippet "$OPTARG" ;;
     d) delete_snippet "$OPTARG" ;;
-    *) die "invalid option '$option'" ;;
+    *) die "invalid option: $option" ;;
     esac
 done && shift $((OPTIND - 1))

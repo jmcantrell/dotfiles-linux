@@ -60,7 +60,7 @@ while getopts ":huwsm" option; do
         follow_mouse=1
         geometry=$(xrectsel)
         ;;
-    *) die "invalid option '$option'" ;;
+    *) die "invalid option: $option" ;;
     esac
 done && shift $((OPTIND - 1))
 

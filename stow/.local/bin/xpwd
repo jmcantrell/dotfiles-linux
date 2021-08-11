@@ -74,7 +74,7 @@ while getopts ":hwcn" option; do
     w) window_id=$(selected-window) ;;
     c) copy_path_to_clipboard=1 ;;
     n) use_notifications=1 ;;
-    *) die "invalid option '$option'" ;;
+    *) die "invalid option: $option" ;;
     esac
 done && shift $((OPTIND - 1))
 
