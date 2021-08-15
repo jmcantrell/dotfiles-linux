@@ -53,9 +53,10 @@ while getopts ":hgn:" option; do
     h) usage ;;
     g) action="generate" ;;
     n) length=$OPTARG ;;
-    *) die "invalid option: $option" ;;
+    *) die "invalid option: $OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))
+unset option OPTIND OPTARG
 
 name=$(pass_names | rofi -dmenu -p "$action password for")
 

@@ -74,9 +74,10 @@ while getopts ":hwcn" option; do
     w) window_id=$(selected-window) ;;
     c) copy_path_to_clipboard=1 ;;
     n) use_notifications=1 ;;
-    *) die "invalid option: $option" ;;
+    *) die "invalid option: $OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))
+unset option OPTIND OPTARG
 
 if [[ -z $window_id ]]; then
     window_id=${1:-$(active-window)}

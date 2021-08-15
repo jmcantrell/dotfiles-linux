@@ -37,9 +37,10 @@ unset OPTIND OPTARG
 while getopts ":h" option; do
     case $option in
     h) usage ;;
-    *) die "invalid option: $option" ;;
+    *) die "invalid option: $OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))
+unset option OPTIND OPTARG
 
 file=${1:-$(xdg-user-dir PICTURES)/camera-$(date +%s).$file_type}
 mkdir -p "$(dirname "$file")"
