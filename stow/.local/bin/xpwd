@@ -115,7 +115,7 @@ if [[ -n $window_pid ]]; then
 
         # Programs like vim and ranger use other tools to do their work.
         # These should never have their own window, so it's safe to ignore them.
-        xclip | ueberzug) continue ;;
+        xsel | xclip | ueberzug) continue ;;
         esac
 
         cwd_link=/proc/$pid/cwd
