@@ -34,8 +34,8 @@ name=
 unset OPTIND OPTARG
 while getopts ":hn:" option; do
     case $option in
-    h) usage ;;
     n) name=$OPTARG ;;
+    h) usage ;;
     *) die "invalid option: $OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))

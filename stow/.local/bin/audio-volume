@@ -22,8 +22,11 @@ volume=$(pamixer --get-volume)
 
 canberra-gtk-play -i message &
 
-icon="audio-volume-high"
-[[ $muted == true ]] && icon="audio-volume-muted"
+if [[ $muted == true ]]; then
+    icon="audio-volume-muted"
+else
+    icon="audio-volume-high"
+fi
 
 notify-send -u low -i "$icon" -h int:value:"$volume" \
     -h string:x-canonical-private-synchronous:audio-volume \

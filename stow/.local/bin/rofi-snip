@@ -22,7 +22,7 @@ usage() {
 }
 
 die() {
-    echo "$me: $*" >&2
+    echo "ERROR: $*" >&2
     exit 1
 }
 
@@ -36,8 +36,8 @@ option_names["d"]="delete"
 unset OPTIND OPTARG
 while getopts ":hecstd" option; do
     case $option in
-    h) usage ;;
     e | c | s | t | d) snip_option=$option ;;
+    h) usage ;;
     *) die "invalid option: $OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))

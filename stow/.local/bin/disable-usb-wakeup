@@ -7,7 +7,12 @@ set -eu
 wakeup="/proc/acpi/wakeup"
 service="/etc/systemd/system/disable-usb-wakeup.service"
 
-devices=$(grep -v '^[[:space:]]' "$wakeup" | grep '^[EX]HC' | awk '{print $1}' | tr -d '[:space:]')
+devices=$(
+    grep -v '^[[:space:]]' "$wakeup" |
+        grep '^[EX]HC' |
+        awk '{print $1}' |
+        tr -d '[:space:]'
+)
 
 sudo tee "$service" >/dev/null <<-EOF
 [Unit]

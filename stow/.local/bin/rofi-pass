@@ -50,9 +50,9 @@ pass_names() {
 unset OPTIND OPTARG
 while getopts ":hgn:" option; do
     case $option in
-    h) usage ;;
     g) action="generate" ;;
     n) length=$OPTARG ;;
+    h) usage ;;
     *) die "invalid option: $OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))

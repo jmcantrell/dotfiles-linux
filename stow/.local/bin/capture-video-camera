@@ -30,7 +30,7 @@ usage() {
 }
 
 die() {
-    echo "$me: $*" >&2
+    echo "ERROR: $*" >&2
     exit 1
 }
 
@@ -46,17 +46,22 @@ unset option OPTIND OPTARG
 ffmpeg_stdin=$XDG_RUNTIME_DIR/$me-ffmpeg-stdin
 
 if [[ $1 == stop ]]; then
-    [[ -f $ffmpeg_stdin ]] && echo "q" >>"$ffmpeg_stdin"
+    if [[ -f $ffmpeg_stdin ]]; then
+        echo "q" >>"$ffmpeg_stdin"
+    fi
     exit 0
 fi
 
-file=${1:-$(xdg-user-dir PICTURES)/camera-$(date +%s).$file_type}
+timestamp=$(date --iso-8601=seconds)
+file=${1:-$(xdg-user-dir PICTURES)/camera-$timestamp.$file_type}
 mkdir -p "$(dirname "$file")"
 
 options=(-hide_banner -loglevel error)
 options+=(-y -f v4l2 -i "$device" -f alsa -i default)
 
-[[ -n $DURATION ]] && options+=(-t "$DURATION")
+if [[ -n $DURATION ]]; then
+    options+=(-t "$DURATION")
+fi
 
 canberra-gtk-play -l "$delay" -i message
 

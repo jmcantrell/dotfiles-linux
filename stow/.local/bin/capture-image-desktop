@@ -28,14 +28,13 @@ usage() {
 }
 
 die() {
-    echo "$me: $*" >&2
+    echo "ERROR: $*" >&2
     exit 1
 }
 
 unset OPTIND OPTARG
 while getopts ":huws" option; do
     case $option in
-    h) usage ;;
     u)
         name="window"
         geometry=$(xwinrect -id "$(active-window)")
@@ -48,17 +47,21 @@ while getopts ":huws" option; do
         name="region"
         geometry=$(xrectsel)
         ;;
+    h) usage ;;
     *) die "invalid option: $OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))
 unset option OPTIND OPTARG
 
-file=${1:-$(xdg-user-dir PICTURES)/desktop-${name:+$name-}$(date +%s).$file_type}
+timestamp=$(date --iso-8601=seconds)
+file=${1:-$(xdg-user-dir PICTURES)/desktop-${name:+$name-}$timestamp.$file_type}
 mkdir -p "$(dirname "$file")"
 
 options=(-window root)
 
-[[ -v geometry ]] && options+=(-crop "$geometry")
+if [[ -v geometry ]]; then
+    options+=(-crop "$geometry")
+fi
 
 import "${options[@]}" "$file"
 

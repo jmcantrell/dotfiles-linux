@@ -70,10 +70,10 @@ use_notifications=
 unset OPTIND OPTARG
 while getopts ":hwcn" option; do
     case $option in
-    h) usage ;;
     w) window_id=$(selected-window) ;;
     c) copy_path_to_clipboard=1 ;;
     n) use_notifications=1 ;;
+    h) usage ;;
     *) die "invalid option: $OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))

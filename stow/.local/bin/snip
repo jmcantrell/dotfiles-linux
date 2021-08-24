@@ -82,7 +82,6 @@ delete_snippet() {
 unset OPTIND OPTARG
 while getopts ":hlp:e:c:s:t:d:" option; do
     case $option in
-    h) usage ;;
     l) list_snippets ;;
     p) print_snippet "$OPTARG" ;;
     e) edit_snippet "$OPTARG" ;;
@@ -90,6 +89,7 @@ while getopts ":hlp:e:c:s:t:d:" option; do
     s) save_snippet "$OPTARG" ;;
     t) type_snippet "$OPTARG" ;;
     d) delete_snippet "$OPTARG" ;;
+    h) usage ;;
     *) die "invalid option: $OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))

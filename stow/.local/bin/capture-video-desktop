@@ -35,14 +35,13 @@ usage() {
 }
 
 die() {
-    echo "$me: $*" >&2
+    echo "ERROR: $*" >&2
     exit 1
 }
 
 unset OPTIND OPTARG
 while getopts ":huwsm" option; do
     case $option in
-    h) usage ;;
     u)
         name="window"
         geometry=$(xwinrect -id "$(active-window)")
@@ -60,6 +59,7 @@ while getopts ":huwsm" option; do
         follow_mouse=1
         geometry=$(xrectsel)
         ;;
+    h) usage ;;
     *) die "invalid option: $OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))
@@ -68,20 +68,27 @@ unset option OPTIND OPTARG
 ffmpeg_stdin=$XDG_RUNTIME_DIR/$me-ffmpeg-stdin
 
 if [[ $1 == stop ]]; then
-    [[ -f $ffmpeg_stdin ]] && echo "q" >>"$ffmpeg_stdin"
+    if [[ -f $ffmpeg_stdin ]]; then
+        echo "q" >>"$ffmpeg_stdin"
+    fi
     exit 0
 fi
 
-file=${1:-$(xdg-user-dir VIDEOS)/desktop-${name:+$name-}$(date +%s).$file_type}
+timestamp=$(date --iso-8601=seconds)
+file=${1:-$(xdg-user-dir VIDEOS)/desktop-${name:+$name-}$timestamp.$file_type}
 mkdir -p "$(dirname "$file")"
 
 options=(-hide_banner -loglevel error)
 options+=(-y -f x11grab)
 
 options+=(-draw_mouse 0)
-[[ -n $follow_mouse ]] && options+=(-follow_mouse "$padding")
+if [[ -n $follow_mouse ]]; then
+    options+=(-follow_mouse "$padding")
+fi
 
-[[ -z $geometry ]] && geometry=$(xwinrect -root)
+if [[ -z $geometry ]]; then
+    geometry=$(xwinrect -root)
+fi
 
 size=${geometry%%+*}
 top_left=${geometry#*+}
@@ -91,7 +98,9 @@ options+=(-s "$size" -i "${DISPLAY}+${left%+*},${top#*+}")
 
 options+=(-f alsa -i default)
 
-[[ -n $DURATION ]] && options+=(-t "$DURATION")
+if [[ -n $DURATION ]]; then
+    options+=(-t "$DURATION")
+fi
 
 canberra-gtk-play -l "$delay" -i message
 
