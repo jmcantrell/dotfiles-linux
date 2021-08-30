@@ -7,4 +7,5 @@ set -eu
 xrandr | grep '\bconnected\b' | cut -d' ' -f1 |
     xargs -r -I{} xrandr --output "{}" --auto "$@"
 
+# refresh background image in case of resize
 setbg

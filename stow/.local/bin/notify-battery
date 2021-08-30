@@ -22,16 +22,16 @@ percent=${info##* }
 if [[ $state == Discharging ]]; then
     if ((percent <= hibernate_percent)); then
         notify-send -u critical -i battery-empty \
-            "Battery Almost Empty: $percent%" \
+            "Battery almost empty: $percent%" \
             "Hibernating in $hibernate_delay seconds..."
         sleep "$hibernate_delay" && systemctl hibernate
     elif ((percent <= critical_percent)); then
         notify-send -u critical -i battery-caution \
-            "Battery Critical: $percent%" \
+            "Battery critical: $percent%" \
             "Hibernation at $hibernate_percent%"
     elif ((percent <= low_percent)); then
         notify-send -u critical -i battery-low \
-            "Battery Low: $percent%" \
+            "Battery low: $percent%" \
             "Attach power supply to avoid hibernation"
     fi
 fi

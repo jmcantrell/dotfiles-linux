@@ -19,7 +19,7 @@ mogrify -scale 10% -scale 1000% "$image" # pixelate
 # usually goes to sleep before the locker has a chance to run. When the system
 # resumes, there's a short period of time between when the system wakes up and
 # when the locker runs where the display is unlocked.
-#
+
 # The solution requires xss-lock to use the --transfer-sleep-lock option, which
 # adds an environment variable, XSS_SLEEP_LOCK_FD. This stores a file descriptor
 # number which, when closed, allows the suspend to continue.

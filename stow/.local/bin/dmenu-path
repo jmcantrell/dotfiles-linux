@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Provide dmenu with a list of all executables.
+# The list is cached and regenerated when needed.
+
+set -eu
+
+commands=${XDG_CACHE_HOME:-$HOME/.cache}/dmenu/commands
+
+readarray -d: -t path <<<"$PATH"
+
+# Is any directory in PATH newer than the cached list?
+if stest -q -dr -n "$commands" "${path[@]}" &>/dev/null; then
+    mkdir -p "$(dirname "$commands")"
+	stest -flx "${path[@]}" | sort -u >"$commands"
+fi
+
+cat "$commands"

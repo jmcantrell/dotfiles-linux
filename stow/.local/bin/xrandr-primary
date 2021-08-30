@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Set the primary output, and ensure save it.
+# Set the primary output, and persist it for future logins.
 # Usage: xrandr-primary [OUTPUT]
 
 set -eu
@@ -12,15 +12,16 @@ if [[ -z $output ]]; then
     exit 0
 fi
 
-autostart=${XDG_CONFIG_HOME:-$HOME/.config}/autostart/xrandr-primary.desktop
 exec_cmd=(xrandr --output "$output" --primary)
+
+autostart=${XDG_CONFIG_HOME:-$HOME/.config}/autostart/xrandr-primary.desktop
 
 mkdir -p "$(dirname "$autostart")"
 
 cat >"$autostart" <<-EOF
 [Desktop Entry]
 Name=${0##*/}
-Comment=Set the primary display
+Comment=set the primary display
 Exec=${exec_cmd[*]}
 Type=Application
 EOF

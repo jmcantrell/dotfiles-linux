@@ -1,5 +1,5 @@
 [Desktop Entry]
 Name=unclutter
-Comment=Hide the mouse cursor while typing
+Comment=hide mouse cursor when idle
 Exec=unclutter
 Type=Application

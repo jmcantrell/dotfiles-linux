@@ -1,4 +1,4 @@
-# Reload configuration.
+# reload configuration
 ctrl + shift + r
 	killall -USR1 sxhkd
 
@@ -17,15 +17,19 @@ super + equal
 super + i
     rofimoji --action copy
 
-# Open whatever is on the clipboard.
+# open whatever is on the clipboard
 super + o
     xdg-open "$(xsel -ob)"
 
-# Copy the path of the active window.
+# copy path of active window
 super + Home
     xpwd -cn
 
-# Launch apps in working directory of active window:
+# copy path of selected window
+ctrl + super + Home
+    xpwd -csn
+
+# launch programs in cwd of active window
 
 super + Return
 	cd "$(xpwd)" && terminal
@@ -36,32 +40,32 @@ super + e
 super + f
 	cd "$(xpwd)" && terminal -e ranger
 
-# Text snippets manager:
+# manage text snippets
 
 super + Insert; c
-	rofi-snip -c # copy to clipboard
+	rofi-snip copy
 
 super + Insert; e
-	rofi-snip -e # open in editor
+	rofi-snip edit
 
 super + Insert; s
-	rofi-snip -s # save from clipboard
+	rofi-snip save
 
 super + Insert; t
-	rofi-snip -t # type in active window
+	rofi-snip type
 
 super + Insert; Delete
-    rofi-snip -d # delete
+    rofi-snip delete
 
-# Password manager:
+# manage passwords
 
 super + Delete; c
-	rofi-pass # copy
+	rofi-pass choose
 
 super + Delete; g
-	rofi-pass -g # generate and copy
+	rofi-pass generate
 
-# Audio controls:
+# control audio
 
 super + {Up,Down}
 	audio-volume {up,down}
@@ -75,7 +79,7 @@ XF86Audio{Raise,Lower}Volume
 XF86AudioMute
 	audio-volume mute
 
-# Media controls:
+# control media playback
 
 super + Pause
 	playerctl play-pause
@@ -86,25 +90,25 @@ super + {Left,Right}
 XF86Audio{Prev,Next}
 	playerctl {previous,next}
 
-# Connect displays:
+# connect displays
 
-# Add the display oriented to the primary.
+# add display oriented to primary
 super + End; {h,j,k,l}
 	xrandr-orient {left-of,below,above,right-of}
 
-# Add with default orientation.
+# add with default orientation
 super + End; d
 	xrandr-detect
 
-# Mirror the primary display.
+# mirror primary display
 super + End; c
 	xrandr-clone
 
-# Disconnect non-primary displays.
+# disconnect non-primary displays
 super + End; q
 	xrandr-off
 
-# Capture images:
+# capture images
 
 super + Print; i; d
     capture-image-desktop
@@ -121,7 +125,7 @@ super + Print; i; s
 super + Print; i; c
     capture-image-camera
 
-# Capture videos:
+# capture videos
 
 super + Print; v; d
     capture-video-desktop
@@ -141,7 +145,7 @@ super + Print; v; m
 super + Print; v; c
     capture-video-camera
 
-# Capture animated gifs:
+# capture animated gifs
 
 super + Print; g; d
     capture-gif-desktop # whole desktop
@@ -161,5 +165,6 @@ super + Print; g; m
 super + Print; g; c
     capture-gif-camera
 
+# stop video capture from camera or desktop
 super + Print; q
     capture-video-stop

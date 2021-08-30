@@ -2,26 +2,45 @@
 
 set -eu
 
-delay=${DELAY:-3}
-device=${DEVICE:-/dev/video0}
-file_type=${FILE_TYPE:-mp4}
+delay=0
+device=/dev/video0
+directory=$(xdg-user-dir VIDEOS)
+file_name=camera_%FT%T%:z
+file_type=mp4
 
-me=${0##*/}
-usage="Capture video from a camera.
+name=${0##*/}
+usage="Capture video from a camera device.
 
-Usage: $me [OPTIONS] [FILE | stop]
+Usage:
+    $name [OPTIONS] [FILE | 'stop']
     
 Options:
-    -h           show this help message
+    -a              also capture audio from microphone
+
+    -i DEVICE       capture input from device
+                    (default: $device)
+
+    -d NUMBER       number of seconds to wait before starting capture
+                    (default: $delay)
+
+    -t NUMBER       number of seconds to capture
+                    (default: record indefinitely)
+
+    -D DIRECTORY    directory in which to store default output file
+                    (default: $directory)
+
+    -N FILENAME     filename to use for default output file
+                    (default: $file_name)
+
+    -E EXTENSION    extension to use for default output file
+                    (default: $file_type)
 
 Arguments:
-    FILE         output capture to FILE
-    stop         stop recording
+    FILE            output file (used instead of default)
+                    formats any sequences recognized by strftime
+                    (default: $directory/$file_name.$file_type)
 
-Environment Variables:
-    DELAY        number of seconds to delay capture (default: $delay)
-    DEVICE       video device to use for capture (default: $device) 
-    FILE_TYPE    extension to use for capture file name (default: $file_type)
+    'stop'          stop any recording session already in progress
 "
 
 usage() {
@@ -34,42 +53,67 @@ die() {
     exit 1
 }
 
-unset OPTIND OPTARG
-while getopts ":h" option; do
+while getopts ":ai:d:t:D:N:E:h" option; do
     case $option in
+    a) capture_audio=1 ;;
+    i) device=$OPTARG ;;
+    d) delay=$OPTARG ;;
+    t) duration=$OPTARG ;;
+    D) directory=$OPTARG ;;
+    N) file_name=$OPTARG ;;
+    E) file_type=$OPTARG ;;
     h) usage ;;
-    *) die "invalid option: $OPTARG" ;;
+    *) die "Invalid option '$OPTARG'" ;;
     esac
 done && shift $((OPTIND - 1))
-unset option OPTIND OPTARG
 
-ffmpeg_stdin=$XDG_RUNTIME_DIR/$me-ffmpeg-stdin
+ffmpeg_stdin=$XDG_RUNTIME_DIR/$name-ffmpeg-stdin
 
-if [[ $1 == stop ]]; then
+if [[ -v 1 && $1 == stop ]]; then
     if [[ -f $ffmpeg_stdin ]]; then
         echo "q" >>"$ffmpeg_stdin"
     fi
     exit 0
 fi
 
-timestamp=$(date --iso-8601=seconds)
-file=${1:-$(xdg-user-dir PICTURES)/camera-$timestamp.$file_type}
-mkdir -p "$(dirname "$file")"
+output_file=$(date +"${1:-$directory/$file_name.$file_type}")
 
 options=(-hide_banner -loglevel error)
-options+=(-y -f v4l2 -i "$device" -f alsa -i default)
 
-if [[ -n $DURATION ]]; then
-    options+=(-t "$DURATION")
+options+=(-y -f v4l2 -i "$device")
+
+if [[ -v capture_audio ]]; then
+    options+=(-f alsa -i default)
 fi
 
-canberra-gtk-play -l "$delay" -i message
+if [[ -v duration ]]; then
+    options+=(-t "$duration")
+fi
 
-touch "$ffmpeg_stdin"
-trap 'rm -f "$ffmpeg_stdin"' INT TERM EXIT
-ffmpeg "${options[@]}" "$file" <"$ffmpeg_stdin"
+if [[ -v delay ]]; then
+    canberra-gtk-play -l "$delay" -i message
+fi
+
+# If not connected to a TTY, tell ffmpeg to get its stdin from a runtime file.
+# This way, recording can be stopped remotely by writing 'q' to the file.
+# For this script, a shortcut is to give "stop" as the first argument.
+
+mkdir -p "$(dirname "$output_file")"
+ffmpeg_command=(ffmpeg "${options[@]}" "$output_file")
+
+if ! tty -s; then
+    touch "$ffmpeg_stdin"
+    trap 'rm -f "$ffmpeg_stdin"' INT TERM EXIT
+    "${ffmpeg_command[@]}" <"$ffmpeg_stdin"
+else
+    echo "Press 'q' at any time to stop recording..." >&2
+    "${ffmpeg_command[@]}"
+fi
 
 canberra-gtk-play -i screen-capture &
-notify-send -i media-record "Captured Video" "<u>${file/$HOME/\~}</u>" &
 
-echo "$file"
+notify-send -i media-record \
+    "Captured camera video ${capture_audio:+ (with microphone audio)}" \
+    "<u>${output_file/$HOME/\~}</u>" &
+
+echo "$output_file"

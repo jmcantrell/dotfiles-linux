@@ -8,7 +8,9 @@ bookmarks=${XDG_CONFIG_HOME:-$HOME/.config}/vimb/bookmark
 
 mkdir -p "$(dirname "$bookmarks")"
 
-(($# == 0)) && "$EDITOR" "$bookmarks"
+if (($# == 0)); then
+    exec "$EDITOR" "$bookmarks"
+fi
 
 url=${1:?missing url}
 title=${2:-}

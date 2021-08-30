@@ -2,23 +2,30 @@
 
 set -eu
 
-me=${0##*/}
-usage="Interact with text snippets.
+config_dir=${XDG_CONFIG_HOME:-$HOME/.config}/snip
 
-Usage: $me [-h] [-l] [-pecst NAME]
+name=${0##*/}
+usage="Manage text snippets.
+
+Usage:
+    $name [OPTIONS] ACTION [NAME]
 
 Options:
-    -h         show this help message
-    -l         list snippets
-    -p NAME    print snippet to stdout
-    -e NAME    edit snippet in preferred editor
-    -c NAME    copy snippet to clipboard
-    -s NAME    save clipboard to snippet
-    -t NAME    type snippet in active window
-    -d NAME    delete snippet
-"
+    -C DIRECTORY    directory in which to store snippets
+                    (default: $config_dir)
 
-snippets_dir=${XDG_CONFIG_HOME:-$HOME/.config}/snip/snippets
+Arguments:
+    ACTION          perform action on snippet
+    NAME            snippet on which to perform action
+
+Actions:
+    list            print snippet names to stdout
+    path            print snippet path to stdout
+    read            dump snippet to stdout
+    write           create snippet from stdin
+    edit            open snippet in editor
+    delete          delete snippet
+"
 
 usage() {
     echo "$usage" >&2
@@ -26,71 +33,86 @@ usage() {
 }
 
 die() {
-    echo "$me: $*" >&2
+    echo "ERROR: $*" >&2
     exit 1
 }
 
-list_snippets() {
-    if [[ -d $snippets_dir ]]; then
-        find "$snippets_dir" -type f -exec basename {} \;
-    fi
-}
-
 snippet_file() {
-    echo "$snippets_dir/${1:?missing snippet name}"
+    echo "$config_dir/${1:?missing snippet name}"
 }
 
 snippet_file_required() {
     local file
     file=$(snippet_file "$1")
-    [[ -f $file ]] || die "snippet '$name' not found"
+
+    if [[ ! -f $file ]]; then
+        die "Snippet '$name' does not exist"
+    fi
+
     echo "$file"
 }
 
-print_snippet() {
+do_list() {
+    if [[ -d $config_dir ]]; then
+        find "$config_dir" -type f -printf "%P\n"
+    fi
+}
+
+do_path() {
+    snippet_file "$1"
+}
+
+do_write() {
+    local file
+    file=$(snippet_file "$1")
+
+    mkdir -p "$(dirname "$file")"
+
+    cat >"$file"
+}
+
+do_read() {
     cat "$(snippet_file_required "$1")"
 }
 
-edit_snippet() {
-    mkdir -p "$snippets_dir"
-    exec "${VISUAL:-$EDITOR}" "$(snippet_file "$1")"
+do_edit() {
+    exec "${VISUAL:-$EDITOR}" "$(snippet_file_required "$1")"
 }
 
-copy_snippet() {
-    local name=$1
-    xsel --input --clipboard <"$(snippet_file_required "$name")"
-    notify-send -i edit-copy "Snippet Text for '$name' Copied to the Clipboard"
-}
-
-save_snippet() {
-    local name=$1
-    mkdir -p "$snippets_dir"
-    xsel --output --clipboard >"$(snippet_file "$name")"
-    notify-send -i document-save "Snippet Text for '$name' Saved from the Clipboard"
-}
-
-type_snippet() {
-    xdotool type --clearmodifiers --delay 25 --file "$(snippet_file_required "$1")"
-}
-
-delete_snippet() {
+do_delete() {
     rm -f "$(snippet_file_required "$1")"
 }
 
-(($# == 0)) && set -- -h
-
-unset OPTIND OPTARG
-while getopts ":hlp:e:c:s:t:d:" option; do
+while getopts ":C:h" option; do
     case $option in
-    l) list_snippets ;;
-    p) print_snippet "$OPTARG" ;;
-    e) edit_snippet "$OPTARG" ;;
-    c) copy_snippet "$OPTARG" ;;
-    s) save_snippet "$OPTARG" ;;
-    t) type_snippet "$OPTARG" ;;
-    d) delete_snippet "$OPTARG" ;;
+    C) config_dir=$OPTARG ;;
     h) usage ;;
-    *) die "invalid option: $OPTARG" ;;
+    *) die "Invalid option '$OPTARG'" ;;
     esac
 done && shift $((OPTIND - 1))
-unset option OPTIND OPTARG
+
+if [[ ! -v 1 ]]; then
+    die "Missing action"
+fi
+
+action=$1
+shift
+
+case $action in
+list | path | read | write | edit | delete) ;;
+*) die "Invalid action '$action'" ;;
+esac
+
+if [[ $action == list ]]; then
+    do_list
+    exit 0
+fi
+
+if [[ ! -v 1 ]]; then
+    die "Missing snippet name"
+fi
+
+snippet_name=$1
+shift
+
+do_"$action" "$snippet_name"

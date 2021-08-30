@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Select a timezone.
+# Set the system timezone interactively.
 
 set -eu
 

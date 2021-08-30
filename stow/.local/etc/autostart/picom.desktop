@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=picom
+Comment=an X11 compositor
+Exec=picom
+Type=Application

@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+
+set -eu
+
+config_dir=${XDG_CONFIG_HOME:-$HOME/.config}/udiskie
+
+name=${0##*/}
+usage="Map a key file to a device in udiskie.
+
+Usage:
+    $name [OPTIONS] DEVICE [KEYFILE]
+
+Options:
+    -c              copy KEYFILE to DIRECTORY
+
+    -C DIRECTORY    udiskie configuration directory
+                    (default: ${config_dir/$HOME/\~})
+
+Arguments:
+    DEVICE          device to unlock with KEYFILE   
+    KEYFILE         file capable of unlocking DEVICE
+
+If KEYFILE is not provided, one will be generated and added to the device.
+If KEYFILE is not copied with -c, it will be used in the original location.
+"
+
+usage() {
+    echo "$usage" >&2
+    exit 0
+}
+
+die() {
+    echo "ERROR: $*" >&2
+    exit 1
+}
+
+while getopts ":cC:h" option; do
+    case $option in
+    c) copy_keyfile=1 ;;
+    C) config_dir=$OPTARG ;;
+    h) usage ;;
+    *) die "Invalid option '$OPTARG'" ;;
+    esac
+done && shift $((OPTIND - 1))
+
+if [[ ! -v 1 ]]; then
+    die "Missing device"
+fi
+
+device=$1
+shift
+
+if ! uuid=$(blkid -s UUID -o value "$device"); then
+    die "Unable to get UUID for device"
+fi
+
+if [[ -z $uuid ]]; then
+    die "Device does not have a UUID"
+fi
+
+keyfile=$config_dir/$uuid.bin
+
+if [[ -v 1 ]]; then
+    if [[ -v copy_keyfile ]]; then
+        cp -v "$1" "$keyfile"
+        chmod -v 600 "$keyfile"
+    else
+        keyfile=$1
+    fi
+else
+    touch "$keyfile"
+    chmod -v 600 "$keyfile"
+    dd bs=512 count=8 if=/dev/urandom of="$keyfile"
+    sudo cryptsetup luksAddKey "$device" "$keyfile"
+fi
+
+config_file=$config_dir/config.json
+
+if [[ ! -f "$config_file" ]]; then
+    jq -n '.device_config=[]' >"$config_file"
+fi
+
+index=$(
+    jq --arg uuid "$uuid" \
+        '.device_config | map(.id_uuid == $uuid) | index(true)' \
+        "$config_file"
+)
+
+args=(--arg keyfile "${keyfile/$HOME/\~}")
+
+if [[ $index == null ]]; then
+    args+=(--arg uuid "$uuid")
+    # shellcheck disable=SC2016
+    query='.device_config += [{ "id_uuid": $uuid, "keyfile": $keyfile }]'
+else
+    args+=(--arg index "$index")
+    # shellcheck disable=SC2016
+    query='.device_config[$index | tonumber].keyfile=$keyfile'
+fi
+
+jq "${args[@]}" "$query" "$config_file" >"$config_file.tmp"
+mv "$config_file.tmp" "$config_file"

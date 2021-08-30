@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 # Enable and set an output to be oriented relative to primary.
-# Usage: xrandr-orient <edge>
+# Usage: xrandr-orient <edge>  # left-of, right-of, above, below
 
 set -eu
 
 primary=$(xrandr-primary)
 
-edge=$1 # left-of, right-of, above, below
+edge=$1
 shift
 
 xrandr-detect --"$edge" "$primary" "$@"

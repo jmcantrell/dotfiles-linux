@@ -2,22 +2,22 @@
 
 set -eu
 
-me=${0##*/}
+name=${0##*/}
 usage="Sound an alarm after a specified amount of time.
 
-Usage: $me [-h] [-n NAME] TIMESPEC
+Usage:
+    $name [OPTIONS] TIMESPEC
 
 Options:
-    -h           show this help message
-    -n NAME      give the timer a descriptive name
-
-See the --date option in date(1) for definition of TIMESPEC.
+    -n NAME    descriptive name for timer
 
 Examples:
     timer 1 minute
     timer -n laundry 45 minutes
     timer -n 'boat tour' 3 hours
     timer -n 'very specific' now + 1 hour + 10 minutes
+
+See --date option in date(1) for the definition of TIMESPEC.
 "
 
 usage() {
@@ -26,25 +26,24 @@ usage() {
 }
 
 die() {
-    echo "$me: $*" >&2
+    echo "ERROR: $*" >&2
     exit 1
 }
 
-name=
-unset OPTIND OPTARG
-while getopts ":hn:" option; do
+while getopts ":n:h" option; do
     case $option in
     n) name=$OPTARG ;;
     h) usage ;;
-    *) die "invalid option: $OPTARG" ;;
+    *) die "Invalid option '$OPTARG'" ;;
     esac
 done && shift $((OPTIND - 1))
-unset option OPTIND OPTARG
 
-(($# > 0)) || die "missing time specification"
+if (($# == 0)); then
+    die "Missing time specification"
+fi
 
 at "$(date -d "$*" +"%H:%M %Y-%m-%d")" <<-EOF
 export DISPLAY=$DISPLAY
 canberra-gtk-play -i alarm-clock-elapsed &
-notify-send -u critical "Timer Elapsed" "$name"
+notify-send -u critical "Timer elapsed" "${name:-}"
 EOF

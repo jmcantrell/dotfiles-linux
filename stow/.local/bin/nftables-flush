@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Flush all tables and chains for nftables.
+
 set -eu
 
 for family in ip ip6 inet arp bridge; do

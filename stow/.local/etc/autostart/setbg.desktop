@@ -1,5 +1,5 @@
 [Desktop Entry]
 Name=setbg
-Comment=Set the background image
+Comment=restore background image
 Exec=setbg
 Type=Application

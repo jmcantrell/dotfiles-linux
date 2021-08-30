@@ -10,4 +10,5 @@ xrandr | grep -E '\b(dis)?connected\b' |
     cut -d' ' -f1 | grep -v "^$primary\b" |
     xargs -r -I{} xrandr --output "{}" --off "$@"
 
+# refresh background image in case of resize
 setbg

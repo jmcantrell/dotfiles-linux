@@ -2,31 +2,49 @@
 
 set -eu
 
-delay=${DELAY:-1}
-file_type=${FILE_TYPE:-mp4}
-padding=${PADDING:-centered}
+delay=0
+directory=$(xdg-user-dir VIDEOS)
+file_name=desktop_%FT%T%:z
+file_type=mp4
 
-me=${0##*/}
+name=${0##*/}
 usage="Capture video of the desktop.
 
-Usage: $me [OPTIONS] [FILE | stop]
+Usage:
+    $name [OPTIONS] [FILE | 'stop']
     
 Options:
-    -h           show this help message
-    -u           capture the current window
-    -w           click to select a window to capture
-    -s           drag to select a region to capture
-    -m           drag to size a viewport that follows the mouse
+    -g GEOMETRY     geometry of region to capture
+
+    -s              select window or region to capture
+
+    -a              also capture audio from microphone
+
+    -M PADDING      drag to size a viewport region that follows mouse
+                    mouse cursor stays at least PADDING pixels from edge
+                    if PADDING is 'centered', keep mouse cursor centered
+
+    -d NUMBER       number of seconds to wait before starting capture
+                    (default: $delay)
+
+    -t NUMBER       number of seconds to capture
+                    (default: record indefinitely)
+
+    -D DIRECTORY    directory in which to store default output file
+                    (default: $directory)
+
+    -N FILENAME     filename to use for default output file
+                    (default: $file_name)
+
+    -E EXTENSION    extension to use for default output file
+                    (default: $file_type)
 
 Arguments:
-    FILE         output capture to FILE
-    stop         stop recording
+    FILE            output file (used instead of default)
+                    formats any sequences recognized by strftime
+                    (default: $directory/$file_name.$file_type)
 
-Environment Variables:
-    DELAY        number of seconds to delay capture (default: $delay)
-    DURATION     number of seconds to record (default: record indefinitely)
-    PADDING      number of pixels to pad region used with -m (default: $padding)
-    FILE_TYPE    extension to use for output file name (default: $file_type)
+    'stop'          stop any recording session already in progress
 "
 
 usage() {
@@ -39,55 +57,51 @@ die() {
     exit 1
 }
 
-unset OPTIND OPTARG
-while getopts ":huwsm" option; do
+select_geometry() {
+    slop -f "%wx%h+%x+%y"
+}
+
+while getopts ":g:sM:mad:t:D:N:E:h" option; do
     case $option in
-    u)
-        name="window"
-        geometry=$(xwinrect -id "$(active-window)")
+    g) geometry=$OPTARG ;;
+    s) geometry=$(select_geometry) ;;
+    M)
+        follow_mouse=$OPTARG
+        geometry=$(select_geometry)
         ;;
-    w)
-        name="window"
-        geometry=$(xwinrect -id "$(selected-window)")
-        ;;
-    s)
-        name="region"
-        geometry=$(xrectsel)
-        ;;
-    m)
-        name="region"
-        follow_mouse=1
-        geometry=$(xrectsel)
-        ;;
+    m) draw_mouse=1 ;;
+    a) capture_audio=1 ;;
+    d) delay=$OPTARG ;;
+    t) duration=$OPTARG ;;
+    D) directory=$OPTARG ;;
+    N) file_name=$OPTARG ;;
+    E) file_type=$OPTARG ;;
     h) usage ;;
-    *) die "invalid option: $OPTARG" ;;
+    *) die "Invalid option '$OPTARG'" ;;
     esac
 done && shift $((OPTIND - 1))
-unset option OPTIND OPTARG
 
-ffmpeg_stdin=$XDG_RUNTIME_DIR/$me-ffmpeg-stdin
+ffmpeg_stdin=$XDG_RUNTIME_DIR/$name-ffmpeg-stdin
 
-if [[ $1 == stop ]]; then
+if [[ -v 1 && $1 == stop ]]; then
     if [[ -f $ffmpeg_stdin ]]; then
         echo "q" >>"$ffmpeg_stdin"
     fi
     exit 0
 fi
 
-timestamp=$(date --iso-8601=seconds)
-file=${1:-$(xdg-user-dir VIDEOS)/desktop-${name:+$name-}$timestamp.$file_type}
-mkdir -p "$(dirname "$file")"
+output_file=$(date +"${1:-$directory/$file_name.$file_type}")
 
-options=(-hide_banner -loglevel error)
-options+=(-y -f x11grab)
+options=(-hide_banner -loglevel warning)
 
-options+=(-draw_mouse 0)
-if [[ -n $follow_mouse ]]; then
-    options+=(-follow_mouse "$padding")
+options+=(-y -f x11grab -draw_mouse "${draw_mouse:-0}")
+
+if [[ -v follow_mouse ]]; then
+    options+=(-follow_mouse "$follow_mouse")
 fi
 
-if [[ -z $geometry ]]; then
-    geometry=$(xwinrect -root)
+if [[ ! -v geometry ]]; then
+    geometry=$(xwininfo -root | grep -w geometry | awk '{print $2}')
 fi
 
 size=${geometry%%+*}
@@ -96,19 +110,38 @@ left=${top_left%+*}
 top=${top_left#*+}
 options+=(-s "$size" -i "${DISPLAY}+${left%+*},${top#*+}")
 
-options+=(-f alsa -i default)
-
-if [[ -n $DURATION ]]; then
-    options+=(-t "$DURATION")
+if [[ -v capture_audio ]]; then
+    options+=(-f alsa -i default)
 fi
 
-canberra-gtk-play -l "$delay" -i message
+if [[ -v duration ]]; then
+    options+=(-t "$duration")
+fi
 
-touch "$ffmpeg_stdin"
-trap 'rm -f "$ffmpeg_stdin"' INT TERM EXIT
-ffmpeg "${options[@]}" "$file" <"$ffmpeg_stdin"
+if [[ -v delay ]]; then
+    canberra-gtk-play -l "$delay" -i message
+fi
+
+# If not connected to a TTY, tell ffmpeg to get its stdin from a runtime file.
+# This way, recording can be stopped remotely by writing 'q' to the file.
+# For this script, a shortcut is to give "stop" as the first argument.
+
+mkdir -p "$(dirname "$output_file")"
+ffmpeg_command=(ffmpeg "${options[@]}" "$output_file")
+
+if ! tty -s; then
+    touch "$ffmpeg_stdin"
+    trap 'rm -f "$ffmpeg_stdin"' INT TERM EXIT
+    "${ffmpeg_command[@]}" <"$ffmpeg_stdin"
+else
+    echo "Press 'q' at any time to stop recording..." >&2
+    "${ffmpeg_command[@]}"
+fi
 
 canberra-gtk-play -i camera-shutter &
-notify-send -i media-record "Captured Screencast" "<u>${file/$HOME/\~}</u>" &
 
-echo "$file"
+notify-send -i media-record \
+    "Captured desktop video${capture_audio:+ (with microphone audio)}" \
+    "<u>${output_file/$HOME/\~}</u>" &
+
+echo "$output_file"

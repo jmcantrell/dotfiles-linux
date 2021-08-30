@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+
+# Ensure dmenu is uniform across different invocations.
+
+exec /usr/bin/dmenu -i -b \
+    -fn 'DejaVu Sans Mono-10:normal' \
+    -nb '#000000' -nf '#808080' \
+    -sb '#800080' -sf '#ffffff' "$@"

@@ -5,7 +5,7 @@ set -eu
 length=16
 
 name=${0##*/}
-usage="Use rofi to interact with pass.
+usage="Use dmenu to interact with pass.
 
 Usage:
     $name [OPTIONS] [ACTION]
@@ -57,7 +57,7 @@ choose | generate) ;;
 *) die "Invalid action '$action'" ;;
 esac
 
-name=$(pass_names | rofi -dmenu -p "$action password for")
+name=$(pass_names | dmenu -p "$action password for")
 
 case $action in
 choose) pass -c "$name" ;;

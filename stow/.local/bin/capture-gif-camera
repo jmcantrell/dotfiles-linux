@@ -4,6 +4,4 @@
 
 set -eu
 
-export FILE_TYPE=gif
-file=$(capture-video-camera "$@")
-gifsicle --batch --optimize 3 "$file"
+gifsicle --batch --optimize 3 "$(capture-video-camera -E gif "$@")"

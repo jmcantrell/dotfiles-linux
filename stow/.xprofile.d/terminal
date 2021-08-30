@@ -1,4 +1,4 @@
-export TERMINAL=xterm
+export TERMINAL=alacritty
 export TERMCMD=$TERMINAL
 
 # vi:ft=sh

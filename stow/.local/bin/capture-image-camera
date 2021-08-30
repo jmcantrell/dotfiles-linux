@@ -2,25 +2,35 @@
 
 set -eu
 
-delay=${DELAY:-3}
-device=${DEVICE:-/dev/video0}
-file_type=${FILE_TYPE:-png}
+delay=0
+device=/dev/video0
+directory=$(xdg-user-dir PICTURES)
+file_name=camera_%FT%T%:z
+file_type=png
 
-me=${0##*/}
+name=${0##*/}
 usage="Capture an image from a video device.
 
-Usage: $me [OPTIONS] [FILE]
+Usage:
+    $name [OPTIONS] [FILE]
 
 Options:
-    -h          show this help message
+    -d NUMBER       number of seconds to wait before starting capture
+                    (default: $delay)
+
+    -D DIRECTORY    directory in which to store default output file
+                    (default: $directory)
+
+    -N FILENAME     filename to use for default output file
+                    (default: $file_name)
+
+    -E EXTENSION    extension to use for default output file
+                    (default: $file_type)
 
 Arguments:
-    FILE        output capture to FILE
-
-Environment Variables:
-    DELAY       number of seconds to delay capture (default: $delay)
-    DEVICE      video device to use for capture (default: $device) 
-    FILE_TYPE   extension to use for output file name (default: $file_type)
+    FILE            output file (used instead of default)
+                    formats any sequences recognized by strftime
+                    (default: $directory/$file_name.$file_type)
 "
 
 usage() {
@@ -33,27 +43,34 @@ die() {
     exit 1
 }
 
-unset OPTIND OPTARG
-while getopts ":h" option; do
+while getopts ":d:D:N:E:h" option; do
     case $option in
+    d) delay=$OPTARG ;;
+    D) directory=$OPTARG ;;
+    N) file_name=$OPTARG ;;
+    E) file_type=$OPTARG ;;
     h) usage ;;
-    *) die "invalid option: $OPTARG" ;;
+    *) die "Invalid option '$OPTARG'" ;;
     esac
 done && shift $((OPTIND - 1))
-unset option OPTIND OPTARG
 
-timestamp=$(date --iso-8601=seconds)
-file=${1:-$(xdg-user-dir PICTURES)/camera-$timestamp.$file_type}
-mkdir -p "$(dirname "$file")"
+output_file=$(date +"${1:-$directory/$file_name.$file_type}")
 
 options=(-hide_banner -loglevel error)
+
 options+=(-y -f v4l2 -i "$device" -frames:v 1)
 
-canberra-gtk-play -l "$delay" -i message
+if [[ -v delay ]]; then
+    canberra-gtk-play -l "$delay" -i message
+fi
 
-ffmpeg "${options[@]}" "$file"
+mkdir -p "$(dirname "$output_file")"
+ffmpeg "${options[@]}" "$output_file"
 
 canberra-gtk-play -i screen-capture &
-notify-send -i media-record "Captured Photo" "<u>${file/$HOME/\~}</u>" &
 
-echo "$file"
+notify-send -i media-record \
+    "Captured photo from camera" \
+    "<u>${output_file/$HOME/\~}</u>" &
+
+echo "$output_file"

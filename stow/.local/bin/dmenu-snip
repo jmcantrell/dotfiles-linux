@@ -3,7 +3,7 @@
 set -eu
 
 name=${0##*/}
-usage="Manage text snippets with rofi.
+usage="Manage text snippets with dmenu.
 
 Usage:
     $name [OPTIONS] ACTION NAME
@@ -61,7 +61,7 @@ fi
 
 action=$1
 
-name=$(snip list | rofi -dmenu -p "$action snippet")
+name=$(snip list | dmenu -p "$action snippet")
 
 if [[ -z $name ]]; then
     die "No snippet was selected"

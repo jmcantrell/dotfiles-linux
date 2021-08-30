@@ -4,8 +4,8 @@
 
 set -eu
 
-wakeup="/proc/acpi/wakeup"
-service="/etc/systemd/system/disable-usb-wakeup.service"
+wakeup=/proc/acpi/wakeup
+service=/etc/systemd/system/disable-usb-wakeup.service
 
 devices=$(
     grep -v '^[[:space:]]' "$wakeup" |
@@ -16,10 +16,10 @@ devices=$(
 
 sudo tee "$service" >/dev/null <<-EOF
 [Unit]
-Description=Disable ACPI wakeup by USB devices
+Description=disable resuming on USB device activity
 
 [Service]
-ExecStart=/bin/bash -c "echo $devices >>/proc/acpi/wakeup"
+ExecStart=/bin/bash -c "echo $devices >>$wakeup"
 
 [Install]
 WantedBy=multi-user.target
