@@ -5,7 +5,7 @@
 set -eu
 
 device_name() {
-    xinput --list --name-only "${1:?missing device id}"
+    xinput --list --name-only "${1:?Missing device ID}"
 }
 
 choose_device() {

@@ -19,7 +19,7 @@ mru_path() {
 }
 
 mru_add() {
-    local cmd=${1:?missing command}
+    local cmd=${1:?Missing command}
     {
         echo "$cmd"                 # Shift the most recent to the top
         grep -vx "$cmd" "$mru_file" # ... from the previous MRU.

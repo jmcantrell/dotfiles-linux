@@ -4,7 +4,7 @@
 
 set -eu
 
-url=${1:?missing url}
+url=${1:?Missing URL}
 
 queue=${XDG_CONFIG_HOME:-$HOME/.config}/vimb/queue
 

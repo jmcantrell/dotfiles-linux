@@ -12,7 +12,7 @@ if (($# == 0)); then
     exec "$EDITOR" "$bookmarks"
 fi
 
-url=${1:?missing url}
+url=${1:?Missing URL}
 title=${2:-}
 tags=${3:-}
 

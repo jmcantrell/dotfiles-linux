@@ -33,7 +33,7 @@ die() {
 }
 
 snippet_file() {
-    echo "$config_dir/${1:?missing snippet name}"
+    echo "$config_dir/${1:?Missing snippet name}"
 }
 
 snippet_file_required() {

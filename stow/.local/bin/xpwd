@@ -25,14 +25,14 @@ die() {
 }
 
 tmux_window_id() {
-    tmux showenv -t "${1:?missing session id}" WINDOWID |
+    tmux showenv -t "${1:?Missing session ID}" WINDOWID |
         awk -F= '{print $2}' | tr -d '[:space:]' |
         xargs -r -I{} printf "0x%x" "{}"
 }
 
 tmux_session_id() {
     while IFS= read -r -d $'\n' session_id; do
-        if [[ $(tmux_window_id "$session_id") == "${1:?missing window id}" ]]; then
+        if [[ $(tmux_window_id "$session_id") == "${1:?Missing window ID}" ]]; then
             echo "$session_id"
             return 0
         fi
@@ -55,7 +55,7 @@ active_window_id() {
 }
 
 pid_for_window_id() {
-    xprop -id "${1:?missing window id}" | grep -m1 PID | awk '{print $3}'
+    xprop -id "${1:?Missing window ID}" | grep -m1 PID | awk '{print $3}'
 }
 
 while getopts ":scnh" option; do
