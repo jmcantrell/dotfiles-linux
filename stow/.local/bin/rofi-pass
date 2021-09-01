@@ -22,11 +22,6 @@ In all cases, the password is copied to the clipboard.
 
 pass_dir=${PASSWORD_STORE_DIR:-$HOME/.password-store}
 
-usage() {
-    echo "$usage" >&2
-    exit 0
-}
-
 die() {
     echo "ERROR: $*" >&2
     exit 1
@@ -45,7 +40,10 @@ pass_names() {
 while getopts ":n:h" option; do
     case $option in
     n) length=$OPTARG ;;
-    h) usage ;;
+    h)
+        echo "$usage"
+        exit
+        ;;
     *) die "Invalid option '$OPTARG'" ;;
     esac
 done && shift $((OPTIND - 1))

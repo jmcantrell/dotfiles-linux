@@ -43,11 +43,6 @@ Arguments:
     'stop'          stop any recording session already in progress
 "
 
-usage() {
-    echo "$usage" >&2
-    exit 0
-}
-
 die() {
     echo "ERROR: $*" >&2
     exit 1
@@ -62,7 +57,10 @@ while getopts ":ai:d:t:D:N:E:h" option; do
     D) directory=$OPTARG ;;
     N) file_name=$OPTARG ;;
     E) file_type=$OPTARG ;;
-    h) usage ;;
+    h)
+        echo "$usage"
+        exit
+        ;;
     *) die "Invalid option '$OPTARG'" ;;
     esac
 done && shift $((OPTIND - 1))

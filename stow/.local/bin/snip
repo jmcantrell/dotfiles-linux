@@ -27,11 +27,6 @@ Actions:
     delete          delete snippet
 "
 
-usage() {
-    echo "$usage" >&2
-    exit 0
-}
-
 die() {
     echo "ERROR: $*" >&2
     exit 1
@@ -86,7 +81,10 @@ do_delete() {
 while getopts ":C:h" option; do
     case $option in
     C) config_dir=$OPTARG ;;
-    h) usage ;;
+    h)
+        echo "$usage"
+        exit
+        ;;
     *) die "Invalid option '$OPTARG'" ;;
     esac
 done && shift $((OPTIND - 1))

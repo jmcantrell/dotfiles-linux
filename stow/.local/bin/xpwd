@@ -19,11 +19,6 @@ Arguments:
 If no window is selected with -w or ID, then the current window is used.
 "
 
-usage() {
-    echo "$usage" >&2
-    exit 0
-}
-
 die() {
     echo "ERROR: $*" >&2
     exit 1
@@ -68,7 +63,10 @@ while getopts ":scnh" option; do
     s) window_id=$(selected_window_id) ;;
     c) copy_path_to_clipboard=1 ;;
     n) use_notifications=1 ;;
-    h) usage ;;
+    h)
+        echo "$usage"
+        exit
+        ;;
     *) die "Invalid option '$OPTARG'" ;;
     esac
 done && shift $((OPTIND - 1))
