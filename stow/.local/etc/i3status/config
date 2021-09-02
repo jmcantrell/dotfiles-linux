@@ -21,7 +21,7 @@ ethernet _first_ {
 wireless _first_ {
 	format_up = "wl %essid %ip"
 	format_down = "wl down"
-	on_click 1 = "exec --no-startup-id terminal -hold -e systemctl status iwd.service"
+	on_click 1 = "exec --no-startup-id terminal-hold -e systemctl status iwd.service"
 	on_click 3 = "exec --no-startup-id terminal -e iwctl"
 }
 
@@ -32,7 +32,7 @@ dpms {
 
 disk "/home" {
 	format = "~ %avail"
-	on_click 1 = "exec --no-startup-id terminal -hold -e df --si"
+	on_click 1 = "exec --no-startup-id terminal-hold -e df --si"
 	on_click 3 = "exec --no-startup-id terminal -e ncdu ~"
 }
 
@@ -43,7 +43,7 @@ cpu_usage {
 
 memory {
 	format = "mem %available"
-	on_click 1 = "exec --no-startup-id terminal -hold -e free -th"
+	on_click 1 = "exec --no-startup-id terminal-hold -e free -th"
 }
 
 tztime pretty {

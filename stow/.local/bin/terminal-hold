@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+case $TERMINAL in
+*xterm*)
+    exec terminal -hold "$@"
+    ;;
+*)
+    exec terminal --hold "$@"
+    ;;
+esac
