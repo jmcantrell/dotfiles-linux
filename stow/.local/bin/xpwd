@@ -20,7 +20,7 @@ If no window is selected with -w or ID, then the current window is used.
 "
 
 die() {
-    echo "ERROR: $*" >&2
+    printf "ERROR: %s\n" "$*" >&2
     exit 1
 }
 
@@ -33,7 +33,7 @@ tmux_window_id() {
 tmux_session_id() {
     while IFS= read -r -d $'\n' session_id; do
         if [[ $(tmux_window_id "$session_id") == "${1:?Missing window ID}" ]]; then
-            echo "$session_id"
+            printf "%s\n" "$session_id"
             return 0
         fi
     done < <(tmux list-sessions -F '#{session_id}')
@@ -64,7 +64,7 @@ while getopts ":scnh" option; do
     c) copy_path_to_clipboard=1 ;;
     n) use_notifications=1 ;;
     h)
-        echo "$usage"
+        printf "%s\n" "$usage"
         exit
         ;;
     *) die "Invalid option '$OPTARG'" ;;
@@ -131,4 +131,4 @@ if [[ -v copy_path_to_clipboard ]]; then
     fi
 fi
 
-echo "$cwd"
+printf "%s\n" "$cwd"

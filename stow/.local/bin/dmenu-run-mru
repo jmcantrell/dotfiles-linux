@@ -21,7 +21,7 @@ mru_path() {
 mru_add() {
     local cmd=${1:?Missing command}
     {
-        echo "$cmd"                 # Shift the most recent to the top
+        printf "%s\n" "$cmd"        # Shift the most recent to the top
         grep -vx "$cmd" "$mru_file" # ... from the previous MRU.
     } | head -n"$histsize" >"$temp" # Letting the least recent drop off.
     mv -f "$temp" "$mru_file"       # Swap out the previous MRU.

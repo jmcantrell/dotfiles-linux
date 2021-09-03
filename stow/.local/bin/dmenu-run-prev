@@ -11,5 +11,5 @@ if [[ ! -f $mru_file ]]; then
 fi
 
 mru=$(head -n1 "$mru_file")
-echo "$mru" >&2
+printf "%s\n" "$mru" >&2
 exec "$mru"

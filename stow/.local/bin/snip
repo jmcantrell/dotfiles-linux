@@ -28,12 +28,12 @@ Actions:
 "
 
 die() {
-    echo "ERROR: $*" >&2
+    printf "ERROR: %s\n" "$*" >&2
     exit 1
 }
 
 snippet_file() {
-    echo "$config_dir/${1:?Missing snippet name}"
+    printf "%s/%s" "$config_dir" "${1:?Missing snippet name}"
 }
 
 snippet_file_required() {
@@ -44,7 +44,7 @@ snippet_file_required() {
         die "Snippet '$name' does not exist"
     fi
 
-    echo "$file"
+    printf "%s\n" "$file"
 }
 
 do_list() {
@@ -82,7 +82,7 @@ while getopts ":C:h" option; do
     case $option in
     C) config_dir=$OPTARG ;;
     h)
-        echo "$usage"
+        printf "%s\n" "$usage"
         exit
         ;;
     *) die "Invalid option '$OPTARG'" ;;

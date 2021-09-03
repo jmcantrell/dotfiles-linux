@@ -20,7 +20,7 @@ Actions:
 "
 
 die() {
-    echo "ERROR: $*" >&2
+    printf "ERROR: %s\n" "$*" >&2
     exit 1
 }
 
@@ -46,7 +46,7 @@ while getopts ":C:h" option; do
     case $option in
     C) snip_options+=(-C "$OPTARG") ;;
     h)
-        echo "$usage"
+        printf "%s\n" "$usage"
         exit
         ;;
     *) die "invalid option: $OPTARG" ;;

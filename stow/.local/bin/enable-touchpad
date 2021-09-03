@@ -9,7 +9,7 @@ device_name() {
 }
 
 choose_device() {
-    echo "Enter the device id to enable:"
+    printf "Enter the device ID to enable:"
 
     readarray -t ids < <(
         xinput --list | grep -v XTEST |
@@ -19,17 +19,17 @@ choose_device() {
 
     local id
     for id in "${ids[@]}"; do
-        echo "$id) $(device_name "$id")"
+        printf "%s) %s\n" "$id" "$(device_name "$id")"
     done
 
     read -r -p "${PS3:-#? }" id
 
     if ! printf "%s\n" "${ids[@]}" | grep -q "^$id$"; then
-        echo "ERROR: Invalid device ID" >&2
+        printf "ERROR: Invalid device ID" >&2
         exit 1
     fi
 
-    echo "$id"
+    printf "%s\n" "$id"
 }
 
 id=${1:-$(choose_device)}
@@ -52,4 +52,4 @@ Section "InputClass"
 EndSection
 EOF
 
-echo "Change options in: $conf"
+printf "Change options in: %s\n" "$conf"

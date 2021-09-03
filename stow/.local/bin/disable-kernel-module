@@ -7,7 +7,7 @@ set -eu
 mod_name=$1
 
 if ! modprobe --show --quiet "$mod_name"; then
-    echo "ERROR: Invalid module '$mod_name'" >&2
+    printf "ERROR: Invalid module '%s'" "$mod_name" >&2
     exit 1
 fi
 

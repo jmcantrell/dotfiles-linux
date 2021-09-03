@@ -11,5 +11,5 @@ queue=${XDG_CONFIG_HOME:-$HOME/.config}/vimb/queue
 mkdir -p "$(dirname "$queue")"
 
 if ! grep -wq "$url" "$queue"; then
-    echo "$url" >>"$queue"
+    printf "%s\n" "$url" >>"$queue"
 fi

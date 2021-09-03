@@ -44,7 +44,7 @@ Arguments:
 "
 
 die() {
-    echo "ERROR: $*" >&2
+    printf "ERROR: %s\n" "$*" >&2
     exit 1
 }
 
@@ -58,7 +58,7 @@ while getopts ":ai:d:t:D:N:E:h" option; do
     N) file_name=$OPTARG ;;
     E) file_type=$OPTARG ;;
     h)
-        echo "$usage"
+        printf "%s\n" "$usage"
         exit
         ;;
     *) die "Invalid option '$OPTARG'" ;;
@@ -69,7 +69,7 @@ ffmpeg_stdin=$XDG_RUNTIME_DIR/$name-ffmpeg-stdin
 
 if [[ -v 1 && $1 == stop ]]; then
     if [[ -f $ffmpeg_stdin ]]; then
-        echo "q" >>"$ffmpeg_stdin"
+        printf "q\n" >>"$ffmpeg_stdin"
     fi
     exit 0
 fi
@@ -104,7 +104,7 @@ if ! tty -s; then
     trap 'rm -f "$ffmpeg_stdin"' INT TERM EXIT
     "${ffmpeg_command[@]}" <"$ffmpeg_stdin"
 else
-    echo "Press 'q' at any time to stop recording..." >&2
+    printf "Press 'q' at any time to stop recording...\n"
     "${ffmpeg_command[@]}"
 fi
 
@@ -114,4 +114,4 @@ notify-send -i media-record \
     "Captured camera video ${capture_audio:+ (with microphone audio)}" \
     "<u>${output_file/$HOME/\~}</u>" &
 
-echo "$output_file"
+printf "%s\n" "$output_file"

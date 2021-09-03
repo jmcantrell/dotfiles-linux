@@ -34,7 +34,7 @@ Arguments:
 "
 
 die() {
-    echo "ERROR: $*" >&2
+    printf "ERROR: %s\n" "$*" >&2
     exit 1
 }
 
@@ -45,7 +45,7 @@ while getopts ":d:D:N:E:h" option; do
     N) file_name=$OPTARG ;;
     E) file_type=$OPTARG ;;
     h)
-        echo "$usage"
+        printf "%s\n" "$usage"
         exit
         ;;
     *) die "Invalid option '$OPTARG'" ;;
@@ -71,4 +71,4 @@ notify-send -i media-record \
     "Captured photo from camera" \
     "<u>${output_file/$HOME/\~}</u>" &
 
-echo "$output_file"
+printf "%s\n" "$output_file"

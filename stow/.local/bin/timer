@@ -21,7 +21,7 @@ See --date option in date(1) for the definition of TIMESPEC.
 "
 
 die() {
-    echo "ERROR: $*" >&2
+    printf "ERROR: %s\n" "$*" >&2
     exit 1
 }
 
@@ -29,7 +29,7 @@ while getopts ":n:h" option; do
     case $option in
     n) name=$OPTARG ;;
     h)
-        echo "$usage"
+        printf "%s\n" "$usage"
         exit
         ;;
     *) die "Invalid option '$OPTARG'" ;;

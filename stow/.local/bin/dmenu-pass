@@ -23,7 +23,7 @@ In all cases, the password is copied to the clipboard.
 pass_dir=${PASSWORD_STORE_DIR:-$HOME/.password-store}
 
 die() {
-    echo "ERROR: $*" >&2
+    printf "ERROR: %s\n" "$*" >&2
     exit 1
 }
 
@@ -32,7 +32,7 @@ pass_names() {
         while IFS= read -r -d'' file; do
             name=${file#"$pass_dir"/}
             name=${name%.gpg}
-            echo "$name"
+            printf "%s\n" "$name"
         done < <(find -L "$pass_dir" -type f -name "*.gpg" -print0)
     fi
 }
@@ -41,7 +41,7 @@ while getopts ":n:h" option; do
     case $option in
     n) length=$OPTARG ;;
     h)
-        echo "$usage"
+        printf "%s\n" "$usage"
         exit
         ;;
     *) die "Invalid option '$OPTARG'" ;;
