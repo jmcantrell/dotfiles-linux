@@ -6,31 +6,27 @@ My configuration files and scripts common to all Linux distributions.
 
 Clone this repository:
 
-```
-$ git clone git@gitlab.com:jmcantrell/dotfiles-linux.git ~/.dotfiles-linux
-$ cd ~/.dotfiles-linux
-```
-
-Update the repository:
-
-```
-$ ./update.sh
+```sh
+git clone git@gitlab.com:jmcantrell/dotfiles-linux.git ~/.dotfiles-linux
+cd ~/.dotfiles-linux
 ```
 
-Configure the system:
+Symlink files, install packages, and configure system:
 
-```
-$ ./config.sh
-```
-
-Stow the files to your home directory:
-
-```
-$ ./stow.sh
+```sh
+./scripts/stow
+./scripts/install
+./scripts/config
 ```
 
-Remove the stowed files from your home directory:
+Update repository with the latest changes:
 
+```sh
+./scripts/update
 ```
-$ ./unstow.sh
+
+Remove files from home directory:
+
+```sh
+./scripts/unstow
 ```
