@@ -19,7 +19,7 @@ sudo tee "$service" >/dev/null <<-EOF
 Description=disable resuming on USB device activity
 
 [Service]
-ExecStart=/bin/bash -c "printf '%s\n' ${devices@Q} >>${wakeup@Q}"
+ExecStart=/bin/bash -c "printf '%%s\n' ${devices@Q} >>${wakeup@Q}"
 
 [Install]
 WantedBy=multi-user.target
