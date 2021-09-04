@@ -88,11 +88,9 @@ args=(--arg keyfile "${keyfile/$HOME/\~}")
 
 if [[ $index == null ]]; then
     args+=(--arg uuid "$uuid")
-    # shellcheck disable=SC2016
     query='.device_config += [{ "id_uuid": $uuid, "keyfile": $keyfile }]'
 else
     args+=(--arg index "$index")
-    # shellcheck disable=SC2016
     query='.device_config[$index | tonumber].keyfile=$keyfile'
 fi
 
