@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-# Set desktop background to a random image from a directory.
-# Usage: randbg [DIRECTORY]
-
-set -eu
-
-setbg "$(find "${1:-$(xdg-user-dir PICTURES)/backgrounds)}" -type f | shuf -n1)"

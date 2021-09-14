@@ -5,14 +5,11 @@
 set -eu
 
 image=${1:-}
+
 background=${XDG_CONFIG_HOME:-$HOME/.config}/background.png
 
 if [[ -f $image ]]; then
-    convert "$image" "$background"
+    ln -sfvr "$image" "$background"
 fi
 
-if [[ -f $background ]]; then
-    hsetroot -cover "$background"
-else
-    hsetroot -solid black
-fi
+swaymsg output "*" bg "$background" stretch '#000000'

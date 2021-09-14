@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-if [[ $DISPLAY && $VISUAL ]]; then
-    exec "$VISUAL" "$@"
+if [[ ($DISPLAY || $WAYLAND_DISPLAY) ]]; then
+    exec terminal -e editor "$@"
 else
     exec editor "$@"
 fi

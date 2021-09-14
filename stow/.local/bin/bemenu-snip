@@ -3,7 +3,7 @@
 set -eu
 
 name=${0##*/}
-usage="Manage text snippets with dmenu.
+usage="Manage text snippets with bemenu.
 
 Usage:
     $name [OPTIONS] ACTION NAME
@@ -25,19 +25,17 @@ die() {
 }
 
 do_copy() {
-    snip "${snip_options[@]}" read "$1" | xsel -ib
+    snip "${snip_options[@]}" read "$1" | wl-copy
     notify-send -i edit-copy "Snippet '$1' copied to clipboard"
 }
 
 do_save() {
-    xsel -ob | snip "${snip_options[@]}" write "$1"
+    wl-paste | snip "${snip_options[@]}" write "$1"
     notify-send -i document-save "Snippet '$name' saved from clipboard"
 }
 
 do_type() {
-    xdotool type \
-        --clearmodifiers --delay 25 \
-        --file "$(snip "${snip_options[@]}" path "$1")"
+    wtype -s 25 "$(snip "${snip_options[@]}" read "$1")"
 }
 
 snip_options=()
@@ -59,7 +57,7 @@ fi
 
 action=$1
 
-name=$(snip list | dmenu -p "$action snippet")
+name=$(snip list | bemenu -b -p "$action snippet")
 
 if [[ -z $name ]]; then
     die "No snippet was selected"

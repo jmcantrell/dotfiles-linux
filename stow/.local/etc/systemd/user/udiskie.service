@@ -1,0 +1,9 @@
+[Unit]
+BindsTo=sway-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/udiskie --automount --notify
+
+[Install]
+WantedBy=sway-session.target

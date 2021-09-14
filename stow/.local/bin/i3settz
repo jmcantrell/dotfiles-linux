@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-# When setting the timezone from the statusbar, be sure to let i3 know.
-
-set -eu
-
-settz "$@"
-i3-msg restart

@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+set -eu
+
+usage="Copy the current working directory of a window to the clipboard.
+
+Usage:
+    ${0##*/} [OPTIONS]
+
+Options:
+    -s    select window by clicking it
+                
+If no window is selected with -s, the current window is used."
+
+select_window_id() {
+    swaymsg -t get_tree |
+        jq -r '.. | select(.id? and .visible?) | .rect + {id} | "\(.x),\(.y) \(.width)x\(.height) \(.id)"' |
+        slurp -f "%l"
+}
+
+swaypwd_command=(swaypwd)
+
+while getopts ":sh" option; do
+    case $option in
+    s) swaypwd_command+=("$(select_window_id)") ;;
+    h)
+        printf "%s\n" "$usage"
+        exit
+        ;;
+    *)
+        printf "ERROR: Invalid option '%s'\n" "$OPTARG"
+        exit 1
+        ;;
+    esac
+done && shift $((OPTIND - 1))
+
+echo "${swaypwd_command[@]}"
+cwd=$("${swaypwd_command[@]}")
+
+wl-copy -n <<<"$cwd"
+
+notify-send -t 3000 -i edit-copy \
+    "Working directory copied to clipboard" \
+    "$cwd"

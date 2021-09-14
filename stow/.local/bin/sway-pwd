@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+set -eu
+
+usage="Print the working directory of a window.
+
+Usage:
+    ${0##*/} [OPTIONS] [ID]
+
+Options:
+    -h    show this help message
+                
+If no window ID is given, the current window is used."
+
+while getopts ":h" option; do
+    case $option in
+    h)
+        printf "%s\n" "$usage"
+        exit
+        ;;
+    *)
+        printf "ERROR: Invalid option '%s'\n" "$OPTARG"
+        exit 1
+        ;;
+    esac
+done && shift "$((OPTIND - 1))"
+
+if [[ -v 1 ]]; then
+    window_pid=$(
+        swaymsg -t get_tree |
+            jq -r --argjson id "$1" '.. | select(.pid? and .id? and .id == $id) | .pid'
+    )
+else
+    window_pid=$(
+        swaymsg -t get_tree |
+            jq -r '.. | select(.pid? and .visible? and .focused?) | .pid'
+    )
+fi
+
+cwd=$HOME # fallback
+
+if [[ -n $window_pid ]]; then
+    readarray -t lines < <(
+        pstree --long --show-pids --ascii --hide-threads "$window_pid" |
+            head -n1 |
+            sed 's/-+-.*$//' |                           # ignore branches
+            sed 's/---/\n/g' |                           # one process per line
+            sed 's/^\(.*\)(\([[:digit:]]\+\))$/\1=\2/' | # separate name and pid
+            tac                                          # order processes by depth
+    )
+
+    # Show the processes on stderr for debugging.
+    printf "%s\n" "${lines[@]}" >&2
+
+    for line in "${lines[@]}"; do
+        pid=${line##*=}
+
+        cwd_link=/proc/$pid/cwd
+
+        if [[ ! -e $cwd_link ]]; then
+            continue
+        fi
+
+        possible_cwd=$(readlink "$cwd_link")
+
+        if [[ -d $possible_cwd ]]; then
+            cwd=$possible_cwd
+            break
+        fi
+    done
+fi
+
+printf "%s" "$cwd"

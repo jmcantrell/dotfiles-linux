@@ -5,7 +5,7 @@ set -eu
 length=16
 
 name=${0##*/}
-usage="Use dmenu to interact with pass.
+usage="Interact with pass using bemenu.
 
 Usage:
     $name [OPTIONS] [ACTION]
@@ -29,8 +29,9 @@ die() {
 
 pass_names() {
     if [[ -d $pass_dir ]]; then
-        while IFS= read -r -d'' file; do
-            name=${file#"$pass_dir"/}
+        local file
+        while IFS= read -r -d '' file; do
+            local name=${file#"$pass_dir"/}
             name=${name%.gpg}
             printf "%s\n" "$name"
         done < <(find -L "$pass_dir" -type f -name "*.gpg" -print0)
@@ -55,7 +56,7 @@ choose | generate) ;;
 *) die "Invalid action '$action'" ;;
 esac
 
-name=$(pass_names | dmenu -p "$action password for")
+name=$(pass_names | bemenu -b -p "$action password")
 
 case $action in
 choose) pass -c "$name" ;;

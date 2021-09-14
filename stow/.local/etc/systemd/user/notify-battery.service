@@ -1,0 +1,6 @@
+[Unit]
+Description=notify about discharging batteries
+
+[Service]
+ExecStart=%h/.local/bin/notify-battery
+

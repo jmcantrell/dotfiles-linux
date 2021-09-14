@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+set -eu
+
+action=$1
+
+case $action in
+set | goto) ;;
+unset)
+    exec swaymsg '[con_id="__focused__"] unmark'
+    ;;
+clear)
+    exec swaymsg unmark
+    ;;
+*)
+    printf "ERROR: Invalid action '%s'\n" "$action"
+    exit 1
+    ;;
+esac
+
+mark=$(
+    swaymsg -t get_marks | jq -r '.[]' |
+        bemenu -p "$action mark"
+)
+
+case $action in
+set) exec swaymsg mark "$mark" ;;
+goto) exec swaymsg "[con_mark=$mark] focus" ;;
+esac

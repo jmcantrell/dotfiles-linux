@@ -9,3 +9,9 @@ sudo gpasswd -a "$USER" locate
 sudo updatedb
 
 sudo chsh -s /bin/zsh "$USER"
+
+systemctl --user enable swayidle.service
+systemctl --user enable mako.service
+systemctl --user enable udiskie.service
+systemctl --user enable sway-setbg.service
+systemctl --user enable notify-battery.timer

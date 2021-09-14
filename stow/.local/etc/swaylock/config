@@ -1,0 +1,6 @@
+ignore-empty-password
+show-failed-attempts
+indicator-caps-lock
+scaling=stretch
+color=000000
+image=~/.local/etc/background.png

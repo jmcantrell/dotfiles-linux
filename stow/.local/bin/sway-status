@@ -1,0 +1,193 @@
+#!/usr/bin/env python3
+
+import locale
+import time
+import json
+import signal
+import os
+import subprocess
+from pathlib import Path
+
+
+b_per_gb = 1024 ** 3
+kb_per_gb = 1024 ** 2
+
+color_off = "#4c4c4c"
+
+
+def capture_stdout(command):
+    return subprocess.run(command, capture_output=True, text=True).stdout
+
+
+class Element:
+    def create_block(self, full_text, **kwargs):
+        kwargs["name"] = self.__class__.__name__
+        kwargs["full_text"] = full_text
+        return kwargs
+
+    def update(self, output):
+        raise NotImplementedError
+
+
+class Clock(Element):
+    def __init__(self, full_format="%c", short_format="%r"):
+        self.full_format = full_format
+        self.short_format = short_format
+
+    def update(self, output):
+        kwargs = {}
+        if self.short_format:
+            kwargs["short_text"] = time.strftime(self.short_format)
+        full_text = time.strftime(self.full_format)
+        output.append(self.create_block(full_text, **kwargs))
+
+
+class DiskUsage(Element):
+    def __init__(self, path, label=None):
+        self.path = path
+        self.label = label or path
+
+    def update(self, output):
+        stat = os.statvfs(self.path)
+        free_gb = round(stat.f_frsize * stat.f_bfree / b_per_gb, 1)
+        full_text = f"{self.label} {free_gb} G"
+        block = self.create_block(full_text, instance=self.path)
+        output.append(block)
+
+
+class MemoryInfo(Element):
+    source = "/proc/meminfo"
+
+    def __init__(self, key):
+        self.line_number = self._find_line_number(key)
+
+    def _find_line_number(self, key):
+        line_number = 0
+
+        for line in open(self.source).readlines():
+            if line.startswith(key + ":"):
+                return line_number
+            line_number += 1
+
+        raise KeyError(f"Key '{key}' not found in {self.source}")
+
+    def update(self, output):
+        line = open(self.source).readlines()[self.line_number]
+        free_kb = int(line.split(":")[1].strip().split()[0])
+        free_gb = round(free_kb / kb_per_gb, 1)
+        block = self.create_block(f"mem {free_gb} G")
+        output.append(block)
+
+
+class NetworkInterfaces(Element):
+    def update(self, output):
+        addr_entries = json.loads(capture_stdout(["ip", "-json", "addr"]))
+        for addr_entry in addr_entries:
+            if addr_entry["operstate"] == "UP":
+                ifname = addr_entry["ifname"]
+                ip = addr_entry["addr_info"][0]["local"]
+                block = self.create_block(
+                    f"{ifname} {ip}", short_text=f"{ifname}", instance=ifname
+                )
+                output.append(block)
+
+
+class LoadAverage(Element):
+    def update(self, output):
+        loadavg = " ".join(open("/proc/loadavg").read().split()[:-1])
+        full_text = f"load {loadavg}"
+        block = self.create_block(full_text)
+        output.append(block)
+
+
+class Batteries(Element):
+    def __init__(self):
+        self.batteries = list(Path("/sys/class/power_supply").glob("BAT*"))
+
+    def update(self, output):
+        for battery in self.batteries:
+            battery_name = battery.name.lower()
+            battery_status = open(battery / "status").read().strip().lower()
+            battery_capacity = open(battery / "capacity").read().strip()
+            full_text = f"{battery_name} {battery_capacity}% {battery_status}"
+            block = self.create_block(full_text, instance=battery_name)
+            output.append(block)
+
+
+class PathExists(Element):
+    def __init__(self, path, label=None):
+        self.path = path
+        self.label = label or f"{path} exists"
+
+    def update(self, output):
+        kwargs = {"instance": str(self.path)}
+        if not self.path.exists():
+            kwargs["color"] = color_off
+        block = self.create_block(self.label, **kwargs)
+        output.append(block)
+
+
+class PulseAudioVolume(Element):
+    def update(self, output):
+        items = capture_stdout(
+            ["pamixer", "--get-mute", "--get-volume"]
+        ).split()
+        kwargs = {}
+        if items[0] == "true":
+            kwargs["color"] = color_off
+        block = self.create_block(f"audio {int(items[1])}%", **kwargs)
+        output.append(block)
+
+
+class StatusUpdater:
+    def __init__(self, elements):
+        self.elements = elements
+
+    def _send_line(self, line):
+        print(line, flush=True)
+
+    def _send_header(self):
+        self._send_line(
+            json.dumps(
+                {
+                    "version": 1,
+                    "click_events": True,
+                    "stop_signal": signal.SIGTSTP,
+                }
+            )
+        )
+
+    def _send_update(self):
+        output = []
+        for element in self.elements:
+            element.update(output)
+        self._send_line("," + json.dumps(output))
+
+    def run(self):
+        self._send_header()
+        self._send_line("[[]")
+
+        while True:
+            self._send_update()
+            time.sleep(1)
+
+
+def main():
+    locale.setlocale(locale.LC_ALL, "")
+
+    elements = [
+        NetworkInterfaces(),
+        PathExists(Path("/proc/sys/net/ipv4/conf/wg-mullvad"), label="vpn"),
+        LoadAverage(),
+        DiskUsage("/home", label="~"),
+        MemoryInfo("MemAvailable"),
+        Batteries(),
+        PulseAudioVolume(),
+        Clock(),
+    ]
+
+    StatusUpdater(elements).run()
+
+
+if __name__ == "__main__":
+    main()

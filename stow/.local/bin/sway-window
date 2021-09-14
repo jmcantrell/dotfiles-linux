@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -eu
+
+swaymsg -t get_tree |
+    jq --argjson id "$1" '.. | select(.id? == $id)'

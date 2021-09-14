@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-# Set all connected outputs to mirror primary.
-
-set -eu
-
-primary=$(xrandr-primary)
-xrandr-detect --same-as "$primary" "$@"
