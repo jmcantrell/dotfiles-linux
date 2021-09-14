@@ -13,6 +13,7 @@ mute) pamixer --toggle-mute ;;
 down) pamixer --decrease $increment ;;
 up) pamixer --increase $increment ;;
 max) pamixer --set-volume 100 ;;
+[0-9]*) pamixer --set-volume "$action" ;;
 esac
 
 # The exit code corresponds to mute status.
