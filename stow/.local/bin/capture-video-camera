@@ -23,9 +23,6 @@ Options:
     -d NUMBER       number of seconds to wait before starting capture
                     (default: $delay)
 
-    -t NUMBER       number of seconds to capture
-                    (default: record indefinitely)
-
     -D DIRECTORY    directory in which to store default output file
                     (default: $directory)
 
@@ -40,20 +37,14 @@ Arguments:
                     formats any sequences recognized by strftime
                     (default: $directory/$file_name.$file_type)
 
-    'stop'          stop any recording session already in progress
+    'stop'          stop recording session
 "
 
-die() {
-    printf "ERROR: %s\n" "$*" >&2
-    exit 1
-}
-
-while getopts ":ai:d:t:D:N:E:h" option; do
+while getopts ":ai:d:D:N:E:h" option; do
     case $option in
     a) capture_audio=1 ;;
     i) device=$OPTARG ;;
     d) delay=$OPTARG ;;
-    t) duration=$OPTARG ;;
     D) directory=$OPTARG ;;
     N) file_name=$OPTARG ;;
     E) file_type=$OPTARG ;;
@@ -61,7 +52,10 @@ while getopts ":ai:d:t:D:N:E:h" option; do
         printf "%s\n" "$usage"
         exit
         ;;
-    *) die "Invalid option '$OPTARG'" ;;
+    *)
+        printf "ERROR: Invalid option '%s'\n" "$OPTARG"
+        exit 1
+        ;;
     esac
 done && shift $((OPTIND - 1))
 
@@ -111,7 +105,7 @@ fi
 canberra-gtk-play -i screen-capture &
 
 notify-send -i media-record \
-    "Captured camera video ${capture_audio:+ (with microphone audio)}" \
+    "Captured camera video ${capture_audio:+ (with audio)}" \
     "<u>${output_file/$HOME/\~}</u>" &
 
 printf "%s" "$output_file"

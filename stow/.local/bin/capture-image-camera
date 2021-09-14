@@ -33,11 +33,6 @@ Arguments:
                     (default: $directory/$file_name.$file_type)
 "
 
-die() {
-    printf "ERROR: %s\n" "$*" >&2
-    exit 1
-}
-
 while getopts ":d:D:N:E:h" option; do
     case $option in
     d) delay=$OPTARG ;;
@@ -48,7 +43,10 @@ while getopts ":d:D:N:E:h" option; do
         printf "%s\n" "$usage"
         exit
         ;;
-    *) die "Invalid option '$OPTARG'" ;;
+    *)
+        printf "ERROR: Invalid option '%s'\n" "$OPTARG"
+        exit 1
+        ;;
     esac
 done && shift $((OPTIND - 1))
 
@@ -68,7 +66,7 @@ ffmpeg "${options[@]}" "$output_file"
 canberra-gtk-play -i screen-capture &
 
 notify-send -i media-record \
-    "Captured photo from camera" \
+    "Captured camera photo" \
     "<u>${output_file/$HOME/\~}</u>" &
 
 printf "%s" "$output_file"

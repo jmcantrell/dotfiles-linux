@@ -16,7 +16,11 @@ Usage:
 Options:
     -g GEOMETRY     geometry of region to capture
 
-    -s              select window or region to capture
+    -f              capture focused window
+    -r              select region to capture
+    -s              select window to capture
+
+    -m              include mouse cursor(s)
 
     -d NUMBER       number of seconds to wait before starting capture
                     (default: $delay)
@@ -36,15 +40,26 @@ Arguments:
                     (default: $directory/$file_name.$file_type)
 "
 
-die() {
-    printf "ERROR: %s\n" "$*" >&2
-    exit 1
+geometry_format='\(.x),\(.y) \(.width)x\(.height)'
+
+focused_window_geometry() {
+    swaymsg -t get_tree |
+        jq -r ".. | select(.rect? and .visible? and .focused?) | .rect | \"$geometry_format\""
 }
 
-while getopts ":g:sd:D:N:E:h" option; do
+select_window_geometry() {
+    swaymsg -t get_tree |
+        jq -r ".. | select(.rect? and .visible?) | .rect | \"$geometry_format\"" |
+        slurp -r
+}
+
+while getopts ":g:rfsmd:D:N:E:h" option; do
     case $option in
     g) geometry=$OPTARG ;;
-    s) geometry=$(slop -f "%wx%h+%x+%y") ;;
+    r) geometry=$(slurp) ;;
+    f) geometry=$(focused_window_geometry) ;;
+    s) geometry=$(select_window_geometry) ;;
+    m) capture_mouse=1 ;;
     d) delay=$OPTARG ;;
     D) directory=$OPTARG ;;
     N) file_name=$OPTARG ;;
@@ -53,16 +68,23 @@ while getopts ":g:sd:D:N:E:h" option; do
         printf "%s\n" "$usage"
         exit
         ;;
-    *) die "Invalid option '$OPTARG'" ;;
+    *)
+        printf "ERROR: Invalid option '%s'\n" "$OPTARG"
+        exit 1
+        ;;
     esac
 done && shift $((OPTIND - 1))
 
 output_file=$(date +"${1:-$directory/$file_name.$file_type}")
 
-options=(-window root)
+options=()
 
 if [[ -v geometry ]]; then
-    options+=(-crop "$geometry")
+    options+=(-g "$geometry")
+fi
+
+if [[ -v capture_mouse ]]; then
+    options+=(-c)
 fi
 
 if ((delay > 0)); then
@@ -70,12 +92,12 @@ if ((delay > 0)); then
 fi
 
 mkdir -p "$(dirname "$output_file")"
-import "${options[@]}" "$output_file"
+grim "${options[@]}" "$output_file"
 
 canberra-gtk-play -i screen-capture &
 
 notify-send -i media-record \
-    "Captured image of desktop" \
+    "Captured desktop image" \
     "<u>${output_file/$HOME/\~}</u>" &
 
 printf "%s" "$output_file"

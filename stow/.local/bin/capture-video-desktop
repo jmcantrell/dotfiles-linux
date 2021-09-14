@@ -16,19 +16,14 @@ Usage:
 Options:
     -g GEOMETRY     geometry of region to capture
 
-    -s              select window or region to capture
+    -f              capture focused window
+    -r              select region to capture
+    -s              select window to capture
 
     -a              also capture audio from microphone
 
-    -M PADDING      drag to size a viewport region that follows mouse
-                    mouse cursor stays at least PADDING pixels from edge
-                    if PADDING is 'centered', keep mouse cursor centered
-
     -d NUMBER       number of seconds to wait before starting capture
                     (default: $delay)
-
-    -t NUMBER       number of seconds to capture
-                    (default: record indefinitely)
 
     -D DIRECTORY    directory in which to store default output file
                     (default: $directory)
@@ -44,30 +39,30 @@ Arguments:
                     formats any sequences recognized by strftime
                     (default: $directory/$file_name.$file_type)
 
-    'stop'          stop any recording session already in progress
+    'stop'          stop recording session
 "
 
-die() {
-    printf "ERROR: %s\n" "$*" >&2
-    exit 1
+geometry_format='\(.x),\(.y) \(.width)x\(.height)'
+
+focused_window_geometry() {
+    swaymsg -t get_tree |
+        jq -r ".. | select(.rect? and .visible? and .focused?) | .rect | \"$geometry_format\""
 }
 
-select_geometry() {
-    slop -f "%wx%h+%x+%y"
+select_window_geometry() {
+    swaymsg -t get_tree |
+        jq -r ".. | select(.rect? and .visible?) | .rect | \"$geometry_format\"" |
+        slurp -r
 }
 
-while getopts ":g:sM:mad:t:D:N:E:h" option; do
+while getopts ":g:rfsad:D:N:E:h" option; do
     case $option in
     g) geometry=$OPTARG ;;
-    s) geometry=$(select_geometry) ;;
-    M)
-        follow_mouse=$OPTARG
-        geometry=$(select_geometry)
-        ;;
-    m) draw_mouse=1 ;;
+    r) geometry=$(slurp) ;;
+    f) geometry=$(focused_window_geometry) ;;
+    s) geometry=$(select_window_geometry) ;;
     a) capture_audio=1 ;;
     d) delay=$OPTARG ;;
-    t) duration=$OPTARG ;;
     D) directory=$OPTARG ;;
     N) file_name=$OPTARG ;;
     E) file_type=$OPTARG ;;
@@ -75,71 +70,58 @@ while getopts ":g:sM:mad:t:D:N:E:h" option; do
         printf "%s\n" "$usage"
         exit
         ;;
-    *) die "Invalid option '$OPTARG'" ;;
+    *)
+        printf "ERROR: Invalid option '%s'\n" "$OPTARG"
+        exit 1
+        ;;
     esac
 done && shift $((OPTIND - 1))
 
-ffmpeg_stdin=$XDG_RUNTIME_DIR/$name-ffmpeg-stdin
+recorder_pid_file=$XDG_RUNTIME_DIR/$name-recorder.pid
 
 if [[ -v 1 && $1 == stop ]]; then
-    if [[ -f $ffmpeg_stdin ]]; then
-        printf "q\n" >>"$ffmpeg_stdin"
+    if [[ -f $recorder_pid_file ]]; then
+        kill "$(<"$recorder_pid_file")"
     fi
     exit 0
 fi
 
 output_file=$(date +"${1:-$directory/$file_name.$file_type}")
 
-options=(-hide_banner -loglevel warning)
+options=()
 
-options+=(-y -f x11grab -draw_mouse "${draw_mouse:-0}")
-
-if [[ -v follow_mouse ]]; then
-    options+=(-follow_mouse "$follow_mouse")
+if [[ -v geometry ]]; then
+    options+=(-g "$geometry")
 fi
-
-if [[ ! -v geometry ]]; then
-    geometry=$(xwininfo -root | grep -w geometry | awk '{print $2}')
-fi
-
-size=${geometry%%+*}
-top_left=${geometry#*+}
-left=${top_left%+*}
-top=${top_left#*+}
-options+=(-s "$size" -i "${DISPLAY}+${left%+*},${top#*+}")
 
 if [[ -v capture_audio ]]; then
-    options+=(-f alsa -i default)
+    options+=(-a)
 fi
 
-if [[ -v duration ]]; then
-    options+=(-t "$duration")
+if [[ $output_file == *.gif ]]; then
+    options+=(-c gif)
 fi
 
 if ((delay > 0)); then
     canberra-gtk-play -l "$delay" -i message
 fi
 
-# If not connected to a TTY, tell ffmpeg to get its stdin from a runtime file.
-# This way, recording can be stopped remotely by writing 'q' to the file.
-# For this script, a shortcut is to give "stop" as the first argument.
-
 mkdir -p "$(dirname "$output_file")"
-ffmpeg_command=(ffmpeg "${options[@]}" "$output_file")
+recorder_command=(wf-recorder "${options[@]}" -f "$output_file")
 
 if ! tty -s; then
-    touch "$ffmpeg_stdin"
-    trap 'rm -f "$ffmpeg_stdin"' INT TERM EXIT
-    "${ffmpeg_command[@]}" <"$ffmpeg_stdin"
+    "${recorder_command[@]}" &
+    echo "$!" >"$recorder_pid_file"
+    trap 'rm "$recorder_pid_file"' INT TERM EXIT
+    wait -f
 else
-    printf "Press 'q' at any time to stop recording...\n"
-    "${ffmpeg_command[@]}"
+    "${recorder_command[@]}"
 fi
 
 canberra-gtk-play -i camera-shutter &
 
 notify-send -i media-record \
-    "Captured desktop video${capture_audio:+ (with microphone audio)}" \
+    "Captured desktop video${capture_audio:+ (with audio)}" \
     "<u>${output_file/$HOME/\~}</u>" &
 
 printf "%s" "$output_file"
