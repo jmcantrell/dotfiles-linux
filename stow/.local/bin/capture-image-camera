@@ -71,4 +71,4 @@ notify-send -i media-record \
     "Captured photo from camera" \
     "<u>${output_file/$HOME/\~}</u>" &
 
-printf "%s\n" "$output_file"
+printf "%s" "$output_file"

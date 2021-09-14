@@ -142,4 +142,4 @@ notify-send -i media-record \
     "Captured desktop video${capture_audio:+ (with microphone audio)}" \
     "<u>${output_file/$HOME/\~}</u>" &
 
-printf "%s\n" "$output_file"
+printf "%s" "$output_file"
