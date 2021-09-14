@@ -58,7 +58,7 @@ options=(-hide_banner -loglevel error)
 
 options+=(-y -f v4l2 -i "$device" -frames:v 1)
 
-if [[ -v delay ]]; then
+if ((delay > 0)); then
     canberra-gtk-play -l "$delay" -i message
 fi
 

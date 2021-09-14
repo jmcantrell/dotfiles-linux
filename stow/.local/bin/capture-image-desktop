@@ -65,7 +65,7 @@ if [[ -v geometry ]]; then
     options+=(-crop "$geometry")
 fi
 
-if [[ -v delay ]]; then
+if ((delay > 0)); then
     canberra-gtk-play -l "$delay" -i message
 fi
 

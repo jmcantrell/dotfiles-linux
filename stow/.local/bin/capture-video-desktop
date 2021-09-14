@@ -116,7 +116,7 @@ if [[ -v duration ]]; then
     options+=(-t "$duration")
 fi
 
-if [[ -v delay ]]; then
+if ((delay > 0)); then
     canberra-gtk-play -l "$delay" -i message
 fi
 
