@@ -4,34 +4,54 @@
 
 set -eu
 
-battery_num=0
-low_percent=25
-critical_percent=15
-hibernate_percent=5
+low_capacity=25
+critical_capacity=15
+hibernate_capacity=5
 hibernate_delay=30
 
-info=$(
-    acpi -b |
-        grep -i "^battery $battery_num:" |
-        awk '{print $3, $4}' |
-        sed -re 's/[^0-9A-Za-z ]//g'
+readarray -t -d '' batteries < <(
+    find -L /sys/class/power_supply \
+        -maxdepth 1 -type d -name "BAT*" -print0
 )
-state=${info%% *}
-percent=${info##* }
 
-if [[ $state == Discharging ]]; then
-    if ((percent <= hibernate_percent)); then
-        notify-send -u critical -i battery-empty \
-            "Battery almost empty: $percent%" \
-            "Hibernating in $hibernate_delay seconds..."
-        sleep "$hibernate_delay" && systemctl hibernate
-    elif ((percent <= critical_percent)); then
-        notify-send -u critical -i battery-caution \
-            "Battery critical: $percent%" \
-            "Hibernation at $hibernate_percent%"
-    elif ((percent <= low_percent)); then
-        notify-send -u critical -i battery-low \
-            "Battery low: $percent%" \
-            "Attach power supply to avoid hibernation"
+batteries_discharging=()
+
+for battery in "${batteries[@]}"; do
+    if [[ $(<"$battery"/status) == Discharging ]]; then
+        batteries_discharging+=("$battery")
     fi
+done
+
+# If there's at least one battery that's not discharging,
+# there's no danger, thus no need to raise an alert.
+
+if ((${#batteries_discharging[@]} < ${#batteries[@]})); then
+    exit 0
+fi
+
+# The battery that has the most charge is the one that will determine how much
+# danger the system is in of unexpected power loss.
+
+max_battery_capacity=0
+
+for battery in "${batteries_discharging[@]}"; do
+    battery_capacity=$(<"$battery"/capacity)
+    if ((battery_capacity > max_battery_capacity)); then
+        max_battery_capacity=$battery_capacity
+    fi
+done
+
+if ((max_battery_capacity <= hibernate_capacity)); then
+    notify-send -u critical -i battery-empty \
+        "Battery almost empty: $max_battery_capacity%" \
+        "Hibernating in $hibernate_delay seconds..."
+    sleep "$hibernate_delay" && systemctl hibernate
+elif ((max_battery_capacity <= critical_capacity)); then
+    notify-send -u critical -i battery-caution \
+        "Battery critical: $max_battery_capacity%" \
+        "Hibernation at $hibernate_capacity%"
+elif ((max_battery_capacity <= low_capacity)); then
+    notify-send -u critical -i battery-low \
+        "Battery low: $max_battery_capacity%" \
+        "Attach power supply to avoid hibernation"
 fi
