@@ -31,4 +31,4 @@ fi
 
 notify-send -u low -i "$icon" -h int:value:"$volume" \
     -h string:x-canonical-private-synchronous:audio-volume \
-    "Volume Control" "Muted: <b>$muted</b><br>Volume: <b>$volume%</b>"
+    "Volume Control" "Volume: $volume%"
