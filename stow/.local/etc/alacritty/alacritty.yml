@@ -31,7 +31,7 @@ colors:
     blue: "#334cb2"
     magenta: "#7f3fb2"
     cyan: "#665c33"
-    white: "#999999"
+    white: "#aaaaaa"
 
   bright:
     black: "#4c4c4c"

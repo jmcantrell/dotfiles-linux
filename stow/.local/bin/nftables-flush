@@ -24,7 +24,7 @@ for family in ip ip6 inet arp bridge; do
             sudo nft delete chain "$family" "$table" "$chain"
         done
 
-        printf "flushing table: %s\n" "$table"
+        printf "Flushing table: %s\n" "$table"
         sudo nft flush table "$family" "$table"
         sudo nft delete table "$family" "$table"
     done
