@@ -1,5 +1,0 @@
-[Desktop Entry]
-Name=dunst
-Comment=a notification daemon
-Exec=dunst
-Type=Application

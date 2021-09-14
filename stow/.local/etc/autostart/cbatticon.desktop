@@ -1,5 +1,0 @@
-[Desktop Entry]
-Name=cbatticon
-Comment=battery tray icon
-Exec=cbatticon -n -c notify-battery -l 20 -r 5 -x "terminal-hold -e cat /sys/class/power_supply/BAT0/uevent"
-Type=Application

@@ -1,5 +1,0 @@
-[Desktop Entry]
-Name=udiskie
-Comment=automounter for removable media
-Exec=udiskie --automount --tray --notify
-Type=Application
