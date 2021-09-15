@@ -151,7 +151,7 @@ class StatusUpdater:
             json.dumps(
                 {
                     "version": 1,
-                    "click_events": True,
+                    "click_events": False,
                     "stop_signal": signal.SIGTSTP,
                 }
             )
