@@ -1,0 +1,3 @@
+[Default]
+save_dir=$HOME/Pictures
+save_filename_format=screenshot_%FT%T%:z.png

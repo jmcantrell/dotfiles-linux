@@ -2,6 +2,7 @@
 
 set -eu
 
+edit=0
 delay=0
 device=/dev/video0
 directory=$(xdg-user-dir PICTURES)
@@ -15,6 +16,8 @@ Usage:
     $name [OPTIONS] [FILE]
 
 Options:
+    -e              edit the captured image before saving
+
     -d NUMBER       number of seconds to wait before starting capture
                     (default: $delay)
 
@@ -33,8 +36,9 @@ Arguments:
                     (default: $directory/$file_name.$file_type)
 "
 
-while getopts ":d:D:N:E:h" option; do
+while getopts ":ed:D:N:E:h" option; do
     case $option in
+    e) edit=1 ;;
     d) delay=$OPTARG ;;
     D) directory=$OPTARG ;;
     N) file_name=$OPTARG ;;
@@ -52,16 +56,21 @@ done && shift $((OPTIND - 1))
 
 output_file=$(date +"${1:-$directory/$file_name.$file_type}")
 
-options=(-hide_banner -loglevel error)
+ffmpeg=(ffmpeg -hide_banner -loglevel error)
 
-options+=(-y -f v4l2 -i "$device" -frames:v 1)
+ffmpeg+=(-y -f v4l2 -i "$device" -frames:v 1)
 
 if ((delay > 0)); then
     canberra-gtk-play -l "$delay" -i message
 fi
 
 mkdir -p "$(dirname "$output_file")"
-ffmpeg "${options[@]}" "$output_file"
+
+if ((edit)); then
+    "${ffmpeg[@]}" -c:v "${file_type}" -f image2 - | swappy -f - -o "$output_file"
+else
+    "${ffmpeg[@]}" "$output_file"
+fi
 
 canberra-gtk-play -i screen-capture &
 

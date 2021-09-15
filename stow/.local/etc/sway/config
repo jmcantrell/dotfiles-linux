@@ -180,11 +180,11 @@ bindsym shift+$super+q mode "$mode_session"
 
 set $mode_capture_image capture image: (d)esktop, (f)ocused or (s)elected window, (r)egion, (c)amera
 mode "$mode_capture_image" {
-	bindsym d exec capture-image-desktop,    mode "default"
-	bindsym f exec capture-image-desktop -f, mode "default"
-	bindsym s exec capture-image-desktop -s, mode "default"
-	bindsym r exec capture-image-desktop -r, mode "default"
-	bindsym c exec capture-image-camera -d5, mode "default"
+	bindsym d exec capture-image-desktop -e,    mode "default"
+	bindsym f exec capture-image-desktop -ef,   mode "default"
+	bindsym s exec capture-image-desktop -es,   mode "default"
+	bindsym r exec capture-image-desktop -er,   mode "default"
+	bindsym c exec capture-image-camera -e -d5, mode "default"
 	bindsym Return mode "default"
 	bindsym Escape mode "default"
 }
