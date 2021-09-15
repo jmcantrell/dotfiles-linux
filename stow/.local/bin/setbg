@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -eu
+
+if [[ -v SWAYSOCK ]]; then
+    exec sway-setbg "$@"
+fi
