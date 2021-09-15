@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -eu
+
+target=$(
+    udiskie-info -a -o "{mount_path}" -f is_mounted |
+        bemenu -l 20 -b -p unmount
+)
+
+udiskie-umount "$@" "$target"

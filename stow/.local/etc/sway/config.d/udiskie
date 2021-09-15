@@ -1,0 +1,5 @@
+bindsym       $super+End exec bemenu-udiskie-mount
+bindsym shift+$super+End exec bemenu-udiskie-umount
+bindsym  ctrl+$super+End exec bemenu-udiskie-umount --detach --eject
+
+# vi:ft=sway

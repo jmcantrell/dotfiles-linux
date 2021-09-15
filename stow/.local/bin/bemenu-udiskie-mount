@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -eu
+
+declare -A choices=()
+
+while IFS=$'\t' read -r device label size_bytes; do
+    if ((size_bytes)); then
+        label+=" ($(numfmt --to=iec <<<"$size_bytes"))"
+    fi
+    choices[$label]=$device
+done < <(udiskie-info -a -f \!in_use -o "{device_presentation}"$'\t'"{ui_device_label}"$'\t'"{device_size}")
+
+choice=$(printf "%s\n" "${!choices[@]}" | sort | bemenu -l 20 -b -p mount)
+device=${choices[$choice]}
+
+udiskie-mount --password-prompt builtin:gui "$@" "$device"
