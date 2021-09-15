@@ -162,7 +162,7 @@ class PulseAudio(Element):
 
 
 class MediaPlayer(Element):
-    def __init__(self, format="{{emoji(status)}} {{title}} by {{artist}}"):
+    def __init__(self, format="{{lc(status)}}: {{title}} by {{artist}}"):
         self.format = format
 
     def update(self, output):
