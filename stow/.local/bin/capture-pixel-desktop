@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# Capture the color value of a selected pixel to the clipboard.
+# Usage: capture-pixel-desktop [hex|rgb|name]  # default: hex
+
+set -eu
+
+declare -A indices=([rgb]=2 [hex]=3 [name]=4)
+
+name=${1:-hex}
+index=${indices[$name]}
+
+value=$(
+    grim -g "$(slurp -p)" -t ppm - |
+        convert - -format '%[pixel:p{0,0}]' txt:- |
+        tail -n1 | awk "{print \$$index}"
+)
+
+canberra-gtk-play -i screen-capture &
+
+notify-send -i media-record \
+    "Captured desktop pixel" \
+    "$name: <u>$value</u>" &
+
+wl-copy -n <<<"$value"
