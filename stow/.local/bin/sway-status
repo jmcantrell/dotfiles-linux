@@ -80,15 +80,14 @@ class MemoryInfo(Element):
 
 
 class NetworkInterfaces(Element):
+    def __init__(self):
+        self.sys_path = Path("/sys/class/net")
+
     def update(self, output):
-        addr_entries = json.loads(capture_stdout(["ip", "-json", "addr"]))
-        for addr_entry in addr_entries:
-            if addr_entry["operstate"] == "UP":
-                ifname = addr_entry["ifname"]
-                ip = addr_entry["addr_info"][0]["local"]
-                block = self.create_block(
-                    f"{ifname} {ip}", short_text=f"{ifname}", instance=ifname
-                )
+        for interface_path in self.sys_path.glob("*"):
+            if open(interface_path / "operstate").read().strip() == "up":
+                name = interface_path.name
+                block = self.create_block(f"{name}", instance=name)
                 output.append(block)
 
 
