@@ -5,4 +5,4 @@
 
 set -eu
 
-sway-setbg "$(find "${1:-$(xdg-user-dir PICTURES)/backgrounds}" -type f | shuf -n1)"
+setbg "$(find "${1:-$(xdg-user-dir PICTURES)/backgrounds}" -type f | shuf -n1)"
