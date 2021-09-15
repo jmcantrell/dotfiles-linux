@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -eu
+
+for file in ~/.wprofile.d/*; do
+    [[ -f $file ]] && . "$file"
+done
+unset file
+
+sway
