@@ -126,16 +126,53 @@ class PathExists(Element):
         output.append(block)
 
 
-class PulseAudioVolume(Element):
+class PulseAudio(Element):
+    def __init__(self, sink="@DEFAULT_SINK@"):
+        self.sink = sink
+
+    @property
+    def stereo_volume(self):
+        stdout = capture_stdout(["pactl", "get-sink-volume", self.sink])
+        return [
+            int(s.strip().rstrip("%"))
+            for s in stdout.split(" / ")
+            if s.endswith("%")
+        ]
+
+    @property
+    def volume_text(self):
+        volumes = self.stereo_volume
+        volume_format = "{}%"
+        if len(set(volumes)) == 1:
+            return volume_format.format(volumes[0])
+        else:
+            return " / ".join([volume_format.format(v) for v in volumes])
+
+    @property
+    def muted(self):
+        stdout = capture_stdout(["pactl", "get-sink-mute", self.sink])
+        return stdout.split()[1] == "yes"
+
     def update(self, output):
-        items = capture_stdout(
-            ["pamixer", "--get-mute", "--get-volume"]
-        ).split()
         kwargs = {}
-        if items[0] == "true":
+        if self.muted:
             kwargs["color"] = color_off
-        block = self.create_block(f"audio {int(items[1])}%", **kwargs)
+        block = self.create_block(f"audio {self.volume_text}", **kwargs)
         output.append(block)
+
+
+class MediaPlayer(Element):
+    def __init__(self, format="{{lc(status)}} {{title}} by {{artist}}"):
+        self.format = format
+
+    def update(self, output):
+        full_text = capture_stdout(
+            ["playerctl", "metadata", "--format", self.format]
+        ).strip()
+
+        if full_text:
+            block = self.create_block(full_text)
+            output.append(block)
 
 
 class StatusUpdater:
@@ -181,7 +218,8 @@ def main():
         DiskUsage("/home", label="~"),
         MemoryInfo("MemAvailable"),
         Batteries(),
-        PulseAudioVolume(),
+        PulseAudio(),
+        MediaPlayer(),
         Clock(),
     ]
 
