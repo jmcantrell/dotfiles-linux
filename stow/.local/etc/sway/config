@@ -246,7 +246,7 @@ bindsym XF86AudioLowerVolume exec $audio_down
 bindsym $super+$alt+Up exec audio-volume max
 
 set $audio_mute audio-volume mute
-bindsym $super+$alt+Down exec $audio_mute
+bindsym ctrl+$super+Down exec $audio_mute
 bindsym XF86AudioMute    exec $audio_mute
 
 set $player_play playerctl play-pause
