@@ -1,5 +1,0 @@
-# Start any programs defined in /etc/xdg/autostart.
-
-exec dex --autostart &
-
-# vi:ft=sh

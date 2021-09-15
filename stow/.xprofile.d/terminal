@@ -1,4 +1,0 @@
-export TERMINAL=xterm
-export TERMCMD=$TERMINAL
-
-# vi:ft=sh
