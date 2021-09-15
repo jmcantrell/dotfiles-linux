@@ -1,0 +1,9 @@
+[binds]
+<Ctrl+Print> = exec setbg "$imv_current_file"
+<Ctrl+y> = exec echo "$imv_current_file" | wl-copy -n
+
+<Ctrl+r> = rotate by 90
+
+<Ctrl+0> = reset
+<Ctrl+minus> = zoom -1
+<Ctrl+equal> = zoom 1
