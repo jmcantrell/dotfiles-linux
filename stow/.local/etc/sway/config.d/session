@@ -1,0 +1,14 @@
+set $mode_session session: (q)uit, (l)ock, (s)uspend, (h)ibernate, (r)eboot, (p)oweroff
+mode "$mode_session" {
+	bindsym q exec swaymsg exit,          mode "default"
+	bindsym l exec loginctl lock-session, mode "default"
+	bindsym s exec systemctl suspend,     mode "default"
+	bindsym h exec systemctl hibernate,   mode "default"
+	bindsym r exec systemctl reboot,      mode "default"
+	bindsym p exec systemctl poweroff,    mode "default"
+	bindsym Return mode "default"
+	bindsym Escape mode "default"
+}
+bindsym shift+$super+q mode "$mode_session"
+
+# vi:ft=sway

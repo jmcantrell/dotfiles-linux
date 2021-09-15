@@ -1,0 +1,3 @@
+bindsym $super+Space exec bemenu-run-mru
+
+# vi:ft=sway

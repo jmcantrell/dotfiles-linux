@@ -1,0 +1,24 @@
+bindsym $super+y bar mode toggle
+
+bar {
+    position top
+    mode dock
+    hidden_state hide
+    modifier $super
+	separator_symbol "  "
+    status_command sway-status
+
+	colors {
+		background $dark
+		separator  $bright
+		statusline $bright
+
+		#class             border  bg      text
+		urgent_workspace   $bright $urgent $bright
+		active_workspace   $bright $focus  $bright
+		focused_workspace  $bright $focus  $bright
+		inactive_workspace $border $dark   $normal
+	}
+}
+
+# vi:ft=sway

@@ -1,0 +1,56 @@
+set $mode_capture_image capture image: (d)esktop, (f)ocused or (s)elected window, (r)egion, (c)amera
+mode "$mode_capture_image" {
+	bindsym d exec capture-image-desktop -e,    mode "default"
+	bindsym f exec capture-image-desktop -ef,   mode "default"
+	bindsym s exec capture-image-desktop -es,   mode "default"
+	bindsym r exec capture-image-desktop -er,   mode "default"
+	bindsym c exec capture-image-camera -e -d5, mode "default"
+	bindsym Return mode "default"
+	bindsym Escape mode "default"
+}
+
+set $mode_capture_video capture video: (d)esktop, (f)ocused or (s)elected window, (r)egion, (c)amera
+mode "$mode_capture_video" {
+	bindsym d exec capture-video-desktop,    mode "default"
+	bindsym f exec capture-video-desktop -f, mode "default"
+	bindsym s exec capture-video-desktop -s, mode "default"
+	bindsym r exec capture-video-desktop -r, mode "default"
+	bindsym c exec capture-video-camera -d5, mode "default"
+	bindsym Return mode "default"
+	bindsym Escape mode "default"
+}
+
+set $mode_capture_gif capture gif: (d)esktop, (f)ocused or (s)elected window, (r)egion, (c)amera
+mode "$mode_capture_gif" {
+	bindsym d exec capture-gif-desktop,    mode "default"
+	bindsym f exec capture-gif-desktop -f, mode "default"
+	bindsym s exec capture-gif-desktop -s, mode "default"
+	bindsym r exec capture-gif-desktop -r, mode "default"
+	bindsym c exec capture-gif-camera -d5, mode "default"
+	bindsym Return mode "default"
+	bindsym Escape mode "default"
+}
+
+bindsym ctrl+$super+Print exec capture-video-stop
+
+set $mode_capture_pixel capture pixel: (h)ex, (r)gb, (n)ame
+mode "$mode_capture_pixel" {
+	bindsym h exec capture-pixel-desktop hex,  mode "default"
+	bindsym r exec capture-pixel-desktop rgb,  mode "default"
+	bindsym n exec capture-pixel-desktop name, mode "default"
+	bindsym Return mode "default"
+	bindsym Escape mode "default"
+}
+
+set $mode_capture capture: (i)mage, (v)ideo, (g)if, (p)ixel
+mode "$mode_capture" {
+    bindsym i mode "$mode_capture_image"
+    bindsym v mode "$mode_capture_video"
+    bindsym g mode "$mode_capture_gif"
+    bindsym p mode "$mode_capture_pixel"
+	bindsym Return mode "default"
+	bindsym Escape mode "default"
+}
+bindsym $super+Print mode "$mode_capture"
+
+# vi:ft=sway

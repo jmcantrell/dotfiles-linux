@@ -1,0 +1,43 @@
+default_border pixel
+
+bindsym $super+q kill
+
+# Vim split semantics.
+bindsym $super+s split v
+bindsym $super+v split h
+
+bindsym shift+$super+d layout default
+bindsym shift+$super+s layout stacking
+bindsym shift+$super+w layout tabbed
+bindsym shift+$super+x layout toggle split
+
+bindsym $super+h focus left
+bindsym $super+j focus down
+bindsym $super+k focus up
+bindsym $super+l focus right
+
+bindsym $alt+$super+h focus output left
+bindsym $alt+$super+j focus output down
+bindsym $alt+$super+k focus output up
+bindsym $alt+$super+l focus output right
+
+bindsym shift+$super+h move left
+bindsym shift+$super+j move down
+bindsym shift+$super+k move up
+bindsym shift+$super+l move right
+
+# Navigate the container layout tree.
+bindsym $super+a focus parent
+bindsym $super+z focus child
+
+# Make the current container fullscreen for current/all displays.
+bindsym       ctrl+$super+f fullscreen toggle
+bindsym shift+ctrl+$super+f fullscreen toggle global
+
+# Never steal the focus. Just mark as urgent.
+focus_on_window_activation urgent
+
+# Focus the most urgent window.
+bindsym $super+grave [urgent=latest] focus
+
+# vi:ft=sway

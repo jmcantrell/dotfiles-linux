@@ -1,0 +1,11 @@
+bindsym shift+$alt+$super+h move container to output left
+bindsym shift+$alt+$super+j move container to output down
+bindsym shift+$alt+$super+k move container to output up
+bindsym shift+$alt+$super+l move container to output right
+
+bindsym shift+ctrl+$super+h move workspace to output left
+bindsym shift+ctrl+$super+j move workspace to output down
+bindsym shift+ctrl+$super+k move workspace to output up
+bindsym shift+ctrl+$super+l move workspace to output right
+
+# vi:ft=sway

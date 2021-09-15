@@ -1,0 +1,32 @@
+# Rename the workspace (prefix with 0-9 to focus with super+0-9).
+bindsym $super+F2 exec swaymsg-input -p "workspace name" 'rename workspace to "%s"'
+
+bindsym $super+1   workspace number 1
+bindsym $super+2   workspace number 2
+bindsym $super+3   workspace number 3
+bindsym $super+4   workspace number 4
+bindsym $super+5   workspace number 5
+bindsym $super+6   workspace number 6
+bindsym $super+7   workspace number 7
+bindsym $super+8   workspace number 8
+bindsym $super+9   workspace number 9
+bindsym $super+0   workspace number 10
+bindsym $super+n   workspace next_on_output
+bindsym $super+p   workspace prev_on_output
+bindsym $super+Tab workspace back_and_forth
+
+bindsym shift+$super+1   move container to workspace number 1
+bindsym shift+$super+2   move container to workspace number 2
+bindsym shift+$super+3   move container to workspace number 3
+bindsym shift+$super+4   move container to workspace number 4
+bindsym shift+$super+5   move container to workspace number 5
+bindsym shift+$super+6   move container to workspace number 6
+bindsym shift+$super+7   move container to workspace number 7
+bindsym shift+$super+8   move container to workspace number 8
+bindsym shift+$super+9   move container to workspace number 9
+bindsym shift+$super+0   move container to workspace number 10
+bindsym shift+$super+n   move container to workspace next_on_output
+bindsym shift+$super+p   move container to workspace prev_on_output
+bindsym shift+$super+Tab move container to workspace back_and_forth
+
+# vi:ft=sway

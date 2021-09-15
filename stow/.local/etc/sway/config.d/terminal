@@ -1,0 +1,11 @@
+bindsym      $super+Return exec cd "$(sway-pwd)" && terminal
+bindsym $alt+$super+Return exec cd "$(sway-pwd)" && terminal --class floating
+
+bindsym $super+t exec visual ~/TODO
+
+bindsym $super+e exec cd "$(sway-pwd)" && visual
+bindsym $super+f exec cd "$(sway-pwd)" && terminal -e ranger
+
+bindsym $alt+$super+Pause exec terminal -e ncspot
+
+# vi:ft=sway

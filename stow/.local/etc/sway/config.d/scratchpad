@@ -1,0 +1,4 @@
+bindsym       $super+backslash scratchpad show
+bindsym shift+$super+backslash move scratchpad
+
+# vi:ft=sway

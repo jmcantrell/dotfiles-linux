@@ -1,0 +1,4 @@
+bindsym      $super+Delete exec bemenu-pass choose
+bindsym ctrl+$super+Delete exec bemenu-pass generate
+
+# vi:ft=sway

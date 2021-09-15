@@ -1,0 +1,15 @@
+floating_modifier $super
+
+default_floating_border pixel
+
+bindsym       $super+BackSpace focus mode_toggle
+bindsym shift+$super+BackSpace floating toggle
+bindsym  ctrl+$super+BackSpace sticky toggle
+
+# Center a floating window.
+bindsym $super+c move absolute position center
+
+# Automatically float windows with class=floating.
+for_window [app_id="^floating$"] floating enable, resize set width 50 ppt height 40 ppt
+
+# vi:ft=sway

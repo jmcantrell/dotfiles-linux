@@ -1,0 +1,13 @@
+set $mode_snip snippet: (s)ave, (c)opy, (e)dit, (t)ype (d)elete
+mode "$mode_snip" {
+    bindsym s exec bemenu-snip save,   mode "default"
+    bindsym c exec bemenu-snip copy,   mode "default"
+    bindsym e exec bemenu-snip edit,   mode "default"
+    bindsym t exec bemenu-snip type,   mode "default"
+    bindsym d exec bemenu-snip delete, mode "default"
+	bindsym Return mode "default"
+	bindsym Escape mode "default"
+}
+bindsym $super+Insert mode "$mode_snip"
+
+# vi:ft=sway

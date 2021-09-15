@@ -1,0 +1,4 @@
+bindsym $super+Home      exec copy-window-cwd
+bindsym ctrl+$super+Home exec copy-window-cwd -s
+
+# vi:ft=sway

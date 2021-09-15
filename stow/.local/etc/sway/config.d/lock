@@ -1,0 +1,3 @@
+bindsym ctrl+$super+q exec swaylock
+
+# vi:ft=sway

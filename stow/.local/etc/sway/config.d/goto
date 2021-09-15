@@ -1,0 +1,3 @@
+bindsym $alt+Tab exec bemenu-goto-window
+
+# vi:ft=sway

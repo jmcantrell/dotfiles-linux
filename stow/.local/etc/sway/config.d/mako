@@ -1,0 +1,5 @@
+bindsym       ctrl+grave exec makoctl dismiss
+bindsym  $alt+ctrl+grave exec makoctl dismiss --all
+bindsym shift+ctrl+grave exec makoctl restore
+
+# vi:ft=sway

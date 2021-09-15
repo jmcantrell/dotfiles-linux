@@ -1,0 +1,13 @@
+set $player_play playerctl play-pause
+bindsym $super+Pause  exec $player_play
+bindsym XF86AudioPlay exec $player_play
+
+set $player_previous playerctl previous
+bindsym $super+Left   exec $player_previous
+bindsym XF86AudioPrev exec $player_previous
+
+set $player_next playerctl next
+bindsym $super+Right  exec $player_next
+bindsym XF86AudioNext exec $player_next
+
+# vi:ft=sway

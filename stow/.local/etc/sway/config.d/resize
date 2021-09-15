@@ -1,0 +1,16 @@
+set $resize_px  40
+set $resize_ppt 4
+
+# Increase the window size in the direction of an edge.
+bindsym ctrl+$super+h resize grow left  $resize_px px or $resize_ppt ppt
+bindsym ctrl+$super+j resize grow down  $resize_px px or $resize_ppt ppt
+bindsym ctrl+$super+k resize grow up    $resize_px px or $resize_ppt ppt
+bindsym ctrl+$super+l resize grow right $resize_px px or $resize_ppt ppt
+
+# Decrease the window size in the direction of an edge.
+bindsym ctrl+$alt+$super+h resize shrink left  $resize_px px or $resize_ppt ppt
+bindsym ctrl+$alt+$super+j resize shrink down  $resize_px px or $resize_ppt ppt
+bindsym ctrl+$alt+$super+k resize shrink up    $resize_px px or $resize_ppt ppt
+bindsym ctrl+$alt+$super+l resize shrink right $resize_px px or $resize_ppt ppt
+
+# vi:ft=sway

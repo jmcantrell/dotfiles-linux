@@ -1,0 +1,5 @@
+seat * hide_cursor when-typing enable
+
+input * tap enabled
+
+# vi:ft=sway
