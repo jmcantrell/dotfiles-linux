@@ -78,4 +78,6 @@ notify-send -i media-record \
     "Captured camera photo" \
     "<u>${output_file/$HOME/\~}</u>" &
 
+wl-copy -n <<<"$output_file"
+
 printf "%s" "$output_file"

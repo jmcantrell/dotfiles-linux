@@ -109,4 +109,6 @@ notify-send -i media-record \
     "Captured desktop image" \
     "<u>${output_file/$HOME/\~}</u>" &
 
+wl-copy -n <<<"$output_file"
+
 printf "%s" "$output_file"
