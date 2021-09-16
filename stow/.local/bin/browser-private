@@ -2,4 +2,4 @@
 
 set -eu
 
-exec qutebrowser --target private-window "$@"
+exec firefox --private-window "$@"

@@ -16,7 +16,13 @@ color_off = "#4c4c4c"
 
 
 def capture_stdout(command):
-    return subprocess.run(command, capture_output=True, text=True).stdout
+    cp = subprocess.run(command, capture_output=True, text=True)
+    cp.check_returncode()
+    return cp.stdout
+
+
+def capture_stdout_lines(command):
+    return capture_stdout(command).strip().split(os.linesep)
 
 
 class Element:
@@ -27,6 +33,18 @@ class Element:
 
     def update(self, output):
         raise NotImplementedError
+
+
+class PathExists(Element):
+    def __init__(self, path, label=None):
+        self.path = path
+        self.label = label or path.name
+
+    def update(self, output):
+        if self.path.exists():
+            output.append(
+                self.create_block(self.label, instance=str(self.path))
+            )
 
 
 class Clock(Element):
@@ -44,21 +62,20 @@ class Clock(Element):
 
 class DiskUsage(Element):
     def __init__(self, path, label=None):
-        self.path = path
-        self.label = label or path
+        self.path = os.path.expanduser(path)
+        self.label = label or path.replace(os.path.expanduser("~"), "~")
 
     def update(self, output):
         stat = os.statvfs(self.path)
         free_gb = round(stat.f_frsize * stat.f_bfree / b_per_gb, 1)
         full_text = f"{self.label} {free_gb} G"
-        block = self.create_block(full_text, instance=self.path)
-        output.append(block)
+        output.append(self.create_block(full_text, instance=self.path))
 
 
 class MemoryInfo(Element):
     source = "/proc/meminfo"
 
-    def __init__(self, key):
+    def __init__(self, key="MemAvailable"):
         self.line_number = self._find_line_number(key)
 
     def _find_line_number(self, key):
@@ -75,8 +92,7 @@ class MemoryInfo(Element):
         line = open(self.source).readlines()[self.line_number]
         free_kb = int(line.split(":")[1].strip().split()[0])
         free_gb = round(free_kb / kb_per_gb, 1)
-        block = self.create_block(f"mem {free_gb} G")
-        output.append(block)
+        output.append(self.create_block(f"mem {free_gb} G"))
 
 
 class NetworkInterfaces(Element):
@@ -87,16 +103,23 @@ class NetworkInterfaces(Element):
         for interface_path in self.sys_path.glob("*"):
             if open(interface_path / "operstate").read().strip() == "up":
                 name = interface_path.name
-                block = self.create_block(f"{name}", instance=name)
-                output.append(block)
+                output.append(self.create_block(f"{name}", instance=name))
+
+
+class Mullvad(PathExists):
+    def __init__(self):
+        super().__init__(
+            Path("/proc/sys/net/ipv4/conf/wg-mullvad"), label="vpn"
+        )
 
 
 class LoadAverage(Element):
+    def __init__(self):
+        self.file = "/proc/loadavg"
+
     def update(self, output):
-        loadavg = " ".join(open("/proc/loadavg").read().split()[:-1])
-        full_text = f"load {loadavg}"
-        block = self.create_block(full_text)
-        output.append(block)
+        loadavg = " ".join(open(self.file).read().split()[:-1])
+        output.append(self.create_block(f"load {loadavg}"))
 
 
 class Batteries(Element):
@@ -109,21 +132,7 @@ class Batteries(Element):
             battery_status = open(battery / "status").read().strip().lower()
             battery_capacity = open(battery / "capacity").read().strip()
             full_text = f"{battery_name} {battery_capacity}% {battery_status}"
-            block = self.create_block(full_text, instance=battery_name)
-            output.append(block)
-
-
-class PathExists(Element):
-    def __init__(self, path, label=None):
-        self.path = path
-        self.label = label or f"{path} exists"
-
-    def update(self, output):
-        kwargs = {"instance": str(self.path)}
-        if not self.path.exists():
-            kwargs["color"] = color_off
-        block = self.create_block(self.label, **kwargs)
-        output.append(block)
+            output.append(self.create_block(full_text, instance=battery_name))
 
 
 class PulseAudio(Element):
@@ -157,12 +166,11 @@ class PulseAudio(Element):
         kwargs = {}
         if self.muted:
             kwargs["color"] = color_off
-        block = self.create_block(f"audio {self.volume_text}", **kwargs)
-        output.append(block)
+        output.append(self.create_block(f"audio {self.volume_text}", **kwargs))
 
 
 class MediaPlayer(Element):
-    def __init__(self, format="{{lc(status)}}: {{title}} by {{artist}}"):
+    def __init__(self, format="{{lc(status)}}: {{artist}} - {{title}}"):
         self.format = format
 
     def update(self, output):
@@ -171,8 +179,11 @@ class MediaPlayer(Element):
         ).strip()
 
         if full_text:
-            block = self.create_block(full_text)
-            output.append(block)
+            output.append(
+                self.create_block(
+                    full_text, short_text=full_text.split(":")[0]
+                )
+            )
 
 
 class StatusUpdater:
@@ -213,10 +224,10 @@ def main():
 
     elements = [
         NetworkInterfaces(),
-        PathExists(Path("/proc/sys/net/ipv4/conf/wg-mullvad"), label="vpn"),
+        Mullvad(),
         LoadAverage(),
-        DiskUsage("/home", label="~"),
-        MemoryInfo("MemAvailable"),
+        DiskUsage("~"),
+        MemoryInfo(),
         Batteries(),
         PulseAudio(),
         MediaPlayer(),
