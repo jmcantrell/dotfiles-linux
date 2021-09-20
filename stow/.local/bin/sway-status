@@ -9,10 +9,20 @@ import subprocess
 from pathlib import Path
 
 
-b_per_gb = 1024 ** 3
-kb_per_gb = 1024 ** 2
-
 color_off = "#4c4c4c"
+
+data_sizes_in_bytes = {}
+data_size_symbols = "BKMGTPEZY"
+for i, s in enumerate(data_size_symbols[1:]):
+    data_sizes_in_bytes[s] = 1 << (i + 1) * 10
+
+
+def bytes2human(value, fmt="{value:.1f} {symbol}"):
+    for symbol in reversed(data_size_symbols[1:]):
+        if value >= data_sizes_in_bytes[symbol]:
+            value = value / data_sizes_in_bytes[symbol]
+            return fmt.format(symbol=symbol, value=value)
+    return fmt.format(symbol=data_size_symbols[0], value=value)
 
 
 def capture_stdout(command):
@@ -67,8 +77,8 @@ class DiskUsage(Element):
 
     def update(self, output):
         stat = os.statvfs(self.path)
-        free_gb = round(stat.f_frsize * stat.f_bfree / b_per_gb, 1)
-        full_text = f"{self.label} {free_gb} G"
+        free = stat.f_frsize * stat.f_bfree
+        full_text = f"{self.label} {bytes2human(free)}"
         output.append(self.create_block(full_text, instance=self.path))
 
 
@@ -90,9 +100,8 @@ class MemoryInfo(Element):
 
     def update(self, output):
         line = open(self.source).readlines()[self.line_number]
-        free_kb = int(line.split(":")[1].strip().split()[0])
-        free_gb = round(free_kb / kb_per_gb, 1)
-        output.append(self.create_block(f"mem {free_gb} G"))
+        free = int(line.split(":")[1].strip().split()[0]) * 1024
+        output.append(self.create_block(f"mem {bytes2human(free)}"))
 
 
 class NetworkInterfaces(Element):
@@ -163,25 +172,35 @@ class PulseAudio(Element):
         return stdout.split()[1] == "yes"
 
     def update(self, output):
-        kwargs = {}
-        if self.muted:
-            kwargs["color"] = color_off
-        output.append(self.create_block(f"audio {self.volume_text}", **kwargs))
+        try:
+            kwargs = {}
+            if self.muted:
+                kwargs["color"] = color_off
+            output.append(
+                self.create_block(f"audio {self.volume_text}", **kwargs)
+            )
+        except subprocess.CalledProcessError:
+            return
 
 
 class MediaPlayer(Element):
-    def __init__(self, format="{{lc(status)}}: {{artist}} - {{title}}"):
+    def __init__(self, format="{{lc(status)}} <u>{{title}}</u>"):
         self.format = format
 
     def update(self, output):
-        full_text = capture_stdout(
-            ["playerctl", "metadata", "--format", self.format]
-        ).strip()
+        try:
+            full_text = capture_stdout(
+                ["playerctl", "metadata", "--format", self.format]
+            ).strip()
+        except subprocess.CalledProcessError:
+            return
 
         if full_text:
             output.append(
                 self.create_block(
-                    full_text, short_text=full_text.split(":")[0]
+                    full_text,
+                    short_text=full_text.split(":")[0],
+                    markup="pango",
                 )
             )
 
