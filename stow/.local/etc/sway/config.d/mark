@@ -1,6 +1,6 @@
-bindsym           $super+apostrophe exec sway-mark goto
-bindsym      ctrl+$super+apostrophe exec sway-mark set
-bindsym     shift+$super+apostrophe exec sway-mark unset
-bindsym ctrl+$alt+$super+apostrophe exec sway-mark clear
+bindsym           $super+apostrophe exec swaymark goto
+bindsym      ctrl+$super+apostrophe exec swaymark set
+bindsym     shift+$super+apostrophe exec swaymark unset
+bindsym ctrl+$alt+$super+apostrophe exec swaymark clear
 
 # vi:ft=sway

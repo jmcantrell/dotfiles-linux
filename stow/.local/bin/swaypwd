@@ -50,7 +50,7 @@ if [[ -n $window_pid ]]; then
     )
 
     # Show the processes on stderr for debugging.
-    printf "%s\n" "${lines[@]}" >&2
+    # printf "%s\n" "${lines[@]}" >&2
 
     for line in "${lines[@]}"; do
         pid=${line##*=}

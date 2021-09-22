@@ -18,7 +18,7 @@ select_window_id() {
         slurp -f "%l"
 }
 
-pwd_command=(sway-pwd)
+pwd_command=(swaypwd)
 
 while getopts ":sh" option; do
     case $option in

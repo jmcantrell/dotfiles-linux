@@ -1,9 +1,9 @@
 [Unit]
-BindsTo=sway-session.target
+BindsTo=graphical-session.target
 
 [Service]
 Type=simple
-ExecStart=%h/.local/bin/sway-setbg
+ExecStart=%h/.local/bin/setbg
 
 [Install]
-WantedBy=sway-session.target
+WantedBy=graphical-session.target

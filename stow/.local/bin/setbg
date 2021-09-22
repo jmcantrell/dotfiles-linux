@@ -1,7 +1,17 @@
 #!/usr/bin/env bash
 
+# Set the desktop background to the given image.
+
 set -eu
 
+image=${1:-}
+
+background=${XDG_CONFIG_HOME:-$HOME/.config}/background.png
+
+if [[ -f $image ]]; then
+    ln -sfvr "$image" "$background"
+fi
+
 if [[ -v SWAYSOCK ]]; then
-    exec sway-setbg "$@"
+    exec swaymsg output "*" bg "$background" stretch '#000000'
 fi
