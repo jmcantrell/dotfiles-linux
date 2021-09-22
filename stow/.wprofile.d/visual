@@ -1,0 +1,3 @@
+export VISUAL=gvim
+
+# vi:ft=sh

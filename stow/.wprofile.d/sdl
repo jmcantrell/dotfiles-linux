@@ -1,0 +1,3 @@
+export SDL_VIDEODRIVER=wayland
+
+# vi:ft=sh
