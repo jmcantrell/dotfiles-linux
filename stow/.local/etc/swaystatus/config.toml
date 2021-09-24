@@ -1,0 +1,14 @@
+order = [
+    "network_interfaces",
+    "mullvad_vpn",
+    "load_average",
+    "disk_usage",
+    "memory_info",
+    "batteries",
+    "pulseaudio",
+    "mpris",
+    "clock"
+]
+
+[settings.disk_usage]
+path = "~"
