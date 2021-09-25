@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -eu
+
+action=${1:?Missing action}
+
+case $action in
+up) brightnessctl set 1+ ;;
+down) brightnessctl set 1- ;;
+max) brightnessctl set 100% ;;
+min) brightnessctl set 0% ;;
+[0-9]*) brightnessctl set "$action" ;;
+esac
+
+value=$(brightnessctl get)
+total=$(brightnessctl max)
+
+notify-send -u low -i sunny -h int:value:"$((value * 100 / total))" \
+    -h string:x-canonical-private-synchronous:audio-volume \
+    "Brightness" "Level: $value"
