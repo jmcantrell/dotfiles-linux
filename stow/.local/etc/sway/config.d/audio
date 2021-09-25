@@ -6,7 +6,7 @@ set $audio_down audio-volume down
 bindsym --locked $super+Down          exec $audio_down
 bindsym --locked XF86AudioLowerVolume exec $audio_down
 
-bindsym --locked $super+$alt+Up exec audio-volume max
+bindsym --locked ctrl+$super+Up exec audio-volume max
 
 set $audio_mute audio-volume mute
 bindsym --locked ctrl+$super+Down exec $audio_mute

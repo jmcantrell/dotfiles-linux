@@ -6,24 +6,31 @@ set -eu
 
 action=${1:?Missing action}
 
-increment=5
+sink=@DEFAULT_SINK@
+increment=5%
 
 case $action in
-mute) pamixer --toggle-mute ;;
-down) pamixer --decrease $increment ;;
-up) pamixer --increase $increment ;;
-max) pamixer --set-volume 100 ;;
-[0-9]*) pamixer --set-volume "$action" ;;
+mute) pactl set-sink-mute "$sink" toggle ;;
+up) pactl set-sink-volume "$sink" +"$increment" ;;
+down) pactl set-sink-volume "$sink" -"$increment" ;;
+max) pactl set-sink-volume "$sink" 100% ;;
+[0-9]*) pactl set-sink-volume "$sink" "$action" ;;
 esac
 
-# The exit code corresponds to mute status.
-muted=$(pamixer --get-mute) || true # -e will cause exit otherwise
+read -r left right < <(
+    pactl get-sink-volume @DEFAULT_SINK@ | head -n1 | awk '{print $5,$12}'
+)
 
-volume=$(pamixer --get-volume)
+if [[ "$left" == "$right" ]]; then
+    volume=$left
+else
+    volume="Left: $left, Right: $right"
+fi
 
 canberra-gtk-play -i message &
+killall -SIGUSR1 swaystatus &
 
-if [[ $muted == true ]]; then
+if [[ $(pactl get-sink-mute "$sink") == *yes ]]; then
     icon="audio-volume-muted"
 else
     icon="audio-volume-high"
@@ -31,4 +38,4 @@ fi
 
 notify-send -u low -i "$icon" -h int:value:"$volume" \
     -h string:x-canonical-private-synchronous:audio-volume \
-    "Volume Control" "Volume: $volume%"
+    "Volume Control" "Volume: $volume"
