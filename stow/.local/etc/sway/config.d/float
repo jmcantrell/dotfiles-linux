@@ -12,4 +12,7 @@ bindsym $super+c move absolute position center
 # Automatically float windows with class=floating.
 for_window [app_id="^floating$"] floating enable, resize set width 50 ppt height 40 ppt
 
+# Password prompts for udiskie.
+for_window [app_id="udiskie"] floating enable
+
 # vi:ft=sway
