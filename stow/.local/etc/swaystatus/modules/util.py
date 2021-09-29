@@ -15,10 +15,14 @@ def bytes2human(value, fmt="{value:.1f} {symbol}"):
     return fmt.format(symbol=data_size_symbols[0], value=value)
 
 
-def capture_stdout(command):
-    cp = subprocess.run(command, capture_output=True, text=True)
+def run_safe(command, *args, **kwargs):
+    cp = subprocess.run(command, *args, **kwargs)
     cp.check_returncode()
-    return cp.stdout
+    return cp
+
+
+def capture_stdout(command):
+    return run_safe(command, capture_output=True, text=True).stdout
 
 
 def capture_stdout_lines(command):

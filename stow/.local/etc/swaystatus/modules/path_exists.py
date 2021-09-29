@@ -1,5 +1,6 @@
 from pathlib import Path
 from swaystatus import BaseElement
+from .colors import color_off
 
 
 class Element(BaseElement):
@@ -9,10 +10,14 @@ class Element(BaseElement):
         self.label = label or path
 
     def on_update(self, output):
-        if self.path.exists():
-            output.append(
-                self.create_block(
-                    self.label,
-                    instance=str(self.path),
-                )
+        options = {}
+        if not self.path.exists():
+            options["color"] = color_off
+
+        output.append(
+            self.create_block(
+                self.label,
+                instance=str(self.path),
+                **options,
             )
+        )
