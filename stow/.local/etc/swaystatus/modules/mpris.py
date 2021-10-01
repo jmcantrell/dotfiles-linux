@@ -13,18 +13,22 @@ class Element(BaseElement):
     def on_update(self, output):
         try:
             status = self._status()
-            artist = self._metadata("artist")
             title = self._metadata("title")
         except subprocess.CalledProcessError:
             return
 
-        full_text = title
-        full_text = f"{full_text} - {artist}" if artist else full_text
-        full_text = f"{status}: {full_text}"
+        name = title
+
+        try:
+            artist = self._metadata("artist").strip()
+            if artist:
+                name = f"{artist} - {title}"
+        except subprocess.CalledProcessError:
+            pass
 
         output.append(
             self.create_block(
-                full_text,
+                full_text=f"{status}: {name}",
                 short_text=f"{status} media",
                 markup="pango",
             )

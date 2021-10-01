@@ -3,12 +3,10 @@ from swaystatus import BaseElement
 
 
 class Element(BaseElement):
-    def __init__(self):
-        super().__init__()
-        self.batteries = list(Path("/sys/class/power_supply").glob("BAT*"))
+    _source = Path("/sys/class/power_supply")
 
     def on_update(self, output):
-        for battery in self.batteries:
+        for battery in self._source.glob("BAT*"):
             battery_name = battery.name.lower()
             battery_status = open(battery / "status").read().strip().lower()
             battery_capacity = open(battery / "capacity").read().strip()

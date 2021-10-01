@@ -4,10 +4,11 @@ from .colors import color_off
 
 
 class Element(BaseElement):
-    def __init__(self, path=None, label=None):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        path = kwargs.pop("path", "/")
         self.path = Path(path).expanduser()
-        self.label = label or path
+        self.label = kwargs.pop("label", path)
+        super().__init__(*args, **kwargs)
 
     def on_update(self, output):
         options = {}

@@ -1,8 +1,9 @@
 order = [
     "network_interfaces",
-    "mullvad_vpn",
+    "path_exists:mullvad",
     "load_average",
-    "disk_usage",
+    "cpu_usage",
+    "disk_usage:home",
     "memory_info",
     "batteries",
     "pulseaudio",
@@ -10,5 +11,45 @@ order = [
     "clock"
 ]
 
+[settings.network_interfaces]
+on_click.1 = 'terminal -e networkctl status'
+on_click.3 = 'terminal -e ip monitor'
+
 [settings.disk_usage]
+on_click.1 = 'terminal -e ncdu ${instance}'
+
+[settings."disk_usage:home"]
 path = "~"
+
+[settings."path_exists:mullvad"]
+path = "/proc/sys/net/ipv4/conf/wg-mullvad"
+label = "wg-mullvad"
+on_click.1 = "mullvad-toggle"
+on_click.3 = "terminal --hold -e mullvad-status"
+
+[settings.clock]
+on_click.1 = "date --iso-8601=seconds | wl-copy -n"
+on_click.3 = "terminal -e sway-settz"
+
+[settings.load_average]
+# Delay starting top until terminal size is available.
+on_click.1 = "terminal -e sh -c 'sleep 0.1 && top'"
+
+[settings.cpu_usage]
+on_click.1 = "terminal -e glances"
+
+[settings.memory_info]
+on_click.1 = "terminal -e watch free"
+
+[settings.batteries]
+on_click.1 = "terminal -e watch acpi --details"
+
+[settings.pulseaudio]
+on_click.1 = "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+on_click.3 = "pavucontrol"
+on_click.4 = "pactl set-sink-volume @DEFAULT_SINK@ +5%"
+on_click.5 = "pactl set-sink-volume @DEFAULT_SINK@ -5%"
+
+[settings.mpris]
+on_click.1 = "playerctl play-pause"
+on_click.3 = "terminal --hold -e playerctl metadata"
