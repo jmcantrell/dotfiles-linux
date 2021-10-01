@@ -12,7 +12,7 @@ order = [
 ]
 
 [settings.network_interfaces]
-on_click.1 = 'terminal -e networkctl status'
+on_click.1 = 'terminal --hold -e networkctl status'
 on_click.3 = 'terminal -e ip monitor'
 
 [settings.disk_usage]
