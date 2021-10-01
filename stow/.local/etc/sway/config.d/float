@@ -15,4 +15,7 @@ for_window [app_id="^floating$"] floating enable, resize set width 50 ppt height
 # Password prompts for udiskie.
 for_window [app_id="udiskie"] floating enable
 
+# PulseAudio mixer.
+for_window [app_id="pavucontrol"] floating enable
+
 # vi:ft=sway
