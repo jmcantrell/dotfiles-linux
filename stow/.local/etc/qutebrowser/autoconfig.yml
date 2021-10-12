@@ -59,6 +59,13 @@ settings:
     global: monospace
   session.lazy_restore:
     global: false
+  url.default_page:
+    global: https://startpage.com
+  url.searchengines:
+    global:
+      DEFAULT: https://startpage.com/sp/search?query={}
+  url.start_pages:
+    global: https://startpage.com
   window.title_format:
     global: qutebrowser {perc}{current_title}
   window.transparent:
