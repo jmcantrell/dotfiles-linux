@@ -23,13 +23,11 @@ class Element(BaseElement):
         raise KeyError(f"Key '{key}' not found in {self._source}")
 
     def on_update(self, output):
-        free = (
-            int(
-                getline(self._source, self._line_number)
-                .split(":", maxsplit=1)[1]
-                .strip()
-                .split(maxsplit=1)[0]
-            )
-            * 1024
+        free = int(
+            getline(self._source, self._line_number)
+            .split(":", maxsplit=1)[1]
+            .strip()
+            .split(maxsplit=1)[0]
         )
+        free *= 1024
         output.append(self.create_block(f"mem {bytes2human(free)}"))

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 # Set the desktop background to the given image.
+# If no image is given, the previous one will be restored.
+# Usage: setbg [IMAGE_FILE]
 
 set -eu
 

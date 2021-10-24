@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Set desktop background to a random image from a directory.
-# Usage: set-random-background [DIRECTORY]
+# Usage: randbg [DIRECTORY]
 
 set -eu
 

@@ -45,10 +45,10 @@ on_click.1 = "terminal -e watch free"
 on_click.1 = "terminal -e watch acpi --details"
 
 [settings.pulseaudio]
-on_click.1 = "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+on_click.1 = "audio-volume mute"
 on_click.3 = "pavucontrol"
-on_click.4 = "pactl set-sink-volume @DEFAULT_SINK@ +5%"
-on_click.5 = "pactl set-sink-volume @DEFAULT_SINK@ -5%"
+on_click.4 = "audio-volume up"
+on_click.5 = "audio-volume down"
 
 [settings.mpris]
 on_click.1 = "playerctl play-pause"

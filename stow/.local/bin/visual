@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ ($DISPLAY || $WAYLAND_DISPLAY) ]]; then
+if [[ -n $DISPLAY || -n $WAYLAND_DISPLAY ]]; then
     exec terminal -e editor "$@"
 else
     exec editor "$@"
