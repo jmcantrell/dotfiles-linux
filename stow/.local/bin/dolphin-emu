@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+export QT_QPA_PLATFORM=xcb
+exec /usr/bin/dolphin-emu "$@"
