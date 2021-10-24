@@ -6,6 +6,7 @@ selection:
 
 scrolling:
   history: 100000
+  multiplier: 1
 
 cursor:
   style:
