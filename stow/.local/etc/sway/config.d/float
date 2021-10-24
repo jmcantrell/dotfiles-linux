@@ -18,4 +18,7 @@ for_window [app_id="udiskie"] floating enable
 # PulseAudio mixer.
 for_window [app_id="pavucontrol"] floating enable
 
+# Printer configurator.
+for_window [app_id="system-config-printer"] floating enable
+
 # vi:ft=sway
