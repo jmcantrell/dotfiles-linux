@@ -1,6 +1,7 @@
 order = [
     "network_interfaces",
     "path_exists:mullvad",
+    "systemd_unit:swayidle",
     "load_average",
     "cpu_usage",
     "disk_usage:home",
@@ -26,6 +27,11 @@ path = "/proc/sys/net/ipv4/conf/wg-mullvad"
 label = "wg-mullvad"
 on_click.1 = "mullvad-toggle"
 on_click.3 = "terminal --hold -e mullvad-status"
+
+[settings."systemd_unit:swayidle"]
+label = "idle"
+unit = "swayidle.service"
+user = true
 
 [settings.clock]
 on_click.1 = "date --iso-8601=seconds | wl-copy -n"
