@@ -3,6 +3,7 @@ overlay_font = Monospace:8
 overlay_position_bottom = true
 
 [binds]
+<Ctrl+Delete> = exec trash "$imv_current_file"
 <Ctrl+Print> = exec setbg "$imv_current_file"
 <Ctrl+y> = exec echo "$imv_current_file" | wl-copy -n
 
