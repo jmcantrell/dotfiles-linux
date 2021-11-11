@@ -1,3 +1,7 @@
+[options]
+overlay_font = Monospace:8
+overlay_position_bottom = true
+
 [binds]
 <Ctrl+Print> = exec setbg "$imv_current_file"
 <Ctrl+y> = exec echo "$imv_current_file" | wl-copy -n
