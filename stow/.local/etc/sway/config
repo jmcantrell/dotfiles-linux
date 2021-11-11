@@ -1,8 +1,6 @@
 set $alt   mod1
 set $super mod4
 
-font pango:Monospace Bold 8
-
 set $dark   #000000
 set $bright #ffffff
 set $normal #4c4c4c
@@ -10,15 +8,6 @@ set $border #191919
 set $marker #667f33
 set $urgent #993333
 set $focus  #663399
-
-client.background $dark
-
-#class                  border  bg      text  indicator child_border
-client.urgent           $bright $urgent $bright $marker   $bright
-client.focused          $focus  $focus  $bright $marker   $focus
-client.focused_inactive $border $border $bright $border   $border
-client.unfocused        $border $border $normal $border   $border
-client.placeholder      $border $border $normal $border   $border
 
 bindsym shift+$super+c reload
 bindsym shift+$super+r restart

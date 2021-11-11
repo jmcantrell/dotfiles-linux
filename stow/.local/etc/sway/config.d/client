@@ -1,0 +1,10 @@
+client.background $dark
+
+#class                  border  bg      text  indicator child_border
+client.urgent           $bright $urgent $bright $marker   $bright
+client.focused          $focus  $focus  $bright $marker   $focus
+client.focused_inactive $border $border $bright $border   $border
+client.unfocused        $border $border $normal $border   $border
+client.placeholder      $border $border $normal $border   $border
+
+# vi:ft=sway
