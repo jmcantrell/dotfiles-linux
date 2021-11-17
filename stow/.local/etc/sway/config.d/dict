@@ -1,0 +1,3 @@
+bindsym $super+d exec terminal -e dict "$(wl-paste -pn)"
+
+# vi:ft=sway
