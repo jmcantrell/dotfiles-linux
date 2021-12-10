@@ -28,7 +28,7 @@ class Element(BaseElement):
 
         output.append(
             self.create_block(
-                full_text=f"{status}: {name}",
+                f"{status}: {name}",
                 short_text=f"{status} media",
                 markup="pango",
             )
