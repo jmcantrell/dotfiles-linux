@@ -38,5 +38,5 @@ class Element(BaseElement):
             )
         )
 
-    def on_click_1(self, event):
+    def on_click_1(self, _):
         self._systemctl("stop" if self._is_active() else "start", self._unit)
