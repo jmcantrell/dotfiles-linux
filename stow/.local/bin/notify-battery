@@ -4,15 +4,22 @@
 
 set -eu
 
-low_capacity=25
-critical_capacity=15
-hibernate_capacity=5
-hibernate_delay=30
-
 readarray -t -d '' batteries < <(
     find -L /sys/class/power_supply \
         -maxdepth 1 -type d -name "BAT*" -print0
 )
+
+# Don't do anything if there are no batteries.
+# This is probably not a mobile device.
+
+if (( ${#batteries[@]} == 0 )); then
+    exit 0
+fi
+
+low_capacity=25
+critical_capacity=15
+hibernate_capacity=5
+hibernate_delay=30
 
 batteries_discharging=()
 
