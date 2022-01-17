@@ -1,0 +1,3 @@
+output "*" background ~/.background.png stretch '#000000'
+
+# vi:ft=sway
