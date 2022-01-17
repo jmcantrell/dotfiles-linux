@@ -8,7 +8,7 @@ set -eu
 
 image=${1:-}
 
-background=${XDG_CONFIG_HOME:-$HOME/.config}/background.png
+background=$HOME/.background.png
 
 if [[ -f $image ]]; then
     ln -sfvr "$image" "$background"
