@@ -2,6 +2,7 @@
 
 set -eu
 
+keyfile_dir=$HOME/.crypto-keyfiles
 config_dir=${XDG_CONFIG_HOME:-$HOME/.config}/udiskie
 
 name=${0##*/}
@@ -52,7 +53,7 @@ if [[ -z $uuid ]]; then
     die "Device does not have a UUID"
 fi
 
-keyfile=${1:-$config_dir/$uuid.bin}
+keyfile=${1:-$keyfile_dir/$uuid.bin}
 
 if [[ ! -e $keyfile ]]; then
     touch "$keyfile"
