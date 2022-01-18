@@ -56,6 +56,7 @@ fi
 keyfile=${1:-$keyfile_dir/$uuid.bin}
 
 if [[ ! -e $keyfile ]]; then
+    mkdir -p "$(dirname "$keyfile")"
     touch "$keyfile"
     chmod -v 600 "$keyfile"
     dd bs=512 count=8 if=/dev/urandom of="$keyfile"
@@ -65,6 +66,7 @@ fi
 config_file=$config_dir/config.json
 
 if [[ ! -f "$config_file" ]]; then
+    mkdir -p "$config_dir"
     jq -n '.device_config=[]' >"$config_file"
 fi
 
