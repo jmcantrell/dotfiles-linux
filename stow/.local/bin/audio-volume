@@ -5,6 +5,14 @@
 set -eu
 
 action=${1:?Missing action}
+lock_file=$XDG_RUNTIME_DIR/${0##*/}.lock
+
+if [[ -e $lock_file ]]; then
+    exit 0
+fi
+
+touch "$lock_file"
+trap 'rm "$lock_file"' INT TERM EXIT
 
 sink=@DEFAULT_SINK@
 increment=5%
@@ -39,3 +47,10 @@ fi
 notify-send -u low -i "$icon" -h int:value:"$volume" \
     -h string:x-canonical-private-synchronous:audio-volume \
     "Volume Control" "Volume: $volume"
+
+# The following sleep command along with the lock file defined at the beginning
+# of the script will limit how often the volume can be changed, and
+# consequently, how often swaystatus will be poked. Sending the refresh signal
+# too frequently seemed to be crashing it.
+
+sleep 0.1
