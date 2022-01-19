@@ -45,7 +45,7 @@ on_click.1 = "terminal -e sh -c 'sleep 0.1 && top'"
 on_click.1 = "terminal -e glances"
 
 [settings.memory_info]
-on_click.1 = "terminal -e watch free"
+on_click.1 = "terminal -e watch free -h"
 
 [settings.batteries]
 on_click.1 = "terminal -e watch acpi --details"
