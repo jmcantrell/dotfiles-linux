@@ -1,0 +1,3 @@
+create_named_directory media /run/media/$USER i
+
+# vi:ft=zsh
