@@ -1,8 +1,6 @@
 bindsym      $super+Return exec cd "$(swaypwd)" && terminal
 bindsym $alt+$super+Return exec cd "$(swaypwd)" && terminal --class floating
 
-bindsym $super+t exec visual ~/TODO
-
 bindsym $super+e exec cd "$(swaypwd)" && visual
 bindsym $super+f exec cd "$(swaypwd)" && terminal -e ranger
 
