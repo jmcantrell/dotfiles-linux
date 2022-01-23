@@ -10,7 +10,6 @@ set $urgent #993333
 set $focus  #663399
 
 bindsym shift+$super+c reload
-bindsym shift+$super+r restart
 
 include /etc/sway/config.d/*
 include ./config.d/*

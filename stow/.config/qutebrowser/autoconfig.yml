@@ -60,12 +60,12 @@ settings:
   session.lazy_restore:
     global: false
   url.default_page:
-    global: https://startpage.com
+    global: https://google.com
   url.searchengines:
     global:
-      DEFAULT: https://startpage.com/sp/search?query={}
+      DEFAULT: https://google.com/search?q={}
   url.start_pages:
-    global: https://startpage.com
+    global: https://google.com
   window.title_format:
     global: qutebrowser {perc}{current_title}
   window.transparent:

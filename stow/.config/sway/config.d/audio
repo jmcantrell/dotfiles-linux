@@ -1,5 +1,5 @@
 set $audio_up audio-volume up
-bindsym --locked $super+Up exec $audio_up
+bindsym --locked $super+Up            exec $audio_up
 bindsym --locked XF86AudioRaiseVolume exec $audio_up
 
 set $audio_down audio-volume down

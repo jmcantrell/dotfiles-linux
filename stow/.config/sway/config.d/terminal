@@ -4,6 +4,6 @@ bindsym $alt+$super+Return exec cd "$(swaypwd)" && terminal --class floating
 bindsym $super+e exec cd "$(swaypwd)" && visual
 bindsym $super+f exec cd "$(swaypwd)" && terminal -e ranger
 
-bindsym $alt+$super+Pause exec terminal -e ncspot
+bindsym $alt+$super+Pause exec terminal --class floating -e ncspot
 
 # vi:ft=sway

@@ -2,8 +2,8 @@
 
 set -eu
 
-keyfile_dir=$HOME/.crypto-keyfiles
 config_dir=${XDG_CONFIG_HOME:-$HOME/.config}/udiskie
+keyfile_dir=${XDG_DATA_HOME:-$HOME/.local/share}/udiskie/keyfiles
 
 name=${0##*/}
 usage="Map a key file to a device in udiskie.

@@ -4,14 +4,14 @@ set -eu
 
 files=()
 
-for file_or_url in "$@"; do
-    if [[ $file_or_url == file://* ]]; then
+for arg in "$@"; do
+    if [[ $arg == file://* ]]; then
         # Since we're masquerading as xdg-open, we need to handle encoded file URLs
         # like: file:///path/to/file+with+spaces.txt
-        files+=("$(urldecode "${file_or_url#file://}")")
+        files+=("$(urldecode "${arg#file://}")")
     else
         # Other URLs (http, etc.) should be handled directly by rifle.
-        files+=("$file_or_url")
+        files+=("$arg")
     fi
 done
 
