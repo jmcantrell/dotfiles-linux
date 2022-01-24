@@ -40,34 +40,21 @@ fi
 cwd=$HOME # fallback
 
 if [[ -n $window_pid ]]; then
-    readarray -t lines < <(
-        pstree --long --show-pids --ascii --hide-threads "$window_pid" |
-            head -n1 |
-            sed 's/-+-.*$//' |                           # ignore branches
-            sed 's/---/\n/g' |                           # one process per line
-            sed 's/^\(.*\)(\([[:digit:]]\+\))$/\1=\2/' | # separate name and pid
-            tac                                          # order processes by depth
-    )
+    parent_pid=$window_pid
 
-    # Show the processes on stderr for debugging.
-    # printf "%s\n" "${lines[@]}" >&2
+    while child_pid=$(pgrep -P "$parent_pid"); do
+        parent_pid=$child_pid
+    done
 
-    for line in "${lines[@]}"; do
-        pid=${line##*=}
+    pid=$parent_pid
+    cwd_link=/proc/$pid/cwd
 
-        cwd_link=/proc/$pid/cwd
-
-        if [[ ! -e $cwd_link ]]; then
-            continue
-        fi
-
+    if [[ -e $cwd_link ]]; then
         possible_cwd=$(readlink "$cwd_link")
-
         if [[ -d $possible_cwd ]]; then
             cwd=$possible_cwd
-            break
         fi
-    done
+    fi
 fi
 
 printf "%s" "$cwd"
