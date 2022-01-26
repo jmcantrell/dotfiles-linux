@@ -14,7 +14,8 @@ order = [
 
 [settings.network_interfaces]
 on_click.1 = 'terminal --hold -e networkctl status'
-on_click.3 = 'terminal -e ip monitor'
+on_click.2 = 'terminal -e sudo iftop -i ${instance}'
+on_click.3 = 'terminal -e ip -color -human monitor'
 
 [settings.disk_usage]
 on_click.1 = 'terminal -e ncdu ${instance}'
@@ -26,6 +27,7 @@ path = "~"
 path = "/proc/sys/net/ipv4/conf/wg-mullvad"
 label = "wg-mullvad"
 on_click.1 = "mullvad-toggle"
+on_click.2 = 'terminal -e sudo iftop -i wg-mullvad'
 on_click.3 = "terminal --hold -e mullvad-status"
 
 [settings."systemd_unit:swayidle"]
@@ -38,8 +40,8 @@ on_click.1 = "date --iso-8601=seconds | wl-copy -n"
 on_click.3 = "terminal -e sway-settz"
 
 [settings.load_average]
-# Delay starting top until terminal size is available.
-on_click.1 = "terminal -e sh -c 'sleep 0.1 && top'"
+on_click.1 = "terminal -e top"
+on_click.3 = "terminal -e sudo iotop"
 
 [settings.cpu_usage]
 on_click.1 = "terminal -e glances"
