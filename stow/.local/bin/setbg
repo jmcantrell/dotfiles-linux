@@ -8,10 +8,10 @@ set -eu
 
 image=${1:-}
 
-background=$HOME/.background.png
+background=$HOME/.background
 
 if [[ -f $image ]]; then
-    ln -sfvr "$image" "$background"
+    cp -v "$image" "$background"
 fi
 
 if [[ -v SWAYSOCK ]]; then

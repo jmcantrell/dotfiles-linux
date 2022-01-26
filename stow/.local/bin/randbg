@@ -5,4 +5,12 @@
 
 set -eu
 
-setbg "$(find "${1:-${XDG_DATA_HOME:-$HOME/.local/share}/backgrounds}" -type f | shuf -n1)"
+backgrounds_dir=${1:-${XDG_DATA_HOME:-$HOME/.local/share}/backgrounds}
+background_file=$(find -L "$backgrounds_dir" -type f | shuf -n1)
+
+if [[ ! -f $background_file ]]; then
+    echo "Backgrounds directory does not exist or is empty!" >&2
+    exit 1
+fi
+
+setbg "$background_file"
