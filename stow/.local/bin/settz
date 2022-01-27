@@ -6,5 +6,5 @@ set -eu
 
 tz=${1:-$(tzselect)}
 
-sudo ln -sf "/usr/share/zoneinfo/$tz" /etc/localtime
+sudo ln -sf /usr/share/zoneinfo/"$tz" /etc/localtime
 sudo timedatectl set-timezone "$tz"

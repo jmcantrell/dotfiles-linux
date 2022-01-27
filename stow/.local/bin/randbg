@@ -5,12 +5,21 @@
 
 set -eu
 
+die() {
+    printf "ERROR: %s\n" "$@" >&2
+    exit 1
+}
+
 backgrounds_dir=${1:-${XDG_DATA_HOME:-$HOME/.local/share}/backgrounds}
+
+if [[ ! -d $backgrounds_dir ]]; then
+    die "Backgrounds directory does not exist!"
+fi
+
 background_file=$(find -L "$backgrounds_dir" -type f | shuf -n1)
 
 if [[ ! -f $background_file ]]; then
-    echo "Backgrounds directory does not exist or is empty!" >&2
-    exit 1
+    die "Backgrounds directory is empty!"
 fi
 
 setbg "$background_file"

@@ -4,7 +4,7 @@
 
 set -eu
 
-mod_name=$1
+mod_name=${1:?Missing module name}
 
 if ! modprobe --show --quiet "$mod_name"; then
     printf "ERROR: Invalid module '%s'" "$mod_name" >&2

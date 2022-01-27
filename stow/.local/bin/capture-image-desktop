@@ -4,7 +4,7 @@ set -eu
 
 edit=0
 delay=0
-directory=$(xdg-user-dir PICTURES)
+directory=$HOME
 file_name=desktop_%FT%T%:z
 file_type=png
 

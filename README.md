@@ -11,11 +11,11 @@ git clone git@gitlab.com:jmcantrell/dotfiles-linux.git ~/.dotfiles-linux
 cd ~/.dotfiles-linux
 ```
 
-Symlink files, install packages, and configure system:
+Install packages, symlink files, and configure system:
 
 ```sh
-./scripts/stow
 ./scripts/install
+./scripts/stow
 ./scripts/config
 ```
 

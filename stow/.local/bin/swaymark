@@ -2,7 +2,7 @@
 
 set -eu
 
-action=$1
+action=${1:?Missing action}
 
 case $action in
 set | goto) ;;

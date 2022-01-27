@@ -3,7 +3,7 @@
 set -eu
 
 delay=0
-directory=$(xdg-user-dir VIDEOS)
+directory=$HOME
 file_name=desktop_%FT%T%:z
 file_type=mp4
 
