@@ -4,4 +4,4 @@ show-failed-attempts
 indicator-caps-lock
 scaling=stretch
 color=000000
-image=~/.background.png
+image=~/.background
