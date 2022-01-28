@@ -3,12 +3,12 @@
 set -eu
 
 # Needed to change screen brightness.
-sudo gpasswd -a "$USER" video
+sudo gpasswd --add "$USER" video
 
-sudo gpasswd -a "$USER" locate
+sudo gpasswd --add "$USER" locate
 sudo updatedb
 
-sudo chsh -s /bin/zsh "$USER"
+sudo chsh --shell /bin/zsh "$USER"
 
 systemctl --user enable swayidle.service
 systemctl --user enable mako.service

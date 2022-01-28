@@ -1,0 +1,4 @@
+# Add mouse support to the default less options.
+export SYSTEMD_LESS="FRSXMK --mouse"
+
+# vi:ft=sh

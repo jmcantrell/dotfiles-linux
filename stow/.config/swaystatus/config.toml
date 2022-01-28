@@ -18,7 +18,8 @@ on_click.2 = 'terminal -e sudo iftop -i ${instance}'
 on_click.3 = 'terminal -e ip -color -human monitor'
 
 [settings.disk_usage]
-on_click.1 = 'terminal -e ncdu ${instance}'
+on_click.1 = 'terminal --hold -e df --si --human-readable ${instance}'
+on_click.3 = 'terminal -e ncdu ${instance}'
 
 [settings."disk_usage:home"]
 path = "~"
