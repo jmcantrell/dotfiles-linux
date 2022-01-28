@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Start wayland with logging, but only after loading its environment.
+
 set -eu
 
 for file in ~/.wprofile.d/*; do

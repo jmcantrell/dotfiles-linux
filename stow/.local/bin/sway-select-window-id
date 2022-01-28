@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Returns the ID of a click-selected window.
+
 set -eu
 
 swaymsg -t get_tree |

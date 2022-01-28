@@ -81,14 +81,14 @@ done && shift $((OPTIND - 1))
 
 output_file=$(date +"${1:-$directory/$file_name.$file_type}")
 
-grim=(grim)
+capture_command=(grim)
 
 if [[ -v geometry ]]; then
-    grim+=(-g "$geometry")
+    capture_command+=(-g "$geometry")
 fi
 
 if [[ -v capture_mouse ]]; then
-    grim+=(-c)
+    capture_command+=(-c)
 fi
 
 if ((delay > 0)); then
@@ -98,9 +98,9 @@ fi
 mkdir -p "$(dirname "$output_file")"
 
 if ((edit)); then
-    "${grim[@]}" - | swappy -f - -o "$output_file"
+    "${capture_command[@]}" - | swappy -f - -o "$output_file"
 else
-    "${grim[@]}" "$output_file"
+    "${capture_command[@]}" "$output_file"
 fi
 
 canberra-gtk-play -i screen-capture &

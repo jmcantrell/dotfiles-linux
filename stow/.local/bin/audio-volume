@@ -32,7 +32,7 @@ max) pactl set-sink-volume "$sink" 100% ;;
 esac
 
 read -r left right < <(
-    pactl get-sink-volume @DEFAULT_SINK@ | head -n1 | awk '{print $5,$12}'
+    pactl get-sink-volume "$sink" | head -n1 | awk '{print $5,$12}'
 )
 
 if [[ "$left" == "$right" ]]; then
@@ -51,7 +51,7 @@ else
 fi
 
 notify-send -u low -i "$icon" -h int:value:"$volume" \
-    -h string:x-canonical-private-synchronous:audio-volume \
+    -h string:x-canonical-private-synchronous:"${0##*/}" \
     "Volume Control" "Volume: $volume"
 
 sleep 0.1

@@ -5,13 +5,14 @@ set -eu
 config_dir=${XDG_CONFIG_HOME:-$HOME/.config}/udiskie
 keyfile_dir=${XDG_DATA_HOME:-$HOME/.local/share}/udiskie/keyfiles
 
-name=${0##*/}
-usage="Map a key file to a device in udiskie.
+usage="Remember a udiskie device's keyfile for automatic mounting.
 
 Usage:
-    $name [OPTIONS] DEVICE [KEYFILE]
+    ${0##*/} [OPTIONS] DEVICE KEYFILE
 
 Options:
+    -n NAME         use NAME for the keyfile instead of the UUID
+
     -C DIRECTORY    udiskie configuration directory
                     (default: ${config_dir/$HOME/\~})
 
@@ -19,7 +20,7 @@ Arguments:
     DEVICE          device to unlock with KEYFILE   
     KEYFILE         file capable of unlocking DEVICE
 
-If KEYFILE is not provided, one will be generated and added to the device.
+It's expected that KEYFILE is already (or will be) added to DEVICE.
 "
 
 die() {
@@ -27,8 +28,11 @@ die() {
     exit 1
 }
 
-while getopts ":C:h" option; do
+unset keyfile_name
+
+while getopts ":s:C:h" option; do
     case $option in
+    s) keyfile_name=$OPTARG ;;
     C) config_dir=$OPTARG ;;
     h)
         printf "%s\n" "$usage"
@@ -42,8 +46,12 @@ if [[ ! -v 1 ]]; then
     die "Missing device"
 fi
 
+if [[ ! -v 2 ]]; then
+    die "Missing keyfile"
+fi
+
 device=$1
-shift
+keyfile_original=$2
 
 if ! uuid=$(sudo blkid -s UUID -o value "$device"); then
     die "Unable to get UUID for device"
@@ -53,22 +61,21 @@ if [[ -z $uuid ]]; then
     die "Device does not have a UUID"
 fi
 
-keyfile=${1:-$keyfile_dir/$uuid.bin}
-
-if [[ ! -e $keyfile ]]; then
-    mkdir -p "$(dirname "$keyfile")"
-    touch "$keyfile"
-    chmod -v 600 "$keyfile"
-    dd bs=512 count=8 if=/dev/urandom of="$keyfile"
-    sudo cryptsetup luksAddKey "$device" "$keyfile"
+if [[ -v keyfile_name ]]; then
+    keyfile_copy=$keyfile_dir/$keyfile_name.bin
+else
+    keyfile_copy=$keyfile_dir/$uuid.bin
 fi
 
 config_file=$config_dir/config.json
 
-if [[ ! -f "$config_file" ]]; then
+if [[ ! -f $config_file ]]; then
     mkdir -p "$config_dir"
     jq -n '.device_config=[]' >"$config_file"
 fi
+
+mkdir -p "$(dirname "$keyfile_copy")"
+cp -v --preserve=mode "$keyfile_original" "$keyfile_copy"
 
 index=$(
     jq --arg uuid "$uuid" \
@@ -76,7 +83,7 @@ index=$(
         "$config_file"
 )
 
-args=(--arg keyfile "${keyfile/$HOME/\~}")
+args=(--arg keyfile "${keyfile_copy/$HOME/\~}")
 
 if [[ $index == null ]]; then
     args+=(--arg uuid "$uuid")

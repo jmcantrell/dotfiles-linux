@@ -27,3 +27,10 @@ def capture_stdout(command):
 
 def capture_stdout_lines(command):
     return capture_stdout(command).strip().split(os.linesep)
+
+
+def get_file_line(file, line_number):
+    with file.open() as f:
+        for i, line in enumerate(f):
+            if i + 1 == line_number:
+                return line

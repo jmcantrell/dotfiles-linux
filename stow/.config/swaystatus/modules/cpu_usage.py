@@ -1,8 +1,9 @@
+from pathlib import Path
 from swaystatus import BaseElement
 
 
 class Element(BaseElement):
-    _source = "/proc/stat"
+    _source = Path("/proc/stat")
     _columns = [
         "user",
         "nice",
@@ -25,7 +26,8 @@ class Element(BaseElement):
         super().__init__(*args, **kwargs)
 
     def _proc_stat_cpu(self):
-        return open(self._source).readline().strip().split()[1:]
+        with self._source.open() as f:
+            return f.readline().strip().split()[1:]
 
     def _proc_stat_cpu_columns(self, *columns):
         values = self._proc_stat_cpu()

@@ -8,3 +8,7 @@ tz=${1:-$(tzselect)}
 
 sudo ln -sf /usr/share/zoneinfo/"$tz" /etc/localtime
 sudo timedatectl set-timezone "$tz"
+
+if [[ -v SWAYSOCK ]]; then
+    swaymsg reload
+fi

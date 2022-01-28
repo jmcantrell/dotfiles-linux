@@ -56,9 +56,9 @@ done && shift $((OPTIND - 1))
 
 output_file=$(date +"${1:-$directory/$file_name.$file_type}")
 
-ffmpeg=(ffmpeg -hide_banner -loglevel error)
-
-ffmpeg+=(-y -f v4l2 -i "$device" -frames:v 1)
+capture_command=(
+    ffmpeg -hide_banner -loglevel error -y -f v4l2 -i "$device" -frames:v 1
+)
 
 if ((delay > 0)); then
     canberra-gtk-play -l "$delay" -i message
@@ -67,9 +67,9 @@ fi
 mkdir -p "$(dirname "$output_file")"
 
 if ((edit)); then
-    "${ffmpeg[@]}" -c:v "${file_type}" -f image2 - | swappy -f - -o "$output_file"
+    "${capture_command[@]}" -c:v "${file_type}" -f image2 - | swappy -f - -o "$output_file"
 else
-    "${ffmpeg[@]}" "$output_file"
+    "${capture_command[@]}" "$output_file"
 fi
 
 canberra-gtk-play -i screen-capture &

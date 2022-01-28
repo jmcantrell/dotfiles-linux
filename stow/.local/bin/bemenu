@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 
-exec /usr/bin/bemenu -i -b \
-    --fn 'monospace 10' \
-    --tb='#222222' --tf='#bbbbbb' \
+exec /usr/bin/bemenu -i -b -n \
+    --fn 'monospace 12' \
+    --tb='#222222' --tf='#ffffff' \
     --fb='#222222' --ff='#bbbbbb' \
     --nb='#222222' --nf='#bbbbbb' \
     --hb='#005577' --hf='#eeeeee' "$@"

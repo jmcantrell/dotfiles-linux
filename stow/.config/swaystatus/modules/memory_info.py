@@ -1,10 +1,10 @@
-from linecache import getline
+from pathlib import Path
 from swaystatus import BaseElement
-from .util import bytes2human
+from .util import bytes2human, get_file_line
 
 
 class Element(BaseElement):
-    _source = "/proc/meminfo"
+    _source = Path("/proc/meminfo")
 
     def __init__(self, *args, **kwargs):
         self._line_number = self._find_line_number(
@@ -22,12 +22,15 @@ class Element(BaseElement):
 
         raise KeyError(f"Key '{key}' not found in {self._source}")
 
-    def on_update(self, output):
-        free = int(
-            getline(self._source, self._line_number)
+    @property
+    def _memory_kbytes(self):
+        return int(
+            get_file_line(self._source, self._line_number)
             .split(":", maxsplit=1)[1]
             .strip()
             .split(maxsplit=1)[0]
         )
-        free *= 1024
+
+    def on_update(self, output):
+        free = self._memory_kbytes * 1024
         output.append(self.create_block(f"mem {bytes2human(free)}"))

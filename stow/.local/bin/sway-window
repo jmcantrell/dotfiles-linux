@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Gets the properties for a given window ID.
+
 set -eu
 
 swaymsg -t get_tree |

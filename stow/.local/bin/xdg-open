@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Pretend rifle is xdg-open.
+
 set -eu
 
 files=()

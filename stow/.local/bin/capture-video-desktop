@@ -77,29 +77,29 @@ while getopts ":g:rfsad:D:N:E:h" option; do
     esac
 done && shift $((OPTIND - 1))
 
-recorder_pid_file=$XDG_RUNTIME_DIR/$name-recorder.pid
+capture_command_pid_file=$XDG_RUNTIME_DIR/$name-recorder.pid
 
 if [[ -v 1 && $1 == stop ]]; then
-    if [[ -f $recorder_pid_file ]]; then
-        kill "$(<"$recorder_pid_file")"
+    if [[ -f $capture_command_pid_file ]]; then
+        kill "$(<"$capture_command_pid_file")"
     fi
     exit 0
 fi
 
 output_file=$(date +"${1:-$directory/$file_name.$file_type}")
 
-options=()
+capture_command=(wf-recorder)
 
 if [[ -v geometry ]]; then
-    options+=(-g "$geometry")
+    capture_command+=(-g "$geometry")
 fi
 
 if [[ -v capture_audio ]]; then
-    options+=(-a)
+    capture_command+=(-a)
 fi
 
 if [[ $output_file == *.gif ]]; then
-    options+=(-c gif)
+    capture_command+=(-c gif)
 fi
 
 if ((delay > 0)); then
@@ -107,15 +107,15 @@ if ((delay > 0)); then
 fi
 
 mkdir -p "$(dirname "$output_file")"
-recorder_command=(wf-recorder "${options[@]}" -f "$output_file")
+capture_command+=(-f "$output_file")
 
 if ! tty -s; then
-    "${recorder_command[@]}" &
-    echo "$!" >"$recorder_pid_file"
-    trap 'rm "$recorder_pid_file"' INT TERM EXIT
+    "${capture_command[@]}" &
+    echo "$!" >"$capture_command_pid_file"
+    trap 'rm "$capture_command_pid_file"' INT TERM EXIT
     wait -f
 else
-    "${recorder_command[@]}"
+    "${capture_command[@]}"
 fi
 
 canberra-gtk-play -i camera-shutter &

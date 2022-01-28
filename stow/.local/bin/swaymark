@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Interact with sway's container marks.
+
 set -eu
 
 action=${1:?Missing action}

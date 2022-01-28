@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Prompt the user for a sway command.
+
 set -eu
 
 prompt=input

@@ -2,12 +2,11 @@ set $brightness_up brightness up
 bindsym --locked $super+Prior        exec $brightness_up
 bindsym --locked XF86MonBrightnessUp exec $brightness_up
 
-bindsym --locked ctrl+$super+Prior exec brightness max
-
 set $brightness_down brightness down
 bindsym --locked $super+Next           exec $brightness_down
 bindsym --locked XF86MonBrightnessDown exec $brightness_down
 
-bindsym --locked ctrl+$super+Next exec brightness min
+bindsym --locked ctrl+$super+Prior exec brightness max
+bindsym --locked ctrl+$super+Next  exec brightness min
 
 # vi:ft=sway

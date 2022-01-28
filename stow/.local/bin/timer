@@ -2,11 +2,10 @@
 
 set -eu
 
-name=${0##*/}
 usage="Sound an alarm after a specified amount of time.
 
 Usage:
-    $name [OPTIONS] TIMESPEC
+    ${0##*/} [OPTIONS] TIMESPEC
 
 Options:
     -n NAME    descriptive name for timer
@@ -24,6 +23,8 @@ die() {
     printf "ERROR: %s\n" "$*" >&2
     exit 1
 }
+
+unset name
 
 while getopts ":n:h" option; do
     case $option in

@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Simulate a GUI for a console editor.
+# In a graphical session, start it in a terminal.
+# Otherwise, just start it normally.
+
 if [[ -n $DISPLAY || -n $WAYLAND_DISPLAY ]]; then
     exec terminal -e editor "$@"
 else

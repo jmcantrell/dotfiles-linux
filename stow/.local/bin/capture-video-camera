@@ -59,27 +59,25 @@ while getopts ":ai:d:D:N:E:h" option; do
     esac
 done && shift $((OPTIND - 1))
 
-ffmpeg_stdin=$XDG_RUNTIME_DIR/$name-ffmpeg-stdin
+capture_command_stdin=$XDG_RUNTIME_DIR/$name-command-stdin
 
 if [[ -v 1 && $1 == stop ]]; then
-    if [[ -f $ffmpeg_stdin ]]; then
-        printf "q\n" >>"$ffmpeg_stdin"
+    if [[ -f $capture_command_stdin ]]; then
+        printf "q\n" >>"$capture_command_stdin"
     fi
     exit 0
 fi
 
 output_file=$(date +"${1:-$directory/$file_name.$file_type}")
 
-options=(-hide_banner -loglevel error)
-
-options+=(-y -f v4l2 -i "$device")
+capture_command=(ffmpeg -hide_banner -loglevel error -y -f v4l2 -i "$device")
 
 if [[ -v capture_audio ]]; then
-    options+=(-f alsa -i default)
+    capture_command+=(-f alsa -i default)
 fi
 
 if [[ -v duration ]]; then
-    options+=(-t "$duration")
+    capture_command+=(-t "$duration")
 fi
 
 if ((delay > 0)); then
@@ -91,15 +89,15 @@ fi
 # For this script, a shortcut is to give "stop" as the first argument.
 
 mkdir -p "$(dirname "$output_file")"
-ffmpeg_command=(ffmpeg "${options[@]}" "$output_file")
+capture_command+=("$output_file")
 
 if ! tty -s; then
-    touch "$ffmpeg_stdin"
-    trap 'rm -f "$ffmpeg_stdin"' INT TERM EXIT
-    "${ffmpeg_command[@]}" <"$ffmpeg_stdin"
+    touch "$capture_command_stdin"
+    trap 'rm -f "$capture_command_stdin"' INT TERM EXIT
+    "${capture_command[@]}" <"$capture_command_stdin"
 else
     printf "Press 'q' at any time to stop recording...\n"
-    "${ffmpeg_command[@]}"
+    "${capture_command[@]}"
 fi
 
 canberra-gtk-play -i screen-capture &
