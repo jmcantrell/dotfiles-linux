@@ -10,6 +10,6 @@ read -r -d $'\t' window_id < <(
         sort -n | bemenu -p windows -l 20
 )
 
-if [[ -n $window_id ]]; then
+if [[ -z $window_id ]]; then
     exec swaymsg "[con_id=$window_id] focus"
 fi

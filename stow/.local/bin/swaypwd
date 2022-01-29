@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eu
+set -eu -o pipefail
 
 usage="Print the working directory of a window.
 
@@ -42,7 +42,7 @@ cwd=$HOME # fallback
 if [[ -n $window_pid ]]; then
     parent_pid=$window_pid
 
-    while child_pid=$(pgrep --parent "$parent_pid"); do
+    while child_pid=$(pgrep --parent "$parent_pid" | head -n1); do
         parent_pid=$child_pid
     done
 

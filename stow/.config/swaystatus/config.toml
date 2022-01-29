@@ -29,7 +29,7 @@ path = "/proc/sys/net/ipv4/conf/wg-mullvad"
 label = "wg-mullvad"
 on_click.1 = "mullvad-toggle"
 on_click.2 = 'terminal -e sudo iftop -i wg-mullvad'
-on_click.3 = "terminal --hold -e mullvad-status"
+on_click.3 = "terminal --hold -e mullvad-details"
 
 [settings."systemd_unit:swayidle"]
 label = "idle"
