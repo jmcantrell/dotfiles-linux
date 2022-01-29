@@ -22,4 +22,4 @@ notify-send -i media-record \
     "Captured desktop pixel" \
     "$name: <u>$value</u>" &
 
-wl-copy -n <<<"$value"
+wl-copy -n "$value"

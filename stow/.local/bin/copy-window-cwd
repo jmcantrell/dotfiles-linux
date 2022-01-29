@@ -34,10 +34,9 @@ while getopts ":sh" option; do
     esac
 done && shift $((OPTIND - 1))
 
-echo "${pwd_command[@]}"
 cwd=$("${pwd_command[@]}")
 
-wl-copy -n <<<"$cwd"
+wl-copy -n "$cwd"
 
 notify-send -t 3000 -i edit-copy \
     "Working directory copied to clipboard" \

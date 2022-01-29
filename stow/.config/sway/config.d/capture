@@ -22,11 +22,11 @@ mode "$mode_capture_video" {
 
 set $mode_capture_gif capture gif: (d)esktop, (f)ocused or (s)elected window, (r)egion, (c)amera
 mode "$mode_capture_gif" {
-	bindsym d exec capture-gif-desktop,    mode "default"
-	bindsym f exec capture-gif-desktop -f, mode "default"
-	bindsym s exec capture-gif-desktop -s, mode "default"
-	bindsym r exec capture-gif-desktop -r, mode "default"
-	bindsym c exec capture-gif-camera -d5, mode "default"
+	bindsym d exec capture-video-desktop -E gif,    mode "default"
+	bindsym f exec capture-video-desktop -E gif -f, mode "default"
+	bindsym s exec capture-video-desktop -E gif -s, mode "default"
+	bindsym r exec capture-video-desktop -E gif -r, mode "default"
+	bindsym c exec capture-video-camera -E gif -d5, mode "default"
 	bindsym Return mode "default"
 	bindsym Escape mode "default"
 }

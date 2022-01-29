@@ -4,6 +4,11 @@
 
 set -eu
 
+low_capacity=25
+critical_capacity=15
+hibernate_capacity=5
+hibernate_grace=30
+
 power_supply=/sys/class/power_supply
 
 # Don't do anything if there are no batteries.
@@ -14,21 +19,23 @@ if [[ ! -d $power_supply/BAT0 ]]; then
     exit 0
 fi
 
-low_capacity=25
-critical_capacity=15
-hibernate_capacity=5
-hibernate_grace=30
+# Returns a status indicating whether or not external power is being supplied.
+
+is_ac_online() {
+    (($(<"$power_supply"/AC/online) == 1))
+}
+
+# Don't do anything if plugged in.
+# There should be no danger of losing power.
+
+if is_ac_online; then
+    exit 0
+fi
 
 # Notifies the user of events, replacing the previous notification.
 
 notify() {
     notify-send -h string:x-canonical-private-synchronous:"${0##*/}" "$@"
-}
-
-# Returns a status indicating whether or not external power is being supplied.
-
-is_ac_online() {
-    (($(<"$power_supply"/AC/online) == 1))
 }
 
 # Returns the capacity of the most charged battery, as it's probably the best
@@ -73,13 +80,6 @@ wait_for_power_or_hibernate() {
 
     systemctl hibernate
 }
-
-# Don't do anything if plugged in.
-# There's no danger of exhausting the power supply.
-
-if is_ac_online; then
-    exit 0
-fi
 
 capacity=$(max_discharging_capacity)
 

@@ -45,5 +45,5 @@ at "$(date -d "$*" +"%H:%M %Y-%m-%d")" <<-EOF
 export DISPLAY=$DISPLAY
 export WAYLAND_DISPLAY=$WAYLAND_DISPLAY
 canberra-gtk-play -i alarm-clock-elapsed &
-notify-send -u critical "Timer elapsed" "${name:-}"
+notify-send -u critical -i emblem-new "Timer elapsed" "${name:-}"
 EOF

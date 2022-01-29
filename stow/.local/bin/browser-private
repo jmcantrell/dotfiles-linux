@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
-set -eu
+#!/usr/bin/env sh
 
 exec firefox --private-window "$@"

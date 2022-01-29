@@ -5,12 +5,12 @@
 set -eu
 
 prompt=input
-swaymsg=(swaymsg)
+ipc_command=(swaymsg)
 
 while getopts "p:s:" option; do
     case $option in
     p) prompt=$OPTARG ;;
-    s) swaymsg+=(-s "$OPTARG") ;;
+    s) ipc_command+=(-s "$OPTARG") ;;
     esac
 done && shift $((OPTIND - 1))
 
@@ -19,4 +19,4 @@ shift
 
 reply=$(bemenu -p "$prompt" </dev/null)
 printf -v message "$format" "$reply"
-exec "${swaymsg[@]}" "$message"
+exec "${ipc_command[@]}" "$message"

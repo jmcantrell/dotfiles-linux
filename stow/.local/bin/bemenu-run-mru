@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Run a command chosen with with bemenu, sorted by most recently used.
+# Run a menu-chosen command, sorted by most recently used.
 
 set -eu
 

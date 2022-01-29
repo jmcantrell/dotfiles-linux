@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Set the display brightness and show a notification.
+
 set -eu
 
 action=${1:?Missing action}

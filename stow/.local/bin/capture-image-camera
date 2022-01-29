@@ -9,11 +9,10 @@ directory=$HOME
 file_name=camera_%FT%T%:z
 file_type=png
 
-name=${0##*/}
 usage="Capture an image from a video device.
 
 Usage:
-    $name [OPTIONS] [FILE]
+    ${0##*/} [OPTIONS] [FILE]
 
 Options:
     -e              edit the captured image before saving
@@ -57,7 +56,8 @@ done && shift $((OPTIND - 1))
 output_file=$(date +"${1:-$directory/$file_name.$file_type}")
 
 capture_command=(
-    ffmpeg -hide_banner -loglevel error -y -f v4l2 -i "$device" -frames:v 1
+    ffmpeg -hide_banner -loglevel error -y
+    -f v4l2 -i "$device" -frames:v 1 -c:v "$file_type"
 )
 
 if ((delay > 0)); then
@@ -67,7 +67,7 @@ fi
 mkdir -p "$(dirname "$output_file")"
 
 if ((edit)); then
-    "${capture_command[@]}" -c:v "${file_type}" -f image2 - | swappy -f - -o "$output_file"
+    "${capture_command[@]}" -f image2 - | swappy -f - -o "$output_file"
 else
     "${capture_command[@]}" "$output_file"
 fi
@@ -78,6 +78,4 @@ notify-send -i media-record \
     "Captured camera photo" \
     "<u>${output_file/$HOME/\~}</u>" &
 
-wl-copy -n <<<"$output_file"
-
-printf "%s" "$output_file"
+wl-copy -n "$output_file"

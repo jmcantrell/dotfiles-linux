@@ -5,7 +5,9 @@ from .colors import color_off
 
 
 class Element(BaseElement):
-    _sink = "@DEFAULT_SINK@"
+    def __init__(self, *args, **kwargs):
+        self._sink = kwargs.pop("sink", "@DEFAULT_SINK@")
+        super().__init__(*args, **kwargs)
 
     @property
     def _stereo_volume(self):

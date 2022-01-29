@@ -2,11 +2,10 @@
 
 set -eu
 
-name=${0##*/}
 usage="Manage text snippets with bemenu.
 
 Usage:
-    $name [OPTIONS] ACTION NAME
+    ${0##*/} [OPTIONS] ACTION NAME
 
 Options:
     -C DIRECTORY    directory in which to store snippets
@@ -31,7 +30,7 @@ do_copy() {
 
 do_save() {
     wl-paste | snip "${snip_options[@]}" write "$1"
-    notify-send -i document-save "Snippet '$name' saved from clipboard"
+    notify-send -i document-save "Snippet '$1' saved from clipboard"
 }
 
 do_type() {

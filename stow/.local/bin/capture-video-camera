@@ -59,7 +59,7 @@ while getopts ":ai:d:D:N:E:h" option; do
     esac
 done && shift $((OPTIND - 1))
 
-capture_command_stdin=$XDG_RUNTIME_DIR/$name-command-stdin
+capture_command_stdin=$XDG_RUNTIME_DIR/$name-command.stdin
 
 if [[ -v 1 && $1 == stop ]]; then
     if [[ -f $capture_command_stdin ]]; then
@@ -100,12 +100,14 @@ else
     "${capture_command[@]}"
 fi
 
+if [[ $output_file == *.gif ]]; then
+    gifsicle --batch --optimize=3 "$output_file"
+fi
+
 canberra-gtk-play -i screen-capture &
 
 notify-send -i media-record \
-    "Captured camera video ${capture_audio:+ (with audio)}" \
+    "Captured camera video${capture_audio:+ (with audio)}" \
     "<u>${output_file/$HOME/\~}</u>" &
 
-wl-copy -n <<<"$output_file"
-
-printf "%s" "$output_file"
+wl-copy -n "$output_file"

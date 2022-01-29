@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-# Capture an animated gif from the main camera.
-
-set -eu
-
-gifsicle --batch --optimize 3 "$(capture-video-camera -E gif "$@")"

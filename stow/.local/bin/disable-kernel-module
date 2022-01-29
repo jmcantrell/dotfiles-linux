@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Disable a kernel module.
+# Immediately and persistently disable a kernel module.
 
 set -eu
 

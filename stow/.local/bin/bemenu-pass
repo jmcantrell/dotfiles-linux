@@ -2,16 +2,15 @@
 
 set -eu
 
-length=16
+password_length=16
 
-name=${0##*/}
 usage="Interact with pass using bemenu.
 
 Usage:
-    $name [OPTIONS] [ACTION]
+    ${0##*/} [OPTIONS] [ACTION]
 
 Options:
-    -n NUMBER    generated password length (default: $length)
+    -n NUMBER    generated password length (default: $password_length)
 
 Actions:
     choose       choose existing password
@@ -40,7 +39,7 @@ pass_names() {
 
 while getopts ":n:h" option; do
     case $option in
-    n) length=$OPTARG ;;
+    n) password_length=$OPTARG ;;
     h)
         printf "%s\n" "$usage"
         exit
@@ -60,7 +59,7 @@ name=$(pass_names | bemenu -b -p "$action password")
 
 case $action in
 choose) pass -c "$name" ;;
-generate) pass generate -c -f "$name" "$length" ;;
+generate) pass generate -c -f "$name" "$password_length" ;;
 esac
 
 notify-send -i edit-copy \

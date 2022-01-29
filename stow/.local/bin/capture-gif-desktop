@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-# Capture an animated gif of the desktop.
-
-set -eu
-
-gifsicle --batch --optimize 3 "$(capture-video-desktop -E gif "$@")"

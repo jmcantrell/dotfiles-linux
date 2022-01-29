@@ -8,11 +8,10 @@ directory=$HOME
 file_name=desktop_%FT%T%:z
 file_type=png
 
-name=${0##*/}
 usage="Capture an image of the desktop.
 
 Usage:
-    $name [OPTIONS] [FILE]
+    ${0##*/} [OPTIONS] [FILE]
 
 Options:
     -g GEOMETRY     geometry of region to capture
@@ -109,6 +108,4 @@ notify-send -i media-record \
     "Captured desktop image" \
     "<u>${output_file/$HOME/\~}</u>" &
 
-wl-copy -n <<<"$output_file"
-
-printf "%s" "$output_file"
+wl-copy -n "$output_file"

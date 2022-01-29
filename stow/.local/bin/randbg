@@ -5,12 +5,12 @@
 
 set -eu
 
+backgrounds_dir=${1:-${XDG_DATA_HOME:-$HOME/.local/share}/backgrounds}
+
 die() {
     printf "ERROR: %s\n" "$@" >&2
     exit 1
 }
-
-backgrounds_dir=${1:-${XDG_DATA_HOME:-$HOME/.local/share}/backgrounds}
 
 if [[ ! -d $backgrounds_dir ]]; then
     die "Backgrounds directory does not exist!"

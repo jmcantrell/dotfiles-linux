@@ -42,7 +42,7 @@ cwd=$HOME # fallback
 if [[ -n $window_pid ]]; then
     parent_pid=$window_pid
 
-    while child_pid=$(pgrep -P "$parent_pid"); do
+    while child_pid=$(pgrep --parent "$parent_pid"); do
         parent_pid=$child_pid
     done
 

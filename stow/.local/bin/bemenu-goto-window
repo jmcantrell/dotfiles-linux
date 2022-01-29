@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Focus a window chosen using a menu.
+# Focus a menu-chosen window.
 
 set -eu
 

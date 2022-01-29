@@ -9,6 +9,8 @@ tz=${1:-$(tzselect)}
 sudo ln -sf /usr/share/zoneinfo/"$tz" /etc/localtime
 sudo timedatectl set-timezone "$tz"
 
+# If the window manager is running, reload to update the clock.
+
 if [[ -v SWAYSOCK ]]; then
     swaymsg reload
 fi

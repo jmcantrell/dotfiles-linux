@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Mount menu-selected udiskie device.
+
 set -eu
 
 declare -A choices=()
