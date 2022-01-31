@@ -1,15 +1,8 @@
 # dotfiles-linux
 
-My configuration files and scripts common to all Linux distributions.
+My configuration files and scripts for Linux-based systems.
 
 ## Installation
-
-Clone this repository:
-
-```sh
-git clone git@gitlab.com:jmcantrell/dotfiles-linux.git ~/.dotfiles-linux
-cd ~/.dotfiles-linux
-```
 
 Install packages, symlink files, and configure system:
 
@@ -18,6 +11,8 @@ Install packages, symlink files, and configure system:
 ./scripts/stow
 ./scripts/config
 ```
+
+## Additional tasks
 
 Update repository with the latest changes:
 
