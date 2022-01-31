@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Focus a menu-chosen window.
+# Focus a menu-selected window.
 
 set -eu
 
@@ -11,5 +11,5 @@ read -r -d $'\t' window_id < <(
 )
 
 if [[ -z $window_id ]]; then
-    exec swaymsg "[con_id=$window_id] focus"
+    swaymsg "[con_id=$window_id] focus"
 fi

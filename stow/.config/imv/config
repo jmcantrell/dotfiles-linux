@@ -1,11 +1,11 @@
 [options]
 overlay = true
-overlay_font = Monospace:8
+overlay_font = monospace:8
 overlay_position_bottom = true
 
 [binds]
 <Ctrl+Delete> = exec trash-put "$imv_current_file"; next
-<Ctrl+Print> = exec setbg "$imv_current_file"
+<Ctrl+Print> = exec set-background -f "$imv_current_file"
 <Ctrl+y> = exec wl-copy -n "$imv_current_file"
 
 <Ctrl+r> = rotate by 90

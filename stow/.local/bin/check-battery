@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Display battery warnings and hibernate when almost empty.
+# Check battery power level and hibernate if necessary.
 
 set -eu
 

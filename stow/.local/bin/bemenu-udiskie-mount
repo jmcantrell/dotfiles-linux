@@ -16,4 +16,4 @@ done < <(udiskie-info -a -f \!in_use -o "{device_presentation}"$'\t'"{ui_device_
 choice=$(printf "%s\n" "${!choices[@]}" | sort | bemenu -l 20 -b -p mount)
 device=${choices[$choice]}
 
-udiskie-mount --password-prompt builtin:gui "$@" "$device"
+udiskie-mount --password-prompt builtin:gui "$device"

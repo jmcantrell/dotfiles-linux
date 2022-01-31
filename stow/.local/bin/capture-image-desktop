@@ -8,10 +8,11 @@ directory=$HOME
 file_name=desktop_%FT%T%:z
 file_type=png
 
+me=${0##*/}
 usage="Capture an image of the desktop.
 
 Usage:
-    ${0##*/} [OPTIONS] [FILE]
+    $me [OPTIONS] [FILE]
 
 Options:
     -g GEOMETRY     geometry of region to capture
@@ -42,6 +43,16 @@ Arguments:
                     (default: $directory/$file_name.$file_type)
 "
 
+usage() {
+    printf "%s\n" "$usage"
+    exit 0
+}
+
+die() {
+    printf "ERROR: %s\n" "$*" >&2
+    exit 1
+}
+
 geometry_format='\(.x),\(.y) \(.width)x\(.height)'
 
 focused_window_geometry() {
@@ -67,14 +78,8 @@ while getopts ":g:rfsmed:D:N:E:h" option; do
     D) directory=$OPTARG ;;
     N) file_name=$OPTARG ;;
     E) file_type=$OPTARG ;;
-    h)
-        printf "%s\n" "$usage"
-        exit
-        ;;
-    *)
-        printf "ERROR: Invalid option '%s'\n" "$OPTARG"
-        exit 1
-        ;;
+    h) usage ;;
+    *) die "Invalid option '$OPTARG'" ;;
     esac
 done && shift $((OPTIND - 1))
 
@@ -105,7 +110,7 @@ fi
 canberra-gtk-play -i screen-capture &
 
 notify-send -i media-record \
-    "Captured desktop image" \
-    "<u>${output_file/$HOME/\~}</u>" &
+    "Captured desktop image:" \
+    "<u>${output_file##*/}</u>" &
 
 wl-copy -n "$output_file"

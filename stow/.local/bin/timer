@@ -2,10 +2,11 @@
 
 set -eu
 
+me=${0##*/}
 usage="Sound an alarm after a specified amount of time.
 
 Usage:
-    ${0##*/} [OPTIONS] TIMESPEC
+    $me [OPTIONS] TIMESPEC
 
 Options:
     -n NAME    descriptive name for timer
@@ -19,6 +20,11 @@ Examples:
 See --date option in date(1) for the definition of TIMESPEC.
 "
 
+usage() {
+    printf "%s\n" "$usage"
+    exit 0
+}
+
 die() {
     printf "ERROR: %s\n" "$*" >&2
     exit 1
@@ -29,10 +35,7 @@ unset name
 while getopts ":n:h" option; do
     case $option in
     n) name=$OPTARG ;;
-    h)
-        printf "%s\n" "$usage"
-        exit
-        ;;
+    h) usage ;;
     *) die "Invalid option '$OPTARG'" ;;
     esac
 done && shift $((OPTIND - 1))

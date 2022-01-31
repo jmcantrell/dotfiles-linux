@@ -9,4 +9,4 @@ target=$(
         bemenu -l 20 -b -p unmount
 )
 
-udiskie-umount "$@" "$target"
+udiskie-umount "$target"

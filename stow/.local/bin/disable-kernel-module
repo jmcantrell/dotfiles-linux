@@ -1,21 +1,50 @@
 #!/usr/bin/env bash
 
-# Immediately and persistently disable a kernel module.
-
 set -eu
 
-mod_name=${1:?Missing module name}
+me=${0##*/}
+usage="Immediately and persistently disable kernel modules.
 
-if ! modprobe --show --quiet "$mod_name"; then
-    printf "ERROR: Invalid module '%s'" "$mod_name" >&2
+Usage:
+    $me NAME...
+
+Arguments:
+    NAME    disable NAME module
+"
+
+usage() {
+    printf "%s\n" "$usage"
+    exit 0
+}
+
+die() {
+    printf "ERROR: %s\n" "$*" >&2
     exit 1
+}
+
+while getopts ":h" option; do
+    case $option in
+    h) usage ;;
+    *) die "Invalid option '$OPTARG'" ;;
+    esac
+done && shift $((OPTIND - 1))
+
+if (($# == 0)); then
+    die "Missing module name(s)"
 fi
 
-# Ensure that the module is not loaded during boot.
-conf_file=/etc/modprobe.d/disable-"$mod_name".conf
-sudo tee "$conf_file" >/dev/null <<<"blacklist $mod_name"
+for name in "$@"; do
+    if ! modprobe --show --quiet "$name"; then
+        printf "ERROR: Invalid module '%s'" "$name" >&2
+        exit 1
+    fi
 
-# If the module is loaded, unload it.
-if grep -wq "^$mod_name" /proc/modules; then
-    sudo rmmod -v "$mod_name"
-fi
+    # Ensure that the module is not loaded during boot.
+    conf_file=/etc/modprobe.d/disable-"$name".conf
+    sudo tee "$conf_file" >/dev/null <<<"blacklist $name"
+
+    # If the module is loaded, unload it.
+    if grep -wq "^$name" /proc/modules; then
+        sudo rmmod -v "$name"
+    fi
+done

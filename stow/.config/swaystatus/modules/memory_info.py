@@ -1,6 +1,6 @@
 from pathlib import Path
 from swaystatus import BaseElement
-from .util import bytes2human, get_file_line
+from .util import bytes_to_human, get_file_line
 
 
 class Element(BaseElement):
@@ -32,5 +32,8 @@ class Element(BaseElement):
         )
 
     def on_update(self, output):
-        free = self._memory_kbytes * 1024
-        output.append(self.create_block(f"mem {bytes2human(free)}"))
+        output.append(
+            self.create_block(
+                f"mem {bytes_to_human(self._memory_kbytes * 1024)}"
+            )
+        )

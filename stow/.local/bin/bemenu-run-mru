@@ -1,16 +1,18 @@
 #!/usr/bin/env bash
 
-# Run a menu-chosen command, sorted by most recently used.
+# Run a menu-selected command, sorted by most recently used.
 
 set -eu
 
+me=${0##*/}
+
 history_size=${BEMENU_RUN_MRU_HISTSIZE:-100}
-history_file=${XDG_CACHE_HOME:-$HOME/.cache}/${0##*/}/history
+history_file=${XDG_CACHE_HOME:-$HOME/.cache}/$me/history
 
 mkdir -p "$(dirname "$history_file")"
 touch "$history_file"
 
-temp_file=$(mktemp -t "${0##*/}.XXXXXXXXXX")
+temp_file=$(mktemp -t "$me.XXXXXXXXXX")
 trap 'rm -f "$temp_file"' INT TERM EXIT
 
 mru_path() {
@@ -27,6 +29,6 @@ mru_add() {
     mv -f "$temp_file" "$history_file"       # Swap out the previous MRU.
 }
 
-cmd=$(mru_path | bemenu -i -p run "$@")
+cmd=$(mru_path | bemenu -i -p run)
 mru_add "$cmd"
 eval "$cmd"

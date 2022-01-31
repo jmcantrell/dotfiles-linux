@@ -2,10 +2,11 @@
 
 set -eu
 
+me=${0##*/}
 usage="Manage text snippets with bemenu.
 
 Usage:
-    ${0##*/} [OPTIONS] ACTION NAME
+    $me [OPTIONS] ACTION NAME
 
 Options:
     -C DIRECTORY    directory in which to store snippets
@@ -17,6 +18,11 @@ Actions:
     type            type snippet to active window
     delete          delete snippet
 "
+
+usage() {
+    printf "%s\n" "$usage"
+    exit 0
+}
 
 die() {
     printf "ERROR: %s\n" "$*" >&2
@@ -42,11 +48,8 @@ snip_options=()
 while getopts ":C:h" option; do
     case $option in
     C) snip_options+=(-C "$OPTARG") ;;
-    h)
-        printf "%s\n" "$usage"
-        exit
-        ;;
-    *) die "invalid option: $OPTARG" ;;
+    h) usage ;;
+    *) die "Invalid option: $OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))
 

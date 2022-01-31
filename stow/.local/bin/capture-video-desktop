@@ -7,11 +7,11 @@ directory=$HOME
 file_name=desktop_%FT%T%:z
 file_type=mp4
 
-name=${0##*/}
+me=${0##*/}
 usage="Capture video of the desktop.
 
 Usage:
-    $name [OPTIONS] [FILE | 'stop']
+    $me [OPTIONS] [FILE | 'stop']
     
 Options:
     -g GEOMETRY     geometry of region to capture
@@ -42,6 +42,16 @@ Arguments:
     'stop'          stop recording session
 "
 
+usage() {
+    printf "%s\n" "$usage"
+    exit 0
+}
+
+die() {
+    printf "ERROR: %s\n" "$*" >&2
+    exit 1
+}
+
 geometry_format='\(.x),\(.y) \(.width)x\(.height)'
 
 focused_window_geometry() {
@@ -66,18 +76,12 @@ while getopts ":g:rfsad:D:N:E:h" option; do
     D) directory=$OPTARG ;;
     N) file_name=$OPTARG ;;
     E) file_type=$OPTARG ;;
-    h)
-        printf "%s\n" "$usage"
-        exit
-        ;;
-    *)
-        printf "ERROR: Invalid option '%s'\n" "$OPTARG"
-        exit 1
-        ;;
+    h) usage ;;
+    *) die "Invalid option '$OPTARG'" ;;
     esac
 done && shift $((OPTIND - 1))
 
-capture_command_pid_file=$XDG_RUNTIME_DIR/$name-command.pid
+capture_command_pid_file=$XDG_RUNTIME_DIR/$me-command.pid
 
 if [[ -v 1 && $1 == stop ]]; then
     if [[ -f $capture_command_pid_file ]]; then
@@ -125,7 +129,7 @@ fi
 canberra-gtk-play -i camera-shutter &
 
 notify-send -i media-record \
-    "Captured desktop video${capture_audio:+ (with audio)}" \
-    "<u>${output_file/$HOME/\~}</u>" &
+    "Captured desktop video${capture_audio:+ (with audio)}:" \
+    "<u>${output_file##*/}</u>" &
 
 wl-copy -n "$output_file"

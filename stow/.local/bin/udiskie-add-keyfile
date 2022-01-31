@@ -5,10 +5,11 @@ set -eu
 config_dir=${XDG_CONFIG_HOME:-$HOME/.config}/udiskie
 keyfile_dir=${XDG_DATA_HOME:-$HOME/.local/share}/udiskie/keyfiles
 
+me=${0##*/}
 usage="Remember a udiskie device's keyfile for automatic mounting.
 
 Usage:
-    ${0##*/} [OPTIONS] DEVICE KEYFILE
+    $me [OPTIONS] DEVICE KEYFILE
 
 Options:
     -n NAME         use NAME for the keyfile instead of the UUID
@@ -23,6 +24,11 @@ Arguments:
 It's expected that KEYFILE is already (or will be) added to DEVICE.
 "
 
+usage() {
+    printf "%s\n" "$usage"
+    exit 0
+}
+
 die() {
     printf "ERROR: %s\n" "$*" >&2
     exit 1
@@ -34,10 +40,7 @@ while getopts ":s:C:h" option; do
     case $option in
     s) keyfile_name=$OPTARG ;;
     C) config_dir=$OPTARG ;;
-    h)
-        printf "%s\n" "$usage"
-        exit
-        ;;
+    h) usage ;;
     *) die "Invalid option '$OPTARG'" ;;
     esac
 done && shift $((OPTIND - 1))

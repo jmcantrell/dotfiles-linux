@@ -1,6 +1,6 @@
-from subprocess import DEVNULL, CalledProcessError
+from subprocess import CalledProcessError
 from swaystatus import BaseElement
-from .util import run_safe
+from .util import run_quietly
 from .colors import color_off
 
 
@@ -16,7 +16,7 @@ class Element(BaseElement):
         if self._user:
             command.append("--user")
         command.extend(args)
-        return run_safe(command, stdout=DEVNULL)
+        return run_quietly(command)
 
     def _is_active(self):
         try:

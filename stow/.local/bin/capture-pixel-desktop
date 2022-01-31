@@ -1,11 +1,36 @@
 #!/usr/bin/env bash
 
-# Capture the color value of a selected pixel to the clipboard.
-# Usage: capture-pixel-desktop [hex|rgb|name]  # default: hex
-
 set -eu
 
-declare -A indices=([rgb]=2 [hex]=3 [name]=4)
+me=${0##*/}
+usage="Capture the color value of a selected pixel to the clipboard.
+
+Usage:
+    $me TYPE
+
+Types:
+    hex    output color as a hex string (ex: #rrggbb) (default)
+    rgb    output color as an RGB tuple (ex: (1,2,3))
+"
+
+usage() {
+    printf "%s\n" "$usage"
+    exit 0
+}
+
+die() {
+    printf "ERROR: %s\n" "$*" >&2
+    exit 1
+}
+
+while getopts ":h" option; do
+    case $option in
+    h) usage ;;
+    *) die "Invalid option '$OPTARG'" ;;
+    esac
+done && shift $((OPTIND - 1))
+
+declare -A indices=([rgb]=2 [hex]=3)
 
 name=${1:-hex}
 index=${indices[$name]}
@@ -19,7 +44,7 @@ value=$(
 canberra-gtk-play -i screen-capture &
 
 notify-send -i media-record \
-    "Captured desktop pixel" \
-    "$name: <u>$value</u>" &
+    "Captured pixel to clipboard:" \
+    "Represented as $name: <u>$value</u>" &
 
 wl-copy -n "$value"

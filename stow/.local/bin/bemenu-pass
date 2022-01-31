@@ -4,16 +4,18 @@ set -eu
 
 password_length=16
 
+me=${0##*/}
 usage="Interact with pass using bemenu.
 
 Usage:
-    ${0##*/} [OPTIONS] [ACTION]
+    $me [OPTIONS] [ACTION]
 
 Options:
-    -n NUMBER    generated password length (default: $password_length)
+    -n NUMBER    generated password length
+                 (default: $password_length)
 
 Actions:
-    choose       choose existing password
+    choose       choose existing password (default)
     generate     generate a new password
 
 In all cases, the password is copied to the clipboard.
@@ -21,29 +23,34 @@ In all cases, the password is copied to the clipboard.
 
 pass_dir=${PASSWORD_STORE_DIR:-$HOME/.password-store}
 
+usage() {
+    printf "%s\n" "$usage"
+    exit 0
+}
+
 die() {
     printf "ERROR: %s\n" "$*" >&2
     exit 1
 }
 
 pass_names() {
-    if [[ -d $pass_dir ]]; then
-        local file
-        while IFS= read -r -d '' file; do
-            local name=${file#"$pass_dir"/}
-            name=${name%.gpg}
-            printf "%s\n" "$name"
-        done < <(find -L "$pass_dir" -type f -name "*.gpg" -print0)
+    if [[ ! -d $pass_dir ]]; then
+        return
     fi
+
+    local file
+
+    find -L "$pass_dir" -type f -name "*.gpg" | while read -r file; do
+        local name=${file#"$pass_dir"/}
+        name=${name%.gpg}
+        printf "%s\n" "$name"
+    done
 }
 
 while getopts ":n:h" option; do
     case $option in
     n) password_length=$OPTARG ;;
-    h)
-        printf "%s\n" "$usage"
-        exit
-        ;;
+    h) usage ;;
     *) die "Invalid option '$OPTARG'" ;;
     esac
 done && shift $((OPTIND - 1))
@@ -62,6 +69,8 @@ choose) pass -c "$name" ;;
 generate) pass generate -c -f "$name" "$password_length" ;;
 esac
 
-notify-send -i edit-copy \
-    "Password for $name copied to the clipboard" \
-    "Self-destructing in <b>45</b> seconds..."
+clipboard_seconds=${PASSWORD_STORE_CLIP_TIME:-45}
+
+notify-send -t $((clipboard_seconds * 1000)) -i edit-copy \
+    "Password copied to clipboard" \
+    "Self-destructing in <b>$clipboard_seconds</b> seconds..."

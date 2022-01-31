@@ -1,5 +1,5 @@
 [Unit]
-Description=check discharging batteries periodically
+Description=periodically check battery power
 
 [Timer]
 OnCalendar=minutely

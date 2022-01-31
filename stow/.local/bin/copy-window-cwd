@@ -2,15 +2,25 @@
 
 set -eu
 
+me=${0##*/}
 usage="Copy the current working directory of a window to the clipboard.
 
 Usage:
-    ${0##*/} [OPTIONS]
+    $me [OPTIONS]
 
 Options:
-    -s    select window by clicking it
-                
-If no window is selected with -s, the current window is used."
+    -s    select a window (default: current)
+"
+
+usage() {
+    printf "%s\n" "$usage"
+    exit 0
+}
+
+die() {
+    printf "ERROR: %s\n" "$*" >&2
+    exit 1
+}
 
 select_window_id() {
     swaymsg -t get_tree |
@@ -23,14 +33,8 @@ pwd_command=(swaypwd)
 while getopts ":sh" option; do
     case $option in
     s) pwd_command+=("$(select_window_id)") ;;
-    h)
-        printf "%s\n" "$usage"
-        exit
-        ;;
-    *)
-        printf "ERROR: Invalid option '%s'\n" "$OPTARG"
-        exit 1
-        ;;
+    h) usage ;;
+    *) die "Invalid option '$OPTARG'" ;;
     esac
 done && shift $((OPTIND - 1))
 
@@ -38,6 +42,6 @@ cwd=$("${pwd_command[@]}")
 
 wl-copy -n "$cwd"
 
-notify-send -t 3000 -i edit-copy \
-    "Working directory copied to clipboard" \
-    "$cwd"
+notify-send -i edit-copy \
+    "Directory copied to clipboard:" \
+    "<u>$cwd</u>"

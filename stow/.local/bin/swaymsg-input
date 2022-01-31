@@ -1,21 +1,52 @@
 #!/usr/bin/env bash
 
-# Prompt the user for a sway command.
-
 set -eu
 
 prompt=input
+
+me=${0##*/}
+usage="Prompt the user for sway command input.
+
+Usage:
+    $me [OPTIONS] [FORMAT]
+
+Options:
+    -p TEXT    use TEXT for input prompt 
+               (default: $prompt)
+
+    -s PATH    use sway socket PATH
+
+Arguments:
+    FORMAT     use FORMAT for sway command
+               (%s will be replaced by user input)
+"
+
+usage() {
+    printf "%s\n" "$usage"
+    exit 0
+}
+
+die() {
+    printf "ERROR: %s\n" "$*" >&2
+    exit 1
+}
+
 ipc_command=(swaymsg)
 
-while getopts "p:s:" option; do
+while getopts ":p:s:h" option; do
     case $option in
     p) prompt=$OPTARG ;;
     s) ipc_command+=(-s "$OPTARG") ;;
+    h) usage ;;
+    *) die "Invalid option '$OPTARG'" ;;
     esac
 done && shift $((OPTIND - 1))
 
-format=${1:?Missing message format}
-shift
+if [[ ! -v 1 ]]; then
+    die "Missing command format"
+fi
+
+format=$1
 
 reply=$(bemenu -p "$prompt" </dev/null)
 printf -v message "$format" "$reply"

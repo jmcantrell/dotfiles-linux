@@ -14,6 +14,7 @@ systemctl --user enable mako.service
 systemctl --user enable udiskie.service
 systemctl --user enable swayidle.service
 
+# Only enable battery monitoring if a battery exists.
 if [[ -e /sys/class/power_supply/BAT0 ]] ; then
-    systemctl --user enable notify-battery.timer
+    systemctl --user enable check-battery.timer
 fi

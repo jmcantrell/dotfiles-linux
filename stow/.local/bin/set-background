@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+
+set -eu
+
+mode=fill
+color=#000000
+
+me=${0##*/}
+usage="Set desktop background to the given image.
+
+Usage:
+    $me [OPTIONS]
+
+Options:
+    -f FILE     set background to FILE
+                (default: previously used file)
+
+    -o NAME     set background on NAME output
+                (default: all outputs)
+
+    -m NAME     use NAME scaling mode
+                (default: $mode)
+
+    -c COLOR    use COLOR for fallback color
+                (default: $color)
+"
+
+usage() {
+    printf "%s\n" "$usage"
+    exit 0
+}
+
+die() {
+    printf "ERROR: %s\n" "$*" >&2
+    exit 1
+}
+
+get_outputs() {
+    swaymsg -t get_outputs -r | jq -r '.[] | .name'
+}
+
+unset file target_output
+
+while getopts ":f:o:m:c:h" option; do
+    case $option in
+    f) file=$OPTARG ;;
+    o) target_output=$OPTARG ;;
+    m) mode=$OPTARG ;;
+    c) color=$OPTARG ;;
+    h) usage ;;
+    *) die "Invalid option '$OPTARG'" ;;
+    esac
+done && shift $((OPTIND - 1))
+
+state=${XDG_DATA_HOME:-$HOME/.local/state}/backgrounds
+
+if [[ -v file && ! -r $file ]]; then
+    die "Image file does not exist or is not readable"
+fi
+
+get_outputs | while read -r output; do
+    if [[ -v target_output && $output != "$target_output" ]]; then
+        continue
+    fi
+
+    output_state=$state/$output
+    output_image=$output_state/image
+    output_state_mode=$output_state/mode
+    output_state_color=$output_state/color
+
+    output_mode=$mode
+    output_color=$color
+
+    if [[ -v file ]]; then
+        mkdir -p "$output_state"
+        cp -v "$file" "$output_image"
+        printf "$mode" >"$output_state_mode"
+        printf "$color" >"$output_state_color"
+    else
+        if [[ -r $output_state_mode ]]; then
+            output_mode=$(<"$output_state_mode")
+        fi
+        if [[ -r $output_state_color ]]; then
+            output_color=$(<"$output_state_color")
+        fi
+    fi
+
+    if [[ -f $output_image ]]; then
+        swaymsg output "$output" \
+            background "$output_image" \
+            "$output_mode" "$output_color"
+    fi
+
+    if [[ -v file ]]; then
+        notify-send -i background \
+            -h string:x-canonical-private-synchronous:"$me" \
+            "Desktop background set for $output:" \
+            "<u>${file/$HOME/\~}</u>"
+    fi
+done

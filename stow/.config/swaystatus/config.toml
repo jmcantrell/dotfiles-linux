@@ -38,7 +38,7 @@ user = true
 
 [settings.clock]
 on_click.1 = "date --iso-8601=seconds | wl-copy -n"
-on_click.3 = "terminal -e settz"
+on_click.3 = "terminal -e set-timezone"
 
 [settings.load_average]
 on_click.1 = "terminal -e top"

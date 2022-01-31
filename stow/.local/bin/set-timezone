@@ -4,13 +4,9 @@
 
 set -eu
 
-tz=${1:-$(tzselect)}
-
-sudo ln -sf /usr/share/zoneinfo/"$tz" /etc/localtime
-sudo timedatectl set-timezone "$tz"
+sudo timedatectl set-timezone "${1:-$(tzselect)}"
 
 # If the window manager is running, reload to update the clock.
-
 if [[ -v SWAYSOCK ]]; then
     swaymsg reload
 fi

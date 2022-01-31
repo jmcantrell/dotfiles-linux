@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 from swaystatus import BaseElement
-from .util import bytes2human
+from .util import bytes_to_human
 
 
 class Element(BaseElement):
@@ -14,5 +14,5 @@ class Element(BaseElement):
     def on_update(self, output):
         stat = os.statvfs(self._path)
         free = stat.f_frsize * stat.f_bfree
-        full_text = f"{self._label} {bytes2human(free)}"
+        full_text = f"{self._label} {bytes_to_human(free)}"
         output.append(self.create_block(full_text, instance=str(self._path)))

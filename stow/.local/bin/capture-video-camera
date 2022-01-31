@@ -8,11 +8,11 @@ directory=$HOME
 file_name=camera_%FT%T%:z
 file_type=mp4
 
-name=${0##*/}
+me=${0##*/}
 usage="Capture video from a camera device.
 
 Usage:
-    $name [OPTIONS] [FILE | 'stop']
+    $me [OPTIONS] [FILE | 'stop']
     
 Options:
     -a              also capture audio from microphone
@@ -40,6 +40,16 @@ Arguments:
     'stop'          stop recording session
 "
 
+usage() {
+    printf "%s\n" "$usage"
+    exit 0
+}
+
+die() {
+    printf "ERROR: %s\n" "$*" >&2
+    exit 1
+}
+
 while getopts ":ai:d:D:N:E:h" option; do
     case $option in
     a) capture_audio=1 ;;
@@ -48,18 +58,12 @@ while getopts ":ai:d:D:N:E:h" option; do
     D) directory=$OPTARG ;;
     N) file_name=$OPTARG ;;
     E) file_type=$OPTARG ;;
-    h)
-        printf "%s\n" "$usage"
-        exit
-        ;;
-    *)
-        printf "ERROR: Invalid option '%s'\n" "$OPTARG"
-        exit 1
-        ;;
+    h) usage ;;
+    *) die "Invalid option '$OPTARG'" ;;
     esac
 done && shift $((OPTIND - 1))
 
-capture_command_stdin=$XDG_RUNTIME_DIR/$name-command.stdin
+capture_command_stdin=$XDG_RUNTIME_DIR/$me-command.stdin
 
 if [[ -v 1 && $1 == stop ]]; then
     if [[ -f $capture_command_stdin ]]; then
@@ -84,12 +88,12 @@ if ((delay > 0)); then
     canberra-gtk-play -l "$delay" -i message
 fi
 
+mkdir -p "$(dirname "$output_file")"
+capture_command+=("$output_file")
+
 # If not connected to a TTY, tell ffmpeg to get its stdin from a runtime file.
 # This way, recording can be stopped remotely by writing 'q' to the file.
 # For this script, a shortcut is to give "stop" as the first argument.
-
-mkdir -p "$(dirname "$output_file")"
-capture_command+=("$output_file")
 
 if ! tty -s; then
     touch "$capture_command_stdin"
@@ -107,7 +111,7 @@ fi
 canberra-gtk-play -i screen-capture &
 
 notify-send -i media-record \
-    "Captured camera video${capture_audio:+ (with audio)}" \
-    "<u>${output_file/$HOME/\~}</u>" &
+    "Captured camera video${capture_audio:+ (with audio)}:" \
+    "<u>${output_file##*/}</u>" &
 
 wl-copy -n "$output_file"

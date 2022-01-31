@@ -2,26 +2,31 @@
 
 set -eu -o pipefail
 
+me=${0##*/}
 usage="Print the working directory of a window.
 
 Usage:
-    ${0##*/} [OPTIONS] [ID]
+    $me [ID]
 
-Options:
-    -h    show this help message
-                
-If no window ID is given, the current window is used."
+Arguments:
+    ID    print directory for window ID
+          (default: focused window)
+"
+
+usage() {
+    printf "%s\n" "$usage"
+    exit 0
+}
+
+die() {
+    printf "ERROR: %s\n" "$*" >&2
+    exit 1
+}
 
 while getopts ":h" option; do
     case $option in
-    h)
-        printf "%s\n" "$usage"
-        exit
-        ;;
-    *)
-        printf "ERROR: Invalid option '%s'\n" "$OPTARG"
-        exit 1
-        ;;
+    h) usage ;;
+    *) die "Invalid option '$OPTARG'" ;;
     esac
 done && shift "$((OPTIND - 1))"
 
@@ -37,24 +42,22 @@ else
     )
 fi
 
-cwd=$HOME # fallback
-
-if [[ -n $window_pid ]]; then
-    parent_pid=$window_pid
-
-    while child_pid=$(pgrep --parent "$parent_pid" | head -n1); do
-        parent_pid=$child_pid
-    done
-
-    pid=$parent_pid
-    cwd_link=/proc/$pid/cwd
-
-    if [[ -e $cwd_link ]]; then
-        possible_cwd=$(readlink "$cwd_link")
-        if [[ -d $possible_cwd ]]; then
-            cwd=$possible_cwd
-        fi
-    fi
+# If unable to get a window PID, provide a fallback.
+if [[ -z $window_pid ]]; then
+    printf "$HOME"
+    exit 0
 fi
 
-printf "%s" "$cwd"
+pid=$window_pid
+
+while next_pid=$(pgrep --parent "$pid" | head -n1); do
+    # Some child processes don't inherit the working directory of the
+    # parent process. If they are encountered, stop looking for children.
+    case "$(readlink /proc/"$next_pid"/exe)" in
+    */wl-copy) break ;;
+    esac
+
+    pid=$next_pid
+done
+
+readlink /proc/"$pid"/cwd

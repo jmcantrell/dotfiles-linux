@@ -42,6 +42,7 @@ class Element(BaseElement):
         user, system, idle, iowait = values = [
             b - a for a, b in zip(self._previous_sample, current_sample)
         ]
+
         total = sum(values)
         active = total - idle
         percent = active * 100 / total
