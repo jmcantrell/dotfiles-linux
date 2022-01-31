@@ -14,7 +14,7 @@ Install packages, symlink files, and configure system:
 
 ## Additional tasks
 
-Update repository with the latest changes:
+Update files with latest changes:
 
 ```sh
 ./scripts/update
