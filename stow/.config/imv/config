@@ -5,8 +5,8 @@ overlay_position_bottom = true
 
 [binds]
 <Ctrl+Delete> = exec trash-put "$imv_current_file"; next
-<Ctrl+Print> = exec set-background -f "$imv_current_file"
-<Ctrl+y> = exec wl-copy -n "$imv_current_file"
+<Ctrl+Print> = exec set-background "$imv_current_file"
+<Ctrl+y> = exec wl-copy -n "$imv_current_file"; exec notify-send -i edit-copy "Image path copied to clipboard:" "<u>$imv_current_file</u>"
 
 <Ctrl+r> = rotate by 90
 

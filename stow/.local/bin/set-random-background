@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+# Set a random background image.
+
+set -eu
+
+die() {
+    printf "ERROR: %s\n" "$*" >&2
+    exit 1
+}
+
+directory=${1:-${XDG_DATA_HOME:-$HOME/.local/share}/backgrounds}
+
+if [[ ! -d $directory ]]; then
+    die "Directory does not exist"
+fi
+
+file=$(find -L "$directory" -type f | shuf -n1)
+
+if [[ -z $file ]]; then
+    die "Directory is empty"
+fi
+
+cp -vL "$file" ~/.background
+
+if [[ -v SWAYSOCK ]]; then
+    swaymsg reload
+fi

@@ -3,7 +3,7 @@
 set -eu
 
 me=${0##*/}
-usage="Copy the current working directory of a window to the clipboard.
+usage="Copy the current working directory of a window to clipboard.
 
 Usage:
     $me [OPTIONS]

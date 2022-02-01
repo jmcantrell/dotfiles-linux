@@ -44,7 +44,7 @@ value=$(
 canberra-gtk-play -i screen-capture &
 
 notify-send -i media-record \
-    "Captured pixel to clipboard:" \
+    "Captured pixel color to clipboard:" \
     "Represented as $name: <u>$value</u>" &
 
 wl-copy -n "$value"

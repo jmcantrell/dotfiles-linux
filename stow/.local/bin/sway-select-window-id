@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Returns the ID of a click-selected window.
+# Returns the ID of a selected window.
 
 set -eu
 

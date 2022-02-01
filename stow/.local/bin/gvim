@@ -1,3 +1,5 @@
 #!/usr/bin/env sh
 
+# Pretend that vim in a terminal is gvim.
+
 exec terminal -e editor "$@"

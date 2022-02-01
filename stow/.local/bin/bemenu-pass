@@ -73,4 +73,4 @@ clipboard_seconds=${PASSWORD_STORE_CLIP_TIME:-45}
 
 notify-send -t $((clipboard_seconds * 1000)) -i edit-copy \
     "Password copied to clipboard" \
-    "Self-destructing in <b>$clipboard_seconds</b> seconds..."
+    "Self-destructing in <b>$clipboard_seconds</b> seconds..." &

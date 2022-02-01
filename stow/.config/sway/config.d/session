@@ -6,7 +6,6 @@ mode "$mode_session" {
 	bindsym h exec systemctl hibernate,   mode "default"
 	bindsym r exec systemctl reboot,      mode "default"
 	bindsym p exec systemctl poweroff,    mode "default"
-	bindsym Return mode "default"
 	bindsym Escape mode "default"
 }
 bindsym shift+$super+q mode "$mode_session"

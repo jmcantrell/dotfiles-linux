@@ -42,22 +42,27 @@ else
     )
 fi
 
-# If unable to get a window PID, provide a fallback.
-if [[ -z $window_pid ]]; then
-    printf "$HOME"
-    exit 0
+# Fallback value, in case of problems.
+cwd=$HOME
+
+if [[ -n $window_pid ]]; then
+    pid=$window_pid
+
+    while next_pid=$(pgrep --parent "$pid" | head -n1); do
+        # Some child processes don't inherit the working directory of the
+        # parent process. If they are encountered, stop looking for children.
+        case "$(readlink /proc/"$next_pid"/exe)" in
+        */wl-copy) break ;;
+        esac
+
+        pid=$next_pid
+    done
+
+    cwd_link=/proc/"$pid"/cwd
+
+    if possible_cwd=$(realpath "$cwd_link" 2>/dev/null); then
+        cwd=$possible_cwd
+    fi
 fi
 
-pid=$window_pid
-
-while next_pid=$(pgrep --parent "$pid" | head -n1); do
-    # Some child processes don't inherit the working directory of the
-    # parent process. If they are encountered, stop looking for children.
-    case "$(readlink /proc/"$next_pid"/exe)" in
-    */wl-copy) break ;;
-    esac
-
-    pid=$next_pid
-done
-
-readlink /proc/"$pid"/cwd
+printf "$cwd"

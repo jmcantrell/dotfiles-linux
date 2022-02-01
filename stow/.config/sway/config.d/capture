@@ -5,7 +5,6 @@ mode "$mode_capture_image" {
 	bindsym s exec capture-image-desktop -es,   mode "default"
 	bindsym r exec capture-image-desktop -er,   mode "default"
 	bindsym c exec capture-image-camera -e -d5, mode "default"
-	bindsym Return mode "default"
 	bindsym Escape mode "default"
 }
 
@@ -16,7 +15,6 @@ mode "$mode_capture_video" {
 	bindsym s exec capture-video-desktop -s, mode "default"
 	bindsym r exec capture-video-desktop -r, mode "default"
 	bindsym c exec capture-video-camera -d5, mode "default"
-	bindsym Return mode "default"
 	bindsym Escape mode "default"
 }
 
@@ -27,7 +25,6 @@ mode "$mode_capture_gif" {
 	bindsym s exec capture-video-desktop -E gif -s, mode "default"
 	bindsym r exec capture-video-desktop -E gif -r, mode "default"
 	bindsym c exec capture-video-camera -E gif -d5, mode "default"
-	bindsym Return mode "default"
 	bindsym Escape mode "default"
 }
 
@@ -38,7 +35,6 @@ mode "$mode_capture_pixel" {
 	bindsym h exec capture-pixel-desktop hex,  mode "default"
 	bindsym r exec capture-pixel-desktop rgb,  mode "default"
 	bindsym n exec capture-pixel-desktop name, mode "default"
-	bindsym Return mode "default"
 	bindsym Escape mode "default"
 }
 
@@ -48,7 +44,6 @@ mode "$mode_capture" {
     bindsym v mode "$mode_capture_video"
     bindsym g mode "$mode_capture_gif"
     bindsym p mode "$mode_capture_pixel"
-	bindsym Return mode "default"
 	bindsym Escape mode "default"
 }
 bindsym $super+Print mode "$mode_capture"

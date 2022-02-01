@@ -53,4 +53,4 @@ total=$(brightnessctl max)
 notify-send -u low -i sunny \
     -h int:value:"$((value * 100 / total))" \
     -h string:x-canonical-private-synchronous:"$me" \
-    "Brightness" "Level: $value"
+    "Brightness" "Level: $value" &

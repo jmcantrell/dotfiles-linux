@@ -1,3 +1,12 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
+
+set -eu
+
+# If sway is running, open the terminal in the same directory as the focused
+# container's working directory.
+
+if [[ -v SWAYSOCK ]]; then
+    cd "$(swaypwd)"
+fi
 
 exec alacritty "$@"

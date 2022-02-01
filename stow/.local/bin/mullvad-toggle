@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Toggle the Mullvad VPN connection.
+# This is primarily used for swaystatus interaction.
+
 set -eu
 
 state=$(mullvad status | awk '{print $3}')
