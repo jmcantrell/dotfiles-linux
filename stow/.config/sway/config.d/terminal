@@ -1,11 +1,11 @@
-bindsym      $super+Return exec terminal
-bindsym $alt+$super+Return exec terminal --class floating
+bindsym      $super+Return exec cd "$(swaypwd)" && terminal
+bindsym $alt+$super+Return exec cd "$(swaypwd)" && terminal --class floating
 
-bindsym      $super+e exec terminal -e editor
-bindsym $alt+$super+e exec terminal --class floating -e editor
+bindsym      $super+e exec cd "$(swaypwd)" && terminal -e editor
+bindsym $alt+$super+e exec cd "$(swaypwd)" && terminal --class floating -e editor
 
-bindsym      $super+f exec terminal -e ranger
-bindsym $alt+$super+f exec terminal --class floating -e ranger
+bindsym      $super+f exec cd "$(swaypwd)" && terminal -e ranger
+bindsym $alt+$super+f exec cd "$(swaypwd)" && terminal --class floating -e ranger
 
 bindsym $alt+$super+Pause exec terminal --class floating -e ncspot
 

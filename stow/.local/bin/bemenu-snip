@@ -31,12 +31,10 @@ die() {
 
 do_copy() {
     snip "${snip_options[@]}" read "$1" | wl-copy
-    notify-send -i edit-copy "Snippet '$1' copied to clipboard"
 }
 
 do_save() {
     wl-paste | snip "${snip_options[@]}" write "$1"
-    notify-send -i document-save "Snippet '$1' saved from clipboard"
 }
 
 do_type() {
