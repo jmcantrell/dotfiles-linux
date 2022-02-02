@@ -65,6 +65,8 @@ capture_command=(
     -f v4l2 -i "$device" -frames:v 1 -c:v "$file_type"
 )
 
+# If a delay was requested, provide an audible countdown to let user know
+# something is about to happen.
 if ((delay > 0)); then
     canberra-gtk-play -l "$delay" -i message
 fi
@@ -77,10 +79,7 @@ else
     "${capture_command[@]}" "$output_file"
 fi
 
+# Provide audible feedback that capture is complete.
 canberra-gtk-play -i screen-capture &
-
-notify-send -i media-record \
-    "Captured camera photo:" \
-    "<u>${output_file##*/}</u>" &
 
 wl-copy -n "$output_file"

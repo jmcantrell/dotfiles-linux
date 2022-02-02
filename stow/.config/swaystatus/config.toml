@@ -26,7 +26,7 @@ path = "~"
 
 [settings."path_exists:mullvad"]
 path = "/proc/sys/net/ipv4/conf/wg-mullvad"
-label = "wg-mullvad"
+label = "vpn"
 on_click.1 = "mullvad-toggle"
 on_click.2 = 'terminal -e sudo iftop -i wg-mullvad'
 on_click.3 = "terminal --hold -e mullvad-details"

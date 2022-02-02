@@ -1,4 +1,9 @@
 #!/usr/bin/env sh
 
+# Wrapper for `dolphin-emu` that forces it to use x11.
+
+# Supposedly, wayland support is being worked on:
+# https://github.com/dolphin-emu/dolphin/pull/7452
+
 export QT_QPA_PLATFORM=xcb
 exec /usr/bin/dolphin-emu "$@"

@@ -26,10 +26,13 @@ class Element(BaseElement):
         except subprocess.CalledProcessError:
             pass
 
+        full_text = f"{status}: {name}"
+        short_text = f"{status} media"
+
         output.append(
             self.create_block(
-                f"{status}: {name}",
-                short_text=f"{status} media",
+                full_text,
+                short_text=short_text,
                 markup="pango",
             )
         )

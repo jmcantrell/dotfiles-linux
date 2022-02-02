@@ -61,26 +61,30 @@ esac
 
 # If sway is running, refresh the status line to reflect the new volume.
 if [[ -v SWAYSOCK ]]; then
-    swaystatus-refresh &
+    throttle swaystatus-refresh 1 killall -SIGUSR1 swaystatus &
 fi
 
 read -r left right < <(
     pactl get-sink-volume "$sink" | head -n1 | awk '{print $5,$12}'
 )
 
+# If the left and right channel values are the same, just display one value.
+# Otherwise, show separate values for each channel.
 if [[ "$left" == "$right" ]]; then
     volume=$left
 else
     volume="Left: $left, Right: $right"
 fi
 
-canberra-gtk-play -i message &
-
+# Show a different icon depending on the mute status.
 if [[ $(pactl get-sink-mute "$sink") == *yes ]]; then
     icon="audio-volume-muted"
 else
     icon="audio-volume-high"
 fi
+
+# Provide audible feedback so user is aware of new volume and mute status.
+canberra-gtk-play -i message &
 
 notify-send -u low -i "$icon" \
     -h int:value:"$volume" \

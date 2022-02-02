@@ -27,13 +27,17 @@ class Element(BaseElement):
 
     def on_update(self, output):
         options = {}
+
         if not self._is_active():
             options["color"] = color_off
 
+        full_text = self._label
+        instance = str(self._unit)
+
         output.append(
             self.create_block(
-                self._label,
-                instance=str(self._unit),
+                full_text,
+                instance=instance,
                 **options,
             )
         )

@@ -40,12 +40,8 @@ action=$1
 
 case $action in
 set | goto) ;;
-unset)
-    exec swaymsg '[con_id="__focused__"] unmark'
-    ;;
-clear)
-    exec swaymsg unmark
-    ;;
+unset) exec swaymsg '[con_id="__focused__"] unmark' ;;
+clear) exec swaymsg unmark ;;
 *) die "Invalid action '$action'" ;;
 esac
 

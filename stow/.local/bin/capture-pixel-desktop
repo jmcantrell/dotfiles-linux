@@ -41,10 +41,7 @@ value=$(
         tail -n1 | awk "{print \$$index}"
 )
 
+# Provide audible feedback that capture is complete.
 canberra-gtk-play -i screen-capture &
-
-notify-send -i media-record \
-    "Captured pixel color to clipboard:" \
-    "Represented as $name: <u>$value</u>" &
 
 wl-copy -n "$value"

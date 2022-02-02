@@ -49,4 +49,6 @@ class Element(BaseElement):
 
         self._previous_sample = current_sample
 
-        output.append(self.create_block(self._format.format(percent)))
+        full_text = self._format.format(percent)
+
+        output.append(self.create_block(full_text))

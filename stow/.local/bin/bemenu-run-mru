@@ -29,6 +29,11 @@ mru_add() {
     mv -f "$temp_file" "$history_file"       # Swap out the previous MRU.
 }
 
+# Prompt user for command.
 cmd=$(mru_path | bemenu -i -p run)
+
+# Remember it as recently used.
 mru_add "$cmd"
+
+# Execute command (eval is used to allow shell substitutions).
 eval "$cmd"

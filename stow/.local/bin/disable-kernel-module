@@ -35,8 +35,7 @@ fi
 
 for name in "$@"; do
     if ! modprobe --show --quiet "$name"; then
-        printf "ERROR: Invalid module '%s'" "$name" >&2
-        exit 1
+        die "Invalid module '$name'"
     fi
 
     # Ensure that the module is not loaded during boot.

@@ -9,9 +9,6 @@ class Element(BaseElement):
         super().__init__(*args, **kwargs)
 
     def on_update(self, output):
-        output.append(
-            self.create_block(
-                time.strftime(self._format),
-                short_text=time.strftime(self._format_short),
-            )
-        )
+        full_text = time.strftime(self._format)
+        short_text = time.strftime(self._format_short)
+        output.append(self.create_block(full_text, short_text=short_text))

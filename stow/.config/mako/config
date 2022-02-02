@@ -10,7 +10,7 @@ background-color=#2e3440
 border-color=#88c0d0
 font=monospace 8
 anchor=bottom-right
-icon-path=/usr/share/icons/gnome:/usr/share/icons/hicolor
+icon-path=/usr/share/icons/Adwaita:/usr/share/icons/Arc:/usr/share/icons/gnome
 default-timeout=3000
 
 [urgency=low]

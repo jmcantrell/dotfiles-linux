@@ -11,4 +11,5 @@ class Element(BaseElement):
             return " ".join(f.read().split()[:-1])
 
     def on_update(self, output):
-        output.append(self.create_block(f"load {self._loadavg}"))
+        full_text = f"load {self._loadavg}"
+        output.append(self.create_block(full_text))

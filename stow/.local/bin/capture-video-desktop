@@ -83,6 +83,7 @@ done && shift $((OPTIND - 1))
 
 capture_command_pid_file=$XDG_RUNTIME_DIR/$me-command.pid
 
+# If the first argument is "stop", kill the running capture command.
 if [[ -v 1 && $1 == stop ]]; then
     if [[ -f $capture_command_pid_file ]]; then
         kill "$(<"$capture_command_pid_file")"
@@ -106,6 +107,8 @@ if [[ $output_file == *.gif ]]; then
     capture_command+=(-c gif)
 fi
 
+# If a delay was requested, provide an audible countdown to let user know
+# something is about to happen.
 if ((delay > 0)); then
     canberra-gtk-play -l "$delay" -i message
 fi
@@ -113,6 +116,8 @@ fi
 mkdir -p "$(dirname "$output_file")"
 capture_command+=(-f "$output_file")
 
+# If not associated with a terminal, there will be no way to directly tell the
+# capture command to stop, so record its pid so that it can be killed later.
 if ! tty -s; then
     "${capture_command[@]}" &
     echo "$!" >"$capture_command_pid_file"
@@ -122,14 +127,12 @@ else
     "${capture_command[@]}"
 fi
 
+# If the capture file is a gif, optimize it.
 if [[ $output_file == *.gif ]]; then
     gifsicle --batch --optimize=3 "$output_file"
 fi
 
+# Provide audible feedback that capture is complete.
 canberra-gtk-play -i camera-shutter &
-
-notify-send -i media-record \
-    "Captured desktop video${capture_audio:+ (with audio)}:" \
-    "<u>${output_file##*/}</u>" &
 
 wl-copy -n "$output_file"

@@ -35,10 +35,12 @@ class Element(BaseElement):
     def on_update(self, output):
         try:
             kwargs = {}
+
             if self._muted:
                 kwargs["color"] = color_off
-            output.append(
-                self.create_block(f"audio {self._volume_text}", **kwargs)
-            )
+
+            full_text = f"audio {self._volume_text}"
+
+            output.append(self.create_block(full_text, **kwargs))
         except subprocess.CalledProcessError:
             return

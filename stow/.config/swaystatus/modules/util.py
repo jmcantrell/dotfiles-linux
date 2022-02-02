@@ -13,6 +13,7 @@ def bytes_to_human(value, fmt="{value:.1f} {symbol}"):
         if value >= data_sizes_in_bytes[symbol]:
             value = value / data_sizes_in_bytes[symbol]
             return fmt.format(symbol=symbol, value=value)
+
     return fmt.format(symbol=data_size_symbols[0], value=value)
 
 

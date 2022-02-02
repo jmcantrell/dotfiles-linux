@@ -1,3 +1,3 @@
-export LESS="R i --mouse"
+export LESS="R --ignore-case --mouse"
 
 # vi:ft=sh

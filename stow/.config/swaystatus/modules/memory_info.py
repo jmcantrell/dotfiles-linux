@@ -32,8 +32,7 @@ class Element(BaseElement):
         )
 
     def on_update(self, output):
-        output.append(
-            self.create_block(
-                f"mem {bytes_to_human(self._memory_kbytes * 1024)}"
-            )
-        )
+        memory_bytes = self._memory_kbytes * 1024
+        memory_human = bytes_to_human(memory_bytes)
+        full_text = f"mem {memory_human}"
+        output.append(self.create_block(full_text))

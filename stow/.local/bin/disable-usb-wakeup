@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
-# Disable the ability for USB devices to wake up the system.
+# Disable resuming the system on USB device activity.
 
 set -eu
 
+me=${0##*/}
 wakeup=/proc/acpi/wakeup
-service=/etc/systemd/system/disable-usb-wakeup.service
+service=/etc/systemd/system/$me.service
 
 devices=$(
     grep -v '^[[:space:]]' "$wakeup" |
@@ -16,7 +17,7 @@ devices=$(
 
 sudo tee "$service" >/dev/null <<-EOF
 [Unit]
-Description=disable resuming on USB device activity
+Description=disable resuming the system on USB device activity
 
 [Service]
 ExecStart=/bin/bash -c "printf '%%s\n' ${devices@Q} >>${wakeup@Q}"

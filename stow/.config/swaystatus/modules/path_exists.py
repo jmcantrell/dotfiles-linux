@@ -12,13 +12,17 @@ class Element(BaseElement):
 
     def on_update(self, output):
         options = {}
+
         if not self._path.exists():
             options["color"] = color_off
 
+        full_text = self._label
+        instance = str(self._path)
+
         output.append(
             self.create_block(
-                self._label,
-                instance=str(self._path),
+                full_text,
+                instance=instance,
                 **options,
             )
         )

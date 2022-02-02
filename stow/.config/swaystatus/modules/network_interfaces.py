@@ -12,5 +12,5 @@ class Element(BaseElement):
     def on_update(self, output):
         for interface in self._source.glob("*"):
             if self._operstate(interface) == "up":
-                name = interface.name
-                output.append(self.create_block(f"{name}", instance=name))
+                full_text = instance = interface.name
+                output.append(self.create_block(full_text, instance=instance))

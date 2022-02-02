@@ -1,3 +1,6 @@
 #!/usr/bin/env sh
 
+# An easier-to-type alias for `trash-put`. This is only in the linux module
+# because the trash-cli command on mac is already `trash`.
+
 exec trash-put "$@"

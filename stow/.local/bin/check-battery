@@ -4,43 +4,41 @@
 
 set -eu
 
-low_capacity=25
-critical_capacity=15
-hibernate_capacity=5
+# Battery capacity percentages that trigger notifications.
+low_capacity=25      # initial alert so user is aware of low power
+critical_capacity=15 # second alert that hibernation is a possibility
+hibernate_capacity=5 # final alert that hibernation is immanaent
+
+# If power is restored after countdown is started, abort hibernation.
 hibernate_grace=30
 
 power_supply=/sys/class/power_supply
 
 # Don't do anything if there are no batteries.
 # This is probably not a mobile device.
-
 if [[ ! -d $power_supply/BAT0 ]]; then
     echo "There are no batteries to monitor"
     exit 0
 fi
 
 # Returns a status indicating whether or not external power is being supplied.
-
 is_ac_online() {
     (($(<"$power_supply"/AC/online) == 1))
 }
 
 # Don't do anything if plugged in.
 # There should be no danger of losing power.
-
 if is_ac_online; then
     exit 0
 fi
 
 # Notifies the user of events, replacing the previous notification.
-
 notify() {
     notify-send -h string:x-canonical-private-synchronous:"${0##*/}" "$@"
 }
 
 # Returns the capacity of the most charged battery, as it's probably the best
 # indicator of impending power loss.
-
 max_discharging_capacity() {
     local max_capacity=0
     local battery capacity
@@ -59,7 +57,6 @@ max_discharging_capacity() {
 
 # Hibernate the system after a countdown, but give the user a grace period
 # where restoring the power will abort the hibernation.
-
 wait_for_power_or_hibernate() {
     local countdown=$hibernate_grace
 
