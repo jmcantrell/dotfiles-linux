@@ -21,8 +21,4 @@ if [[ -z $file ]]; then
     die "Directory is empty"
 fi
 
-cp -vL "$file" ~/.background
-
-if [[ -v SWAYSOCK ]]; then
-    swaymsg reload
-fi
+set-background "$file"

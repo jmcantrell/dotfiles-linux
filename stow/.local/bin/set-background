@@ -4,8 +4,13 @@
 
 set -eu
 
-cp -vL "${1:?Missing file}" ~/.background
+image=${1:-}
+background=$HOME/.background
 
-if [[ -v SWAYSOCK ]]; then
-    swaymsg reload
+if [[ -n $image ]]; then
+    cp -vL "$image" "$background"
+fi
+
+if [[ -v SWAYSOCK && -r $background ]]; then
+    swaymsg output "*" background "$background" fill "#000000"
 fi
