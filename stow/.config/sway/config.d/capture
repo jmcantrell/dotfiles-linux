@@ -30,11 +30,10 @@ mode "$mode_capture_gif" {
 
 bindsym ctrl+$super+Print exec capture-video-stop
 
-set $mode_capture_pixel capture pixel: (h)ex, (r)gb, (n)ame
+set $mode_capture_pixel capture pixel: (h)ex, (r)gb
 mode "$mode_capture_pixel" {
-	bindsym h exec capture-pixel-desktop hex,  mode "default"
-	bindsym r exec capture-pixel-desktop rgb,  mode "default"
-	bindsym n exec capture-pixel-desktop name, mode "default"
+	bindsym h exec capture-pixel-desktop hex, mode "default"
+	bindsym r exec capture-pixel-desktop rgb, mode "default"
 	bindsym Escape mode "default"
 }
 

@@ -54,10 +54,10 @@ on_click.1 = "terminal -e watch free -h"
 on_click.1 = "terminal -e watch acpi --details"
 
 [settings.pulseaudio]
-on_click.1 = "audio-volume mute"
+on_click.1 = "set-audio-volume mute"
 on_click.3 = "pavucontrol"
-on_click.4 = "audio-volume up"
-on_click.5 = "audio-volume down"
+on_click.4 = "set-audio-volume up"
+on_click.5 = "set-audio-volume down"
 
 [settings.mpris]
 on_click.1 = "playerctl play-pause"

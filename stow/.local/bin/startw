@@ -9,4 +9,4 @@ for file in ~/.wprofile.d/*; do
 done
 unset file
 
-sway 2>&1 | logger -t sway
+exec sway 2>&1 | logger -t sway

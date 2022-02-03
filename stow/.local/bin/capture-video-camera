@@ -99,7 +99,7 @@ capture_command+=("$output_file")
 
 # If not associated with a terminal, there will be no way to directly tell the
 # capture command to stop, so allow its stdin to be written to externally.
-if ! tty -s; then
+if ! tty --silent; then
     touch "$capture_command_stdin"
     trap 'rm -f "$capture_command_stdin"' INT TERM EXIT
     "${capture_command[@]}" <"$capture_command_stdin"

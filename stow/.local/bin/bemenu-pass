@@ -71,6 +71,8 @@ esac
 
 clipboard_seconds=${PASSWORD_STORE_CLIP_TIME:-45}
 
-notify-send -t $((clipboard_seconds * 1000)) -i edit-copy \
-    "Password copied to clipboard" \
+notify-send -i edit-copy \
+    -t $((clipboard_seconds * 1000)) \
+    -h string:x-canonical-private-synchronous:"$me" \
+    "Password for '$name' copied to clipboard" \
     "Self-destructing in <b>$clipboard_seconds</b> seconds..." &

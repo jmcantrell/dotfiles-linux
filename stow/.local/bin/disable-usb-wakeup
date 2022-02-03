@@ -2,6 +2,9 @@
 
 # Disable resuming the system on USB device activity.
 
+# Relies on writing the device IDs to a procfs file, which is reset on each
+# boot, hence, the systemd service.
+
 set -eu
 
 me=${0##*/}
