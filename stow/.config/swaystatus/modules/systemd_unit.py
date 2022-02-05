@@ -4,6 +4,22 @@ from .util import run_quietly
 from .colors import color_off
 
 
+def systemctl(*args, user=False):
+    command = ["systemctl"]
+    if user:
+        command.append("--user")
+    command.extend(args)
+    return run_quietly(command)
+
+
+def is_active(unit, **kwargs):
+    try:
+        systemctl("is-active", unit, **kwargs)
+        return True
+    except CalledProcessError:
+        return False
+
+
 class Element(BaseElement):
     def __init__(self, *args, **kwargs):
         self._unit = kwargs.pop("unit")
@@ -11,24 +27,14 @@ class Element(BaseElement):
         self._label = kwargs.pop("label", self._unit)
         super().__init__(*args, **kwargs)
 
-    def _systemctl(self, *args):
-        command = ["systemctl"]
-        if self._user:
-            command.append("--user")
-        command.extend(args)
-        return run_quietly(command)
-
+    @property
     def _is_active(self):
-        try:
-            self._systemctl("is-active", self._unit)
-            return True
-        except CalledProcessError:
-            return False
+        return is_active(self._unit, user=self._user)
 
     def on_update(self, output):
         options = {}
 
-        if not self._is_active():
+        if not self._is_active:
             options["color"] = color_off
 
         full_text = self._label
@@ -43,4 +49,5 @@ class Element(BaseElement):
         )
 
     def on_click_1(self, _):
-        self._systemctl("stop" if self._is_active() else "start", self._unit)
+        action = "stop" if self._is_active else "start"
+        systemctl(action, self._unit, user=self._user)

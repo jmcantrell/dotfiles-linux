@@ -3,24 +3,26 @@ from swaystatus import BaseElement
 from .util import capture_stdout
 
 
+def get_status():
+    return capture_stdout(["playerctl", "status"]).strip().lower()
+
+
+def get_metadata(key):
+    return capture_stdout(["playerctl", "metadata", key]).strip()
+
+
 class Element(BaseElement):
-    def _status(self):
-        return capture_stdout(["playerctl", "status"]).strip().lower()
-
-    def _metadata(self, key):
-        return capture_stdout(["playerctl", "metadata", key]).strip()
-
     def on_update(self, output):
         try:
-            status = self._status()
-            title = self._metadata("title")
+            status = get_status()
+            title = get_metadata("title")
         except subprocess.CalledProcessError:
             return
 
         name = title
 
         try:
-            artist = self._metadata("artist").strip()
+            artist = get_metadata("artist").strip()
             if artist:
                 name = f"{artist} - {title}"
         except subprocess.CalledProcessError:

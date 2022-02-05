@@ -2,4 +2,4 @@
 
 # Pretend that vim in a terminal is gvim.
 
-exec terminal -e editor "$@"
+exec terminal -e vim "$@"

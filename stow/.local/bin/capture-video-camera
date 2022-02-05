@@ -77,7 +77,7 @@ fi
 output_file=$(date +"${1:-$directory/$file_name.$file_type}")
 
 capture_command=(
-    ffmpeg -hide_banner -loglevel error -y -f v4l2 -i "$device"
+    ffmpeg -hide_banner -y -f v4l2 -i "$device"
 )
 
 if [[ -v capture_audio ]]; then

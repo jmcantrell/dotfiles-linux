@@ -52,7 +52,7 @@ max_discharging_capacity() {
         fi
     done
 
-    echo "$max_capacity"
+    printf "$max_capacity"
 }
 
 # Hibernate the system after a countdown, but give the user a grace period

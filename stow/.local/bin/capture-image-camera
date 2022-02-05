@@ -2,7 +2,6 @@
 
 set -eu
 
-edit=0
 delay=0
 device=/dev/video0
 directory=$HOME
@@ -46,6 +45,8 @@ die() {
     exit 1
 }
 
+unset edit
+
 while getopts ":ed:D:N:E:h" option; do
     case $option in
     e) edit=1 ;;
@@ -61,8 +62,7 @@ done && shift $((OPTIND - 1))
 output_file=$(date +"${1:-$directory/$file_name.$file_type}")
 
 capture_command=(
-    ffmpeg -hide_banner -loglevel error -y
-    -f v4l2 -i "$device" -frames:v 1 -c:v "$file_type"
+    ffmpeg -hide_banner -y -f v4l2 -i "$device" -frames:v 1 -c:v "$file_type"
 )
 
 # If a delay was requested, provide an audible countdown to let user know
@@ -73,7 +73,7 @@ fi
 
 mkdir -p "$(dirname "$output_file")"
 
-if ((edit)); then
+if [[ -v edit ]]; then
     "${capture_command[@]}" -f image2 - | swappy -f - -o "$output_file"
 else
     "${capture_command[@]}" "$output_file"

@@ -48,6 +48,11 @@ fi
 
 format=$1
 
+# Prompt user for input.
 reply=$(bemenu -p "$prompt" </dev/null)
+
+# Substitute user's reply into message format.
 printf -v message "$format" "$reply"
+
+# Send command to sway.
 exec "${ipc_command[@]}" "$message"

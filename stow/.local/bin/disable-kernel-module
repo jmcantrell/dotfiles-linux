@@ -39,7 +39,7 @@ for name in "$@"; do
     fi
 
     # Ensure that the module is not loaded during boot.
-    conf_file=/etc/modprobe.d/disable-"$name".conf
+    conf_file=/etc/modprobe.d/disable-$name.conf
     sudo tee "$conf_file" >/dev/null <<<"blacklist $name"
 
     # If the module is loaded, unload it.

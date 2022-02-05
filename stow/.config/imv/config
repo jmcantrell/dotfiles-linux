@@ -6,6 +6,7 @@ overlay_position_bottom = true
 [binds]
 <Ctrl+Delete> = exec trash-put "$imv_current_file"; next
 <Ctrl+Print> = exec set-background "$imv_current_file"
+<Ctrl+e> = exec rifle -p edit "$imv_current_file"
 <Ctrl+y> = exec wl-copy -n "$imv_current_file"
 
 <Ctrl+r> = rotate by 90

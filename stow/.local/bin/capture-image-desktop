@@ -2,7 +2,6 @@
 
 set -eu
 
-edit=0
 delay=0
 directory=$HOME
 file_name=desktop_%FT%T%:z
@@ -66,6 +65,8 @@ select_window_geometry() {
         slurp -r
 }
 
+unset edit capture_mouse
+
 while getopts ":g:rfsmed:D:N:E:h" option; do
     case $option in
     g) geometry=$OPTARG ;;
@@ -103,7 +104,7 @@ fi
 
 mkdir -p "$(dirname "$output_file")"
 
-if ((edit)); then
+if [[ -v edit ]]; then
     "${capture_command[@]}" - | swappy -f - -o "$output_file"
 else
     "${capture_command[@]}" "$output_file"

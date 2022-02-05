@@ -7,9 +7,8 @@
 
 set -eu
 
-me=${0##*/}
 wakeup=/proc/acpi/wakeup
-service=/etc/systemd/system/$me.service
+service=/etc/systemd/system/${0##*/}.service
 
 devices=$(
     grep -v '^[[:space:]]' "$wakeup" |

@@ -64,18 +64,14 @@ if [[ -z $uuid ]]; then
     die "Device does not have a UUID"
 fi
 
-if [[ -v keyfile_name ]]; then
-    keyfile_copy=$keyfile_dir/$keyfile_name.bin
-else
-    keyfile_copy=$keyfile_dir/$uuid.bin
-fi
-
 config_file=$config_dir/config.json
 
 if [[ ! -f $config_file ]]; then
     mkdir -p "$config_dir"
     jq -n '.device_config=[]' >"$config_file"
 fi
+
+keyfile_copy=$keyfile_dir/${keyfile_name:-$uuid}.bin
 
 mkdir -p "$(dirname "$keyfile_copy")"
 cp -v --preserve=mode "$keyfile_original" "$keyfile_copy"
@@ -86,15 +82,15 @@ index=$(
         "$config_file"
 )
 
-args=(--arg keyfile "${keyfile_copy/$HOME/\~}")
+options=(--arg keyfile "${keyfile_copy/$HOME/\~}")
 
 if [[ $index == null ]]; then
-    args+=(--arg uuid "$uuid")
+    options+=(--arg uuid "$uuid")
     query='.device_config += [{ "id_uuid": $uuid, "keyfile": $keyfile }]'
 else
-    args+=(--arg index "$index")
+    options+=(--arg index "$index")
     query='.device_config[$index | tonumber].keyfile=$keyfile'
 fi
 
-jq "${args[@]}" "$query" "$config_file" >"$config_file.tmp"
+jq "${options[@]}" "$query" "$config_file" >"$config_file.tmp"
 mv "$config_file.tmp" "$config_file"

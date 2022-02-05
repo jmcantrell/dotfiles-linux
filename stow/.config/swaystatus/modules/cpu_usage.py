@@ -1,36 +1,37 @@
 from pathlib import Path
 from swaystatus import BaseElement
 
+source = Path("/proc/stat")
+columns = [
+    "user",
+    "nice",
+    "system",
+    "idle",
+    "iowait",
+    "irq",
+    "softirq",
+    "steal",
+    "guest",
+    "guest_nice",
+]
+
+
+def proc_stat_cpu():
+    with source.open() as f:
+        return f.readline().strip().split()[1:]
+
 
 class Element(BaseElement):
-    _source = Path("/proc/stat")
-    _columns = [
-        "user",
-        "nice",
-        "system",
-        "idle",
-        "iowait",
-        "irq",
-        "softirq",
-        "steal",
-        "guest",
-        "guest_nice",
-    ]
-
     def __init__(self, *args, **kwargs):
         self._format = kwargs.pop("format", "cpu {:.1f}%")
         self._column_index = {
-            column: index for index, column in enumerate(self._columns)
+            column: index for index, column in enumerate(columns)
         }
         self._previous_sample = self._sample()
         super().__init__(*args, **kwargs)
 
-    def _proc_stat_cpu(self):
-        with self._source.open() as f:
-            return f.readline().strip().split()[1:]
-
     def _proc_stat_cpu_columns(self, *columns):
-        values = self._proc_stat_cpu()
+        values = proc_stat_cpu()
         return [int(values[self._column_index[column]]) for column in columns]
 
     def _sample(self):
