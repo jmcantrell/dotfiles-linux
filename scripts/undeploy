@@ -2,4 +2,4 @@
 
 set -eu
 
-stow --no-folding --dir . --target ~ --delete home
+stow --no-folding --dir ./files --target ~ --delete home
