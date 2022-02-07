@@ -27,14 +27,10 @@ class Element(BaseElement):
         self._label = kwargs.pop("label", self._unit)
         super().__init__(*args, **kwargs)
 
-    @property
-    def _is_active(self):
-        return is_active(self._unit, user=self._user)
-
     def on_update(self, output):
         options = {}
 
-        if not self._is_active:
+        if not is_active(self._unit, user=self._user):
             options["color"] = color_off
 
         full_text = self._label

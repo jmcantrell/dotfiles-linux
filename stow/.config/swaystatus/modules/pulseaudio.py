@@ -4,7 +4,7 @@ from .util import capture_stdout
 from .colors import color_off
 
 
-def get_stereo_volume(sink):
+def stereo_volume(sink):
     stdout = capture_stdout(["pactl", "get-sink-volume", sink])
     return [
         int(s.strip().rstrip("%"))
@@ -13,7 +13,7 @@ def get_stereo_volume(sink):
     ]
 
 
-def get_muted(sink):
+def is_muted(sink):
     stdout = capture_stdout(["pactl", "get-sink-mute", sink])
     return stdout.split()[1] == "yes"
 
@@ -25,7 +25,7 @@ class Element(BaseElement):
 
     @property
     def _volume_text(self):
-        volumes = get_stereo_volume(self._sink)
+        volumes = stereo_volume(self._sink)
         volume_format = "{}%"
         if len(set(volumes)) == 1:
             return volume_format.format(volumes[0])
@@ -36,7 +36,7 @@ class Element(BaseElement):
         try:
             kwargs = {}
 
-            if get_muted(self._sink):
+            if is_muted(self._sink):
                 kwargs["color"] = color_off
 
             full_text = f"audio {self._volume_text}"
