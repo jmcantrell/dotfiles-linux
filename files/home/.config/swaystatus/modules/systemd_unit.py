@@ -27,6 +27,13 @@ class Element(BaseElement):
         self._label = kwargs.pop("label", self._unit)
         super().__init__(*args, **kwargs)
 
+    def _systemctl(self, *args):
+        return systemctl(*args, self._unit, user=self._user)
+
+    @property
+    def _is_active(self):
+        return is_active(self._unit, user=self._user)
+
     def on_update(self, output):
         options = {}
 
@@ -45,5 +52,4 @@ class Element(BaseElement):
         )
 
     def on_click_1(self, _):
-        action = "stop" if self._is_active else "start"
-        systemctl(action, self._unit, user=self._user)
+        self._systemctl("stop" if self._is_active else "start")
