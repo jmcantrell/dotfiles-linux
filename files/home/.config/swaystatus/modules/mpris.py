@@ -29,7 +29,7 @@ class Element(BaseElement):
             pass
 
         full_text = f"{status}: {name}"
-        short_text = f"{status} media"
+        short_text = status
 
         output.append(
             self.create_block(
