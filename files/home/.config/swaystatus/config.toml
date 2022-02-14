@@ -4,7 +4,7 @@ order = [
     "systemd_unit:swayidle",
     "load_average",
     "cpu_usage",
-    "disk_usage:home",
+    "mounts",
     "memory_info",
     "batteries",
     "pulseaudio",
@@ -17,12 +17,9 @@ on_click.1 = 'terminal --hold -e networkctl status'
 on_click.2 = 'terminal -e sudo iftop -i ${instance}'
 on_click.3 = 'terminal -e ip -color -human monitor'
 
-[settings.disk_usage]
+[settings.mounts]
 on_click.1 = 'terminal --hold -e df --si --human-readable ${instance}'
 on_click.3 = 'terminal -e ncdu ${instance}'
-
-[settings."disk_usage:home"]
-path = "~"
 
 [settings."path_exists:mullvad"]
 path = "/proc/sys/net/ipv4/conf/wg-mullvad"
