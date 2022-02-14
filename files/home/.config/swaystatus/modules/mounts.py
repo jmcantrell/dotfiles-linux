@@ -57,7 +57,10 @@ class Element(BaseElement):
         for path in mounted_paths():
             instance = str(path)
             label = path.name or "root"
-            free_bytes = path_free_bytes(path)
-            free = bytes_to_human(free_bytes)
-            full_text = f"{label} {free}"
+            try:
+                free_bytes = path_free_bytes(path)
+                free = bytes_to_human(free_bytes)
+                full_text = f"{label} {free}"
+            except PermissionError:
+                full_text = label
             output.append(self.create_block(full_text, instance=instance))
