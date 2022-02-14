@@ -8,10 +8,14 @@ for i, s in enumerate(data_size_symbols[1:]):
     data_sizes_in_bytes[s] = 1 << (i + 1) * 10
 
 
-def bytes_to_human(value, fmt="{value:.1f} {symbol}"):
+def bytes_to_human(value, fmt="{value} {symbol}"):
+    if value == 0:
+        return "0"
+
     for symbol in reversed(data_size_symbols[1:]):
         if value >= data_sizes_in_bytes[symbol]:
             value = value / data_sizes_in_bytes[symbol]
+            value = "{:n}".format(round(value, 1))
             return fmt.format(symbol=symbol, value=value)
 
     return fmt.format(symbol=data_size_symbols[0], value=value)
