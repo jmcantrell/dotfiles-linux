@@ -16,6 +16,7 @@ ignore_types = {
     "fusectl",
     "hugetlbfs",
     "mqueue",
+    "nsfs",
     "proc",
     "pstore",
     "ramfs",
