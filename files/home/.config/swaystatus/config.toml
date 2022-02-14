@@ -2,7 +2,6 @@ order = [
     "network_interfaces",
     "path_exists:mullvad",
     "systemd_unit:swayidle",
-    "load_average",
     "cpu_usage",
     "mounts",
     "memory_info",
@@ -38,12 +37,9 @@ on_click.1 = "date --iso-8601=seconds | wl-copy -n"
 on_click.2 = "date --iso-8601=seconds --utc | wl-copy -n"
 on_click.3 = "terminal -e set-timezone"
 
-[settings.load_average]
+[settings.cpu_usage]
 on_click.1 = "terminal -e top"
 on_click.3 = "terminal -e sudo iotop"
-
-[settings.cpu_usage]
-on_click.1 = "terminal -e glances"
 
 [settings.memory_info]
 on_click.1 = "terminal -e watch free -h"
