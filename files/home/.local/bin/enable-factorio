@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+set -eu
+
+me=${0##*/}
+temp_dir=${TMPDIR:-/tmp}
+cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/$me
+base_url=https://factorio.com
+
+latest_version() {
+    curl -sL "$base_url"/api/latest-releases | jq -r ".$release.$branch"
+}
+
+branch=${FACTORIO_BRANCH:-alpha}
+release=${FACTORIO_RELEASE:-stable}
+version=${FACTORIO_VERSION:-$(latest_version)}
+
+url=$base_url/get-download/$version/$branch/linux64
+filename=factorio_${branch}_x64_$version.tar.xz
+cache_file=$cache_dir/$filename
+
+if [[ ! -f $cache_file ]]; then
+    temp_file=$temp_dir/$filename.part
+
+    curl --get --fail --location \
+        --retry 10 --retry-delay 3 --continue-at - \
+        --data-urlencode username="$FACTORIO_USERNAME" \
+        --data-urlencode token="$FACTORIO_TOKEN" \
+        --output "$temp_file" "$url"
+
+    mkdir -p "$cache_dir"
+    mv "$temp_file" "$cache_file"
+fi
+
+opt_home=$HOME/.local/opt
+opt_dir=$opt_home/factorio
+
+rm -rf "$opt_dir"
+mkdir -p "$opt_home"
+echo "Unpacking: $filename"
+tar xf "$cache_file" -C "$opt_home"
+
+mkdir -p ~/.local/bin
+ln -sfvrn "$opt_dir"/bin/x64/factorio ~/.local/bin/factorio
