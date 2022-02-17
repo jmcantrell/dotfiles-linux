@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Run qutebrowser in a temporary session, but with the user's configuration.
+
+set -eu
+
+base_dir=$(mktemp -d -t "${0##*/}.XXXXXXXXXX")
+trap 'rm -rf "$base_dir"' INT TERM EXIT
+
+config_dir=${XDG_CONFIG_HOME:-$HOME/.config}/qutebrowser
+
+mkdir -p "$base_dir"
+ln -svfrn "$config_dir" "$base_dir"/config
+
+qutebrowser \
+    --basedir "$base_dir" \
+    --desktop-file-name "org.qutebrowser.qutebrowser.${base_dir##*.}" \
+    "$@"
