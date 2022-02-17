@@ -4,7 +4,7 @@ bar {
     hidden_state hide
     modifier $super
 	separator_symbol "  "
-    status_command swaystatus
+    status_command swaystatus --log-journal
 
 	colors {
 		background $dark
