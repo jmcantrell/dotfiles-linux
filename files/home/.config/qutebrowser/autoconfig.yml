@@ -13,9 +13,18 @@ settings:
   bindings.commands:
     global:
       normal:
+        +: null
+        '-': null
         <Ctrl+->: zoom-out
         <Ctrl+0>: zoom
         <Ctrl+=>: zoom-in
+        <Ctrl+i>: forward
+        <Ctrl+o>: back
+        '=': null
+        H: null
+        L: null
+        d: null
+        et: edit-text
   colors.statusbar.insert.bg:
     global: darkgreen
   colors.tabs.even.bg:
@@ -30,6 +39,8 @@ settings:
     global: never
   colors.webpage.preferred_color_scheme:
     global: dark
+  completion.shrink:
+    global: true
   completion.use_best_match:
     global: true
   content.autoplay:
@@ -67,6 +78,10 @@ settings:
     global: monospace
   session.lazy_restore:
     global: false
+  tabs.show:
+    global: never
+  tabs.tabs_are_windows:
+    global: true
   url.default_page:
     global: https://google.com
   url.searchengines:
@@ -75,6 +90,6 @@ settings:
   url.start_pages:
     global: https://google.com
   window.title_format:
-    global: qutebrowser {perc}{current_title}
+    global: '{perc}{current_title}'
   window.transparent:
     global: false
