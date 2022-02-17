@@ -6,8 +6,8 @@ order = [
     "cpu_usage",
     "memory_info",
     "batteries",
-    "pulseaudio",
     "mpris",
+    "pulseaudio",
     "clock"
 ]
 
