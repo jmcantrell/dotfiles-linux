@@ -8,8 +8,14 @@ config_version: 2
 settings:
   auto_save.interval:
     global: 15000
+  auto_save.session:
+    global: true
   bindings.commands:
-    global: null
+    global:
+      normal:
+        <Ctrl+->: zoom-out
+        <Ctrl+0>: zoom
+        <Ctrl+=>: zoom-in
   colors.statusbar.insert.bg:
     global: darkgreen
   colors.tabs.even.bg:
@@ -19,7 +25,7 @@ settings:
   colors.webpage.darkmode.algorithm:
     global: lightness-cielab
   colors.webpage.darkmode.enabled:
-    global: false
+    global: true
   colors.webpage.darkmode.policy.images:
     global: never
   colors.webpage.preferred_color_scheme:
@@ -28,6 +34,8 @@ settings:
     global: true
   content.autoplay:
     global: false
+  content.javascript.can_access_clipboard:
+    global: true
   downloads.open_dispatcher:
     global: xdg-open
   editor.command:
