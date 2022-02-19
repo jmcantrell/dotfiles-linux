@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+# Show a QR-encoded string as an image in imv.
+
+qrencode --size=10 --output=- "$@" |
+    gm display -title "qr code" -geometry +200+200 -

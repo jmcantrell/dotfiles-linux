@@ -14,6 +14,8 @@ Options:
     -n NUMBER    generated password length
                  (default: $password_length)
 
+    -q           show a QR code instead of copying to clipboard
+
 Actions:
     choose       choose existing password (default)
     generate     generate a new password
@@ -47,9 +49,12 @@ pass_names() {
     done
 }
 
-while getopts ":n:h" option; do
+show_option=--clip
+
+while getopts ":n:qh" option; do
     case $option in
     n) password_length=$OPTARG ;;
+    q) show_option=--qrcode ;;
     h) usage ;;
     *) die "Invalid option '$OPTARG'" ;;
     esac
@@ -65,14 +70,16 @@ esac
 name=$(pass_names | bemenu -b -p "$action password")
 
 case $action in
-choose) pass -c "$name" ;;
-generate) pass generate -c -f "$name" "$password_length" ;;
+choose) pass show "$show_option" "$name" ;;
+generate) pass generate "$show_option" --force "$name" "$password_length" ;;
 esac
 
 clipboard_seconds=${PASSWORD_STORE_CLIP_TIME:-45}
 
-notify-send -i edit-copy \
-    -t $((clipboard_seconds * 1000)) \
-    -h string:x-canonical-private-synchronous:"$me" \
-    "Password for '$name' copied to clipboard" \
-    "Self-destructing in <b>$clipboard_seconds</b> seconds..." &
+if [[ $show_option == --clip ]]; then
+    notify-send -i edit-copy \
+        -t $((clipboard_seconds * 1000)) \
+        -h string:x-canonical-private-synchronous:"$me" \
+        "Password for '$name' copied to clipboard" \
+        "Self-destructing in <b>$clipboard_seconds</b> seconds..." &
+fi

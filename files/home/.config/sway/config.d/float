@@ -21,4 +21,10 @@ for_window [app_id="pavucontrol"] floating enable
 # Printer configurator.
 for_window [app_id="system-config-printer"] floating enable
 
+# Pass QR code display.
+for_window [class="Display" title="pass: .*"] floating enable
+
+# Generic QR code display.
+for_window [class="Display" title="qr code"] floating enable
+
 # vi:ft=sway

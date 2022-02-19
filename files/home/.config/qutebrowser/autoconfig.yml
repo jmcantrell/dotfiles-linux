@@ -6,10 +6,6 @@
 
 config_version: 2
 settings:
-  auto_save.interval:
-    global: 15000
-  auto_save.session:
-    global: true
   bindings.commands:
     global:
       normal:
@@ -21,16 +17,16 @@ settings:
         <Ctrl+i>: forward
         <Ctrl+o>: back
         '=': null
+        D: null
         H: null
         L: null
         d: null
         et: edit-text
+        yq: spawn generate-qr-code {url}
   colors.statusbar.insert.bg:
     global: darkgreen
-  colors.tabs.even.bg:
-    global: '#2d2d2d'
-  colors.tabs.odd.bg:
-    global: '#4c4c4c'
+  colors.webpage.bg:
+    global: '#121212'
   colors.webpage.darkmode.algorithm:
     global: lightness-cielab
   colors.webpage.darkmode.enabled:
@@ -45,10 +41,12 @@ settings:
     global: true
   content.autoplay:
     global: false
+  content.geolocation:
+    https://www.google.com: true
   content.javascript.can_access_clipboard:
     global: true
   downloads.open_dispatcher:
-    global: xdg-open
+    global: open
   editor.command:
     global:
     - visual
@@ -76,14 +74,21 @@ settings:
     - --choosefile={}
   fonts.default_family:
     global: monospace
-  session.lazy_restore:
-    global: false
+  statusbar.widgets:
+    global:
+    - keypress
+    - url
+    - scroll
+    - history
+    - progress
   tabs.show:
     global: never
   tabs.tabs_are_windows:
     global: true
   url.default_page:
     global: https://google.com
+  url.open_base_url:
+    global: true
   url.searchengines:
     global:
       DEFAULT: https://google.com/search?q={}
@@ -91,5 +96,3 @@ settings:
     global: https://google.com
   window.title_format:
     global: '{perc}{current_title}'
-  window.transparent:
-    global: false
