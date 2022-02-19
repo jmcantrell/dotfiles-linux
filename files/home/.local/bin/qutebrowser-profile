@@ -4,7 +4,6 @@
 
 set -eu
 
-config_dir=${XDG_CONFIG_HOME:-$HOME/.config}/qutebrowser
 profiles_dir=${XDG_DATA_HOME:-$HOME/.local/share}/qutebrowser/profiles
 
 profile_name=${1:?Missing profile name}
@@ -12,8 +11,7 @@ shift
 
 profile_dir=$profiles_dir/$profile_name
 
-mkdir -p "$profile_dir"
-ln -svfrn "$config_dir" "$profile_dir"/config
+qutebrowser-spawn-basedir "$profile_dir"
 
 qutebrowser \
     --basedir "$profile_dir" \

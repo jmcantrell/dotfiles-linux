@@ -7,10 +7,7 @@ set -eu
 base_dir=$(mktemp -d -t "${0##*/}.XXXXXXXXXX")
 trap 'rm -rf "$base_dir"' INT TERM EXIT
 
-config_dir=${XDG_CONFIG_HOME:-$HOME/.config}/qutebrowser
-
-mkdir -p "$base_dir"
-ln -svfrn "$config_dir" "$base_dir"/config
+qutebrowser-spawn-basedir "$base_dir"
 
 qutebrowser \
     --basedir "$base_dir" \
