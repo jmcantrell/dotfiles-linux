@@ -1,3 +1,3 @@
 [Default]
 save_dir=$HOME
-save_filename_format=screenshot_%FT%T%:z.png
+save_filename_format=screenshot_%FT%TZ.png
