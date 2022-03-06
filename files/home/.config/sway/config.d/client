@@ -1,6 +1,6 @@
 client.background $dark
 
-#class                  border  bg      text  indicator child_border
+#class                  border  bg      text    indicator child_border
 client.urgent           $bright $urgent $bright $marker   $bright
 client.focused          $focus  $focus  $bright $marker   $focus
 client.focused_inactive $border $border $bright $border   $border

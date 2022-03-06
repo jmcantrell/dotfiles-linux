@@ -2,4 +2,4 @@
 
 # Run the preferred web browser in private mode.
 
-exec qutebrowser --target private-window "$@"
+exec firefox --private-window "$@"
