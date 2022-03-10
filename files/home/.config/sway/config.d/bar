@@ -1,6 +1,6 @@
 bar {
-    position top
     mode dock
+    position top
     hidden_state hide
     modifier $super
 	separator_symbol "  "

@@ -7,22 +7,26 @@
 
 set -eu
 
+me=${0##*/}
 wakeup=/proc/acpi/wakeup
-service=/etc/systemd/system/${0##*/}.service
+service=/etc/systemd/system/$me.service
+script=/usr/local/sbin/$me
 
-devices=$(
-    grep -v '^[[:space:]]' "$wakeup" |
-        grep '^[EX]HC' |
-        awk '{print $1}' |
-        tr -d '[:space:]'
-)
+sudo tee "$script" >/dev/null <<-EOF
+#!/usr/bin/sh
+
+grep '^[EX]HC[0-9]\?\\b.*\\benabled\\b' $wakeup |
+    awk '{print \$1}' | tr -d '[:space:]' >$wakeup
+EOF
+
+sudo chmod +x "$script"
 
 sudo tee "$service" >/dev/null <<-EOF
 [Unit]
 Description=disable resuming the system on USB device activity
 
 [Service]
-ExecStart=/bin/bash -c "printf '%%s\n' ${devices@Q} >>${wakeup@Q}"
+ExecStart=$script
 
 [Install]
 WantedBy=multi-user.target
