@@ -3,3 +3,5 @@
 set -eu
 
 stow --no-folding --dir ./files --target ~ --restow home
+
+ln -sfnr ~/.config/mimeapps.list ~/.local/share/applications/mimeapps.list

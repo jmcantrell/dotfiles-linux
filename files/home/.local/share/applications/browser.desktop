@@ -1,0 +1,19 @@
+[Desktop Entry]
+Version=1.0
+Name=Browser
+GenericName=Web Browser
+Comment=Browse the World Wide Web
+Keywords=Internet;WWW;Browser;Web;Explorer
+Exec=browser %U
+Icon=web-browser
+Terminal=false
+X-MultipleArgs=true
+Type=Application
+MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;
+StartupNotify=true
+Categories=Network;WebBrowser;
+Actions=new-private-window;
+
+[Desktop Action new-private-window]
+Name=New Private Window
+Exec=browser-private %U
