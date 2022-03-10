@@ -4,15 +4,18 @@ from swaystatus import BaseElement
 from .util import bytes_to_human
 
 source = Path("/proc/mounts")
+
 ignore_types = {
     "autofs",
     "binfmt_misc",
     "bpf",
+    "cgroup",
     "cgroup2",
     "configfs",
     "debugfs",
     "devpts",
     "devtmpfs",
+    "fuse.portal",
     "fusectl",
     "hugetlbfs",
     "mqueue",
@@ -24,7 +27,6 @@ ignore_types = {
     "sysfs",
     "tmpfs",
     "tracefs",
-    "cgroup",
 }
 
 
