@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+# An easier-to-type opener command.
+
+exec xdg-open "$@"

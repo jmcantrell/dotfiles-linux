@@ -1,15 +1,11 @@
 #!/usr/bin/env bash
 
-# Run qutebrowser in a temporary session, but with the user's configuration.
+# Run qutebrowser using a temporary session directory.
 
 set -eu
 
-base_dir=$(mktemp -d -t "${0##*/}.XXXXXXXXXX")
-trap 'rm -rf "$base_dir"' INT TERM EXIT
+directory=$(mktemp -d -t "${0##*/}.XXXXXXXXXX")
+trap 'rm -rf "$directory"' INT TERM EXIT
 
-qutebrowser-spawn-basedir "$base_dir"
-
-qutebrowser \
-    --basedir "$base_dir" \
-    --desktop-file-name "org.qutebrowser.qutebrowser.${base_dir##*.}" \
-    "$@"
+export QUTEBROWSER_PROFILE_NAME=${directory##*.}
+exec qutebrowser-local "$directory" "$@"

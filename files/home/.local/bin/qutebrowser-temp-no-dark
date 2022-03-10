@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+export QUTEBROWSER_DARK=0
+exec qutebrowser-temp "$@"

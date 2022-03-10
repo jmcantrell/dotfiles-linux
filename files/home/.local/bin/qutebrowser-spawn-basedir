@@ -3,17 +3,29 @@
 # Prepare a skeleton base directory inheriting from the user's configuration.
 
 set -eu
+shopt -s nullglob
 
 config_dir=${XDG_CONFIG_HOME:-$HOME/.config}/qutebrowser
 data_dir=${XDG_DATA_HOME:-$HOME/.local/share}/qutebrowser
 
 base_dir=${1:?Missing directory}
 
-mkdir -p "$base_dir"
-ln -svfrn "$config_dir" "$base_dir"/config
+symlink_files() {
+    local dst_dir=$1
+    shift
 
-mkdir -p "$base_dir"/data
-for file in "$data_dir"/{adblock-cache.dat,blocked-hosts}; do
-    touch "$file"
-    ln -svfrn "$file" "$base_dir/data/${file##*/}"
-done
+    local src
+    for src in "$@"; do
+        if [[ -r $src ]]; then
+            dst=$dst_dir/${src##*/}
+            mkdir -p "$(dirname "$dst")"
+            ln -svfrn "$src" "$dst"
+        fi
+    done
+}
+
+symlink_files "$base_dir"/config \
+    "$config_dir"/{autoconfig.yml,bookmarks/urls,config.py,quickmarks}
+
+symlink_files "$base_dir"/data \
+    "$data_dir"/{adblock-cache.dat,blocked-hosts,greasemonkey/*.js}

@@ -14,4 +14,5 @@ bindsym shift+$super+c reload
 include /etc/sway/config.d/*
 include ./config.d/*
 
+exec_always dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 exec_always systemctl --user start sway-session.target

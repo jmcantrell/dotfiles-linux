@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
 
-# Run the preferred web browser.
-
+export QUTEBROWSER_DARKMODE=0
 exec qutebrowser "$@"

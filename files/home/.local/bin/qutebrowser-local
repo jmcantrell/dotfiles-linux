@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# Run qutebrowser using a given session directory.
+
+set -eu
+
+directory=$1
+shift
+
+qutebrowser-spawn-basedir "$directory"
+
+profile_name=${QUTEBROWSER_PROFILE_NAME:-${directory##*/}}
+
+exec qutebrowser \
+    --basedir "$directory" \
+    --desktop-file-name "org.qutebrowser.qutebrowser.$profile_name" \
+    "$@"
