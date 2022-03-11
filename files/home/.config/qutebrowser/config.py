@@ -4,7 +4,7 @@ config.load_autoconfig()
 
 
 def get_env(name, default):
-    return os.environ.get(f"QUTEBROWSER_{name}", default)
+    return os.environ.get(name, default)
 
 
 def get_env_bool(name, default=None):
@@ -35,4 +35,4 @@ def set_dark(maybe_enabled):
         config.set("colors.webpage.bg", None)
 
 
-set_dark(get_env_bool("DARK"))
+set_dark(get_env_bool("QUTE_OVERRIDE_DARK"))

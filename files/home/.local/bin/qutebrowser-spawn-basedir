@@ -28,4 +28,4 @@ symlink_files "$base_dir"/config \
     "$config_dir"/{autoconfig.yml,bookmarks/urls,config.py,quickmarks}
 
 symlink_files "$base_dir"/data \
-    "$data_dir"/{adblock-cache.dat,blocked-hosts,greasemonkey/*.js}
+    "$data_dir"/{adblock-cache.dat,blocked-hosts,greasemonkey/*.js,userscripts/*}
