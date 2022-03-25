@@ -1,3 +1,4 @@
+export GDK_BACKEND=wayland
 export GTK_THEME=Adwaita:dark
 
 # vi:ft=sh
