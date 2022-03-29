@@ -1,5 +1,5 @@
-set $define_word terminal --class floating -e dict
-bindsym      $super+d exec $define_word "$(wl-paste -n)"
-bindsym $alt+$super+d exec $define_word "$(bemenu -p define </dev/null)"
+bindsym      $super+d exec terminal-dict "$(wl-paste -np)"
+bindsym ctrl+$super+d exec terminal-dict "$(wl-paste -n)"
+bindsym $alt+$super+d exec terminal-dict "$(bemenu -p define </dev/null)"
 
 # vi:ft=sway
