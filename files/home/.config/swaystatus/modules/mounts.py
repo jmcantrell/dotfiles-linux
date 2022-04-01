@@ -15,6 +15,7 @@ ignore_types = {
     "debugfs",
     "devpts",
     "devtmpfs",
+    "fuse.gvfsd-fuse",
     "fuse.portal",
     "fusectl",
     "hugetlbfs",
