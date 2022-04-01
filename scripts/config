@@ -10,11 +10,15 @@ sudo updatedb
 
 sudo chsh --shell /bin/zsh "$USER"
 
-systemctl --user enable mako.service
-systemctl --user enable udiskie.service
-systemctl --user enable swayidle.service
+systemctl --user enable --now {mako,udiskie,swayidle}.service
 
 # Only enable battery monitoring if a battery exists.
-if [[ -e /sys/class/power_supply/BAT0 ]] ; then
-    systemctl --user enable check-battery.timer
+if [[ -e /sys/class/power_supply/BAT0 ]]; then
+    systemctl --user enable --now check-battery.timer
 fi
+
+# Manage user temp files with systemd-tmpfiles.
+tmp_conf=$HOME/.config/user-tmpfiles.d/tmp.conf
+mkdir -p "$(dirname "$tmp_conf")"
+echo "d $HOME/.local/tmp 0700 $USER $USER 10d" >"$tmp_conf"
+systemctl --user enable --now systemd-tmpfiles-{setup.service,clean.timer}
