@@ -74,12 +74,12 @@ fi
 mkdir -p "$(dirname "$output_file")"
 
 if [[ -v edit ]]; then
+    # The editor is feedback that the capture has occurred.
     "${capture_command[@]}" -f image2 - | swappy -f - -o "$output_file"
 else
     "${capture_command[@]}" "$output_file"
+    # Provide audible feedback that capture is complete.
+    canberra-gtk-play -i screen-capture &
 fi
-
-# Provide audible feedback that capture is complete.
-canberra-gtk-play -i screen-capture &
 
 wl-copy -n "$output_file"
