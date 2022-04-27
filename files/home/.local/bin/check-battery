@@ -71,10 +71,6 @@ wait_for_power_or_hibernate() {
         sleep 1
     done
 
-    notify -u critical -i battery-empty \
-        "Battery almost empty" \
-        "Forcibly hibernating system..."
-
     systemctl hibernate
 }
 
