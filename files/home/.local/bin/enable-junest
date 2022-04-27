@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -eu
+
+data_dir=${XDG_DATA_HOME:-$HOME/.local/share}/junest
+
+if [[ -d $data_dir ]]; then
+    cd "$data_dir"
+    git pull origin master
+else
+    mkdir -p "$(dirname "$data_dir")"
+    git clone https://github.com/fsquillace/junest.git "$data_dir"
+    cd "$data_dir"
+fi

@@ -1,0 +1,9 @@
+data_dir=${XDG_DATA_HOME:-$HOME/.local/share}/junest
+[[ -d $data_dir ]] && export PATH=$data_dir/bin:$PATH
+unset data_dir
+
+home_dir=${JUNEST_HOME:-$HOME/.junest}
+[[ -d $home_dir ]] && export PATH=$PATH:$home_dir/usr/bin_wrappers
+unset home_dir
+
+# vi:ft=sh
