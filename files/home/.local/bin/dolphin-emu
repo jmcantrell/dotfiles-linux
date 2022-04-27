@@ -4,6 +4,7 @@
 
 # Supposedly, wayland support is being worked on:
 # https://github.com/dolphin-emu/dolphin/pull/7452
-
+# This shouldn't be necessary then:
 export QT_QPA_PLATFORM=xcb
+
 exec /usr/bin/dolphin-emu "$@"
