@@ -61,6 +61,7 @@ esac
 
 # If sway is running, refresh the status line to reflect the new volume.
 if [[ -v SWAYSOCK ]]; then
+    # But send the refresh command no more than once per second.
     throttle swaystatus-refresh 1 killall -SIGUSR1 swaystatus &
 fi
 

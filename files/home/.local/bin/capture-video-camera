@@ -97,8 +97,10 @@ fi
 mkdir -p "$(dirname "$output_file")"
 capture_command+=("$output_file")
 
-# If not associated with a terminal, there will be no way to directly tell the
-# capture command to stop, so allow its stdin to be written to externally.
+# Normally, the capture command can be stopped by pressing 'q'. If not
+# associated with a terminal, there will be no way to directly tell the capture
+# command to stop. Therefore, allow its stdin to be written to externally, so
+# we can send the 'q' from elsewhere.
 if ! tty --silent; then
     touch "$capture_command_stdin"
     trap 'rm -f "$capture_command_stdin"' INT TERM EXIT

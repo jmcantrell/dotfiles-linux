@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Run a menu-selected command, with the most recently used listed first.
+# Run a menu-selected command, with the most recent ones listed first.
 
 set -eu
 
@@ -16,20 +16,20 @@ temp_file=$(mktemp -t "$me.XXXXXXXXXX")
 trap 'rm -f "$temp_file"' INT TERM EXIT
 
 mru_path() {
-    cat "$history_file"                       # Shift the most recent to the top
-    compgen -c | grep -vxF -f "$history_file" # ... from the full list of commands.
+    cat "$history_file"                       # Shift the most recent entries to the top
+    compgen -c | grep -vxF -f "$history_file" # ... of the full list of commands.
 }
 
 mru_add() {
     local cmd=${1:?Missing command}
     {
-        printf "%s\n" "$cmd"                 # Shift the most recent to the top
-        grep -vx "$cmd" "$history_file"      # ... from the previous MRU.
-    } | head -n"$history_size" >"$temp_file" # Letting the least recent drop off.
-    mv -f "$temp_file" "$history_file"       # Swap out the previous MRU.
+        printf "%s\n" "$cmd"                 # Shift the most recent entry to the top
+        grep -vx "$cmd" "$history_file"      # ... of the previous entries.
+    } | head -n"$history_size" >"$temp_file" # Letting the least recent entry drop off.
+    mv -f "$temp_file" "$history_file"       # Swap out the previous entries.
 }
 
-# Prompt user for command.
+# Prompt user for a command.
 cmd=$(mru_path | bemenu -i -p run)
 
 # Remember it as recently used.

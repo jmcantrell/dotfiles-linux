@@ -116,8 +116,9 @@ fi
 mkdir -p "$(dirname "$output_file")"
 capture_command+=(-f "$output_file")
 
-# If not associated with a terminal, there will be no way to directly tell the
-# capture command to stop, so record its pid so that it can be killed later.
+# Normally, the capture command can be stopped with ctrl-c. If not associated
+# with a terminal, there will be no way to directly tell the capture command to
+# stop. Therefore, record its pid so that it can be killed later.
 if ! tty --silent; then
     "${capture_command[@]}" &
     echo "$!" >"$capture_command_pid_file"

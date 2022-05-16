@@ -46,8 +46,10 @@ fi
 cwd=$HOME
 
 if [[ -n $window_pid ]]; then
+    # Start the child pid search with the window.
     pid=$window_pid
 
+    # What is the direct descendent of the current pid?
     while next_pid=$(pgrep --parent "$pid" | head -n1); do
         # Some child processes don't inherit the working directory of the
         # parent process. If they are encountered, stop looking for children.
