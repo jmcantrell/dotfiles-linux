@@ -35,4 +35,4 @@ def set_dark(maybe_enabled):
         config.set("colors.webpage.bg", None)
 
 
-set_dark(get_env_bool("QUTE_OVERRIDE_DARK"))
+set_dark(get_env_bool("QUTEBROWSER_OVERRIDE_DARK"))

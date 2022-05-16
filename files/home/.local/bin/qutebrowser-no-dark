@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-export QUTE_OVERRIDE_DARK=0
+export QUTEBROWSER_OVERRIDE_DARK=0
 exec qutebrowser "$@"
