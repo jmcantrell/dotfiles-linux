@@ -33,17 +33,20 @@ if (($# == 0)); then
     die "Missing module name(s)"
 fi
 
+# First, ensure all given module names are valid.
 for name in "$@"; do
     if ! modprobe --show --quiet "$name"; then
         die "Invalid module '$name'"
+    fi
+done
+
+for name in "$@"; do
+    # If the module is loaded, unload it.
+    if grep -wq "^$name" /proc/modules; then
+        sudo rmmod -v "$name"
     fi
 
     # Ensure that the module is not loaded during boot.
     conf_file=/etc/modprobe.d/disable-$name.conf
     sudo tee "$conf_file" >/dev/null <<<"blacklist $name"
-
-    # If the module is loaded, unload it.
-    if grep -wq "^$name" /proc/modules; then
-        sudo rmmod -v "$name"
-    fi
 done
