@@ -12,6 +12,11 @@ def get_metadata(key):
 
 
 class Element(BaseElement):
+    def __init__(self, *args, **kwargs):
+        self._format = kwargs.pop("format", "{status}: {name}")
+        self._format_short = kwargs.pop("format_short", "{status}")
+        super().__init__(*args, **kwargs)
+
     def on_update(self, output):
         try:
             status = get_status()
@@ -28,8 +33,9 @@ class Element(BaseElement):
         except subprocess.CalledProcessError:
             pass
 
-        full_text = f"{status}: {name}"
-        short_text = status
+        format_kwargs = {"name": name, "status": status}
+        full_text = self._format.format(**format_kwargs)
+        short_text = self._format_short.format(**format_kwargs)
 
         output.append(
             self.create_block(

@@ -54,16 +54,18 @@ def path_free_bytes(path):
 
 class Element(BaseElement):
     def __init__(self, *args, **kwargs):
+        self._format = kwargs.pop("format", "{label} {free}")
         super().__init__(*args, **kwargs)
 
     def on_update(self, output):
         for path in mounted_paths():
             instance = str(path)
             label = path.name or "root"
+            format_kwargs = {"label": label, "free": ""}
             try:
                 free_bytes = path_free_bytes(path)
-                free = bytes_to_human(free_bytes)
-                full_text = f"{label} {free}"
+                format_kwargs["free"] = bytes_to_human(free_bytes)
             except PermissionError:
-                full_text = label
+                pass
+            full_text = self._format.format(**format_kwargs)
             output.append(self.create_block(full_text, instance=instance))

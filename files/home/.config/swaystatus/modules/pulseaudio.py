@@ -6,11 +6,8 @@ from .colors import color_off
 
 def stereo_volume(sink):
     stdout = capture_stdout(["pactl", "get-sink-volume", sink])
-    return [
-        int(s.strip().rstrip("%"))
-        for s in stdout.split(" / ")
-        if s.endswith("%")
-    ]
+    tokens = [s.strip() for s in stdout.split(" / ")]
+    return [int(s.rstrip("%")) for s in tokens if s.endswith("%")]
 
 
 def is_muted(sink):
@@ -21,16 +18,17 @@ def is_muted(sink):
 class Element(BaseElement):
     def __init__(self, *args, **kwargs):
         self._sink = kwargs.pop("sink", "@DEFAULT_SINK@")
+        self._format = kwargs.pop("format", "audio {}")
+        self._volume_format = kwargs.pop("volume_format", "{}%")
         super().__init__(*args, **kwargs)
 
     @property
     def _volume_text(self):
         volumes = stereo_volume(self._sink)
-        volume_format = "{}%"
         if len(set(volumes)) == 1:
-            return volume_format.format(volumes[0])
+            return self._volume_format.format(volumes[0])
         else:
-            return " / ".join([volume_format.format(v) for v in volumes])
+            return " / ".join([self._volume_format.format(v) for v in volumes])
 
     def on_update(self, output):
         try:
@@ -39,7 +37,7 @@ class Element(BaseElement):
             if is_muted(self._sink):
                 kwargs["color"] = color_off
 
-            full_text = f"audio {self._volume_text}"
+            full_text = self._format.format(self._volume_text)
 
             output.append(self.create_block(full_text, **kwargs))
         except subprocess.CalledProcessError:
