@@ -5,7 +5,8 @@
 set -eu
 
 for file in ~/.wprofile.d/*; do
-    [[ -f $file ]] && . "$file"
+    [[ -f $file ]] || continue
+    . "$file" || echo "ERROR: Unable to load: $file" >&2
 done
 unset file
 

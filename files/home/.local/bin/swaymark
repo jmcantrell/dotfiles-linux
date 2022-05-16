@@ -45,10 +45,7 @@ clear) exec swaymsg unmark ;;
 *) die "Invalid action '$action'" ;;
 esac
 
-mark=$(
-    swaymsg -t get_marks | jq -r '.[]' |
-        bemenu -p "$action mark"
-)
+mark=$(swaymsg -t get_marks | jq -r '.[]' | bemenu -p "$action mark")
 
 case $action in
 set) exec swaymsg mark "$mark" ;;

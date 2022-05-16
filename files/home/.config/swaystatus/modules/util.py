@@ -1,5 +1,4 @@
-import os
-import subprocess
+import os, subprocess
 from subprocess import DEVNULL
 
 data_sizes_in_bytes = {}
@@ -8,7 +7,7 @@ for i, s in enumerate(data_size_symbols[1:]):
     data_sizes_in_bytes[s] = 1 << (i + 1) * 10
 
 
-def bytes_to_human(value, fmt="{value} {symbol}"):
+def bytes_to_human(value, format="{value} {symbol}"):
     if value == 0:
         return "0"
 
@@ -16,9 +15,9 @@ def bytes_to_human(value, fmt="{value} {symbol}"):
         if value >= data_sizes_in_bytes[symbol]:
             value = value / data_sizes_in_bytes[symbol]
             value = "{:n}".format(round(value, 1))
-            return fmt.format(symbol=symbol, value=value)
+            return format.format(symbol=symbol, value=value)
 
-    return fmt.format(symbol=data_size_symbols[0], value=value)
+    return format.format(symbol=data_size_symbols[0], value=value)
 
 
 def run(command, *args, **kwargs):

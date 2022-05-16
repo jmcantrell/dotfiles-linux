@@ -64,8 +64,8 @@ class Element(BaseElement):
             format_kwargs = {"label": label, "free": ""}
             try:
                 free_bytes = path_free_bytes(path)
-                format_kwargs["free"] = bytes_to_human(free_bytes)
             except PermissionError:
                 pass
+            format_kwargs["free"] = bytes_to_human(free_bytes)
             full_text = self._format.format(**format_kwargs)
             output.append(self.create_block(full_text, instance=instance))

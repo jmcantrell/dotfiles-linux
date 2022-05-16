@@ -2,7 +2,6 @@
 
 # Gets the properties for a given window ID.
 
-set -eu
+set -euo pipefail
 
-swaymsg -t get_tree |
-    jq --argjson id "$1" '.. | select(.id? == $id)'
+swaymsg -t get_tree | jq --argjson id "$1" '.. | select(.id? == $id)'

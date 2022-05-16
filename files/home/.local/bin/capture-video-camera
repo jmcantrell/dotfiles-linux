@@ -76,9 +76,7 @@ fi
 # Substitute any date format placeholders in output filename.
 output_file=$(date +"${1:-$directory/$file_name.$file_type}")
 
-capture_command=(
-    ffmpeg -hide_banner -y -f v4l2 -i "$device"
-)
+capture_command=(ffmpeg -hide_banner -y -f v4l2 -i "$device")
 
 if [[ -v capture_audio ]]; then
     capture_command+=(-f alsa -i default)

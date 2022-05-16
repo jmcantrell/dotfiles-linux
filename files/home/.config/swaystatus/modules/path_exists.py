@@ -11,18 +11,11 @@ class Element(BaseElement):
         super().__init__(*args, **kwargs)
 
     def on_update(self, output):
-        options = {}
+        kwargs = {}
 
         if not self._path.exists():
-            options["color"] = color_off
+            kwargs["color"] = color_off
 
-        full_text = self._label
-        instance = str(self._path)
+        kwargs["instance"] = str(self._path)
 
-        output.append(
-            self.create_block(
-                full_text,
-                instance=instance,
-                **options,
-            )
-        )
+        output.append(self.create_block(self._label, **kwargs))

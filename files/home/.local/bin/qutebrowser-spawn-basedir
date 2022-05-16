@@ -17,7 +17,9 @@ symlink_files() {
     local src
     for src in "$@"; do
         if [[ -r $src ]]; then
-            dst=$dst_dir/${src##*/qutebrowser/}
+            # Assume that files are in a app-like path:
+            # /path/to/qutebrowser/foo/bar => foo/bar
+            dst=$dst_dir/${src#*/qutebrowser/}
             mkdir -p "$(dirname "$dst")"
             ln -svfrn "$src" "$dst"
         fi

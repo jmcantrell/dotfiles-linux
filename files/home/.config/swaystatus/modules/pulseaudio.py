@@ -31,14 +31,14 @@ class Element(BaseElement):
             return " / ".join([self._volume_format.format(v) for v in volumes])
 
     def on_update(self, output):
+        kwargs = {}
+
+        if is_muted(self._sink):
+            kwargs["color"] = color_off
+
         try:
-            kwargs = {}
-
-            if is_muted(self._sink):
-                kwargs["color"] = color_off
-
             full_text = self._format.format(self._volume_text)
-
-            output.append(self.create_block(full_text, **kwargs))
         except subprocess.CalledProcessError:
             return
+
+        output.append(self.create_block(full_text, **kwargs))

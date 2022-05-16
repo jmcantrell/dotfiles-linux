@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Install or update the JuNest Arch Linux environment.
+
 set -eu
 
 data_dir=${XDG_DATA_HOME:-$HOME/.local/share}/junest

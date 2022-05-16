@@ -35,21 +35,14 @@ class Element(BaseElement):
         return is_active(self._unit, user=self._user)
 
     def on_update(self, output):
-        options = {}
+        kwargs = {}
 
         if not is_active(self._unit, user=self._user):
-            options["color"] = color_off
+            kwargs["color"] = color_off
 
-        full_text = self._label
-        instance = str(self._unit)
+        kwargs["instance"] = str(self._unit)
 
-        output.append(
-            self.create_block(
-                full_text,
-                instance=instance,
-                **options,
-            )
-        )
+        output.append(self.create_block(self._label, **kwargs))
 
     def on_click_1(self, _):
         self._systemctl("stop" if self._is_active else "start")

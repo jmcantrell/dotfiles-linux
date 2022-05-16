@@ -16,10 +16,10 @@ class Element(BaseElement):
 
     def on_update(self, output):
         for battery in source.glob("BAT*"):
-            name = battery.name.lower()
-            status = battery_attr(battery, "status").lower()
-            capacity = battery_attr(battery, "capacity")
-            full_text = self._format.format(
-                name=name, status=status, capacity=capacity
-            )
+            format_kwargs = {
+                "name": battery.name.lower(),
+                "capacity": battery_attr(battery, "capacity"),
+                "status": battery_attr(battery, "status").lower(),
+            }
+            full_text = self._format.format(**format_kwargs)
             output.append(self.create_block(full_text, instance=name))

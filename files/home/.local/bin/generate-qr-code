@@ -1,6 +1,8 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Show a QR-encoded string.
+
+set -euo pipefail
 
 qrencode --size=10 --output=- "$@" |
     gm display -title "qr code" -geometry +200+200 -

@@ -13,7 +13,7 @@ def get_metadata(key):
 
 class Element(BaseElement):
     def __init__(self, *args, **kwargs):
-        self._format = kwargs.pop("format", "{status}: {name}")
+        self._format = kwargs.pop("format", "{status} {name}")
         self._format_short = kwargs.pop("format_short", "{status}")
         super().__init__(*args, **kwargs)
 
