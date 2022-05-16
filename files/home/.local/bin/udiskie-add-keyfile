@@ -56,12 +56,8 @@ fi
 device=$1
 keyfile_original=$2
 
-if ! uuid=$(sudo blkid -s UUID -o value "$device"); then
+if ! uuid=$(sudo blkid -s UUID -o value "$device") || [[ -z $uuid ]]; then
     die "Unable to get UUID for device"
-fi
-
-if [[ -z $uuid ]]; then
-    die "Device does not have a UUID"
 fi
 
 config_file=$config_dir/config.json
