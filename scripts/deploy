@@ -2,6 +2,9 @@
 
 set -eu
 
+# Ensure any generated file does not interfere with stow.
+rm -f ~/.config/mimeapps.list
+
 stow --no-folding --dir ./files --target ~ --restow home
 
 ln -sfnr ~/.config/mimeapps.list ~/.local/share/applications/mimeapps.list
