@@ -1,3 +1,0 @@
-#!/usr/bin/env sh
-
-exec terminal --class floating -e dict "${1:?Missing word to define}"

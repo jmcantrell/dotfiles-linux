@@ -32,10 +32,12 @@ die() {
 }
 
 ipc_command=(swaymsg)
+treat_empty_as_error=0
 
-while getopts ":p:s:h" option; do
+while getopts ":p:es:h" option; do
     case $option in
     p) prompt=$OPTARG ;;
+    e) treat_empty_as_error=1 ;;
     s) ipc_command+=(-s "$OPTARG") ;;
     h) usage ;;
     *) die "Invalid option '$OPTARG'" ;;
@@ -50,6 +52,10 @@ format=$1
 
 # Prompt user for input.
 reply=$(bemenu -p "$prompt" </dev/null)
+
+if ((treat_empty_as_error)) && [[ -z $reply ]]; then
+    exit 1
+fi
 
 # Substitute user's reply into message format.
 printf -v message "$format" "$reply"

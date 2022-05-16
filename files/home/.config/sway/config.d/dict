@@ -1,5 +1,7 @@
-bindsym      $super+d exec terminal-dict "$(wl-paste -np)"
-bindsym ctrl+$super+d exec terminal-dict "$(wl-paste -n)"
-bindsym $alt+$super+d exec terminal-dict "$(bemenu -p define </dev/null)"
+set $dict terminal --class floating -e dict
+
+bindsym      $super+d exec $dict "$(wl-paste -np)"
+bindsym ctrl+$super+d exec $dict "$(wl-paste -n)"
+bindsym $alt+$super+d exec swaymsg-input -e -p define 'exec $dict "%s"'
 
 # vi:ft=sway
