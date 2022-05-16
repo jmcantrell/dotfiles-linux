@@ -1,12 +1,13 @@
-set $audio_up set-audio-volume up
+set $audio_up   set-audio-volume up
+set $audio_down set-audio-volume down
+set $audio_mute set-audio-volume mute
+
 bindsym --locked $super+Up            exec $audio_up
 bindsym --locked XF86AudioRaiseVolume exec $audio_up
 
-set $audio_down set-audio-volume down
 bindsym --locked $super+Down          exec $audio_down
 bindsym --locked XF86AudioLowerVolume exec $audio_down
 
-set $audio_mute set-audio-volume mute
 bindsym --locked ctrl+$super+Down exec $audio_mute
 bindsym --locked XF86AudioMute    exec $audio_mute
 
