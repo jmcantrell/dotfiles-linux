@@ -13,7 +13,8 @@ mkdir -p "$(dirname "$history_file")"
 touch "$history_file"
 
 temp_file=$(mktemp -t "$me.XXXXXXXXXX")
-trap 'rm -f "$temp_file"' INT TERM EXIT
+printf -v cleanup "rm -f %q" "$temp_file"
+trap "$cleanup" INT TERM EXIT
 
 mru_path() {
     cat "$history_file"                       # Shift the most recent entries to the top

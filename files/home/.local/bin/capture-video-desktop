@@ -122,7 +122,8 @@ capture_command+=(-f "$output_file")
 if ! tty --silent; then
     "${capture_command[@]}" &
     echo "$!" >"$capture_command_pid_file"
-    trap 'rm "$capture_command_pid_file"' INT TERM EXIT
+    printf -v cleanup "rm -f %q" "$capture_command_pid_file"
+    trap "$cleanup" INT TERM EXIT
     wait -f
 else
     "${capture_command[@]}"
