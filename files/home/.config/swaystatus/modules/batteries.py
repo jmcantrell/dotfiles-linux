@@ -16,8 +16,9 @@ class Element(BaseElement):
 
     def on_update(self, output):
         for battery in source.glob("BAT*"):
+            name = battery.name.lower()
             format_kwargs = {
-                "name": battery.name.lower(),
+                "name": name,
                 "capacity": battery_attr(battery, "capacity"),
                 "status": battery_attr(battery, "status").lower(),
             }
