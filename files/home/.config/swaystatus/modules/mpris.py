@@ -29,7 +29,7 @@ class Element(BaseElement):
         try:
             artist = get_metadata("artist").strip()
             if artist:
-                name = f"{artist} - {title}"
+                name = f"{title} by {artist}"
         except subprocess.CalledProcessError:
             pass
 
