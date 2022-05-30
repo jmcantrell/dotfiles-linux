@@ -10,6 +10,8 @@ def interface_attr(interface, attr):
 
 
 class Element(BaseElement):
+    name = "network_interfaces"
+
     def on_update(self, output):
         for interface in source.glob("*"):
             if interface_attr(interface, "operstate") == "up":

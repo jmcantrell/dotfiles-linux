@@ -4,6 +4,8 @@ from .colors import color_off
 
 
 class Element(BaseElement):
+    name = "path_exists"
+
     def __init__(self, *args, **kwargs):
         path = kwargs.pop("path", "/")
         self._path = Path(path).expanduser()

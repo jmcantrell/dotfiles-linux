@@ -53,6 +53,8 @@ def path_free_bytes(path):
 
 
 class Element(BaseElement):
+    name = "mounts"
+
     def __init__(self, *args, **kwargs):
         self._format = kwargs.pop("format", "{label} {free}")
         super().__init__(*args, **kwargs)

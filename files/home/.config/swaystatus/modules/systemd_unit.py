@@ -21,6 +21,8 @@ def is_active(unit, **kwargs):
 
 
 class Element(BaseElement):
+    name = "systemd_unit"
+
     def __init__(self, *args, **kwargs):
         self._unit = kwargs.pop("unit")
         self._user = kwargs.pop("user", False)

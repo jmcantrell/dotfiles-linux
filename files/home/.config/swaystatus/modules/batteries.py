@@ -10,6 +10,8 @@ def battery_attr(battery, attr):
 
 
 class Element(BaseElement):
+    name = "batteries"
+
     def __init__(self, *args, **kwargs):
         self._format = kwargs.pop("format", "{name} {capacity}% {status}")
         super().__init__(*args, **kwargs)
