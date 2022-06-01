@@ -30,13 +30,16 @@ class Element(BaseElement):
         else:
             return " / ".join([self._volume_format.format(v) for v in volumes])
 
+    @property
+    def _is_muted(self):
+        return is_muted(self._sink)
+
     def on_update(self, output):
         kwargs = {}
 
-        if is_muted(self._sink):
-            kwargs["color"] = color_off
-
         try:
+            if self._is_muted:
+                kwargs["color"] = color_off
             full_text = self._format.format(self._volume_text)
         except subprocess.CalledProcessError:
             return

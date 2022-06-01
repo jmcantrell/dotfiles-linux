@@ -31,11 +31,11 @@ def run_quietly(command, *args, **kwargs):
     return run(command, *args, **kwargs)
 
 
-def capture_stdout(command):
-    return run(command, capture_output=True, text=True).stdout
+def capture_stdout(command, **kwargs):
+    return run(command, capture_output=True, text=True, **kwargs).stdout
 
 
-def capture_stdout_lines(command):
+def capture_stdout_lines(command, **kwargs):
     return capture_stdout(command).strip().split(os.linesep)
 
 
