@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Start wayland with logging after loading its environment.
+# Start a wayland window manager with logging after loading its environment.
 
 set -eu
 
