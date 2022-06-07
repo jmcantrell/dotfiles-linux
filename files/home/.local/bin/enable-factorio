@@ -42,5 +42,6 @@ mkdir -p "$opt_home"
 echo "Unpacking: $filename"
 tar xf "$cache_file" -C "$opt_home"
 
-mkdir -p ~/.local/bin
-ln -sfvrn "$opt_dir"/bin/x64/factorio ~/.local/bin/factorio
+bin=$HOME/.local/bin/factorio
+mkdir -p "$(dirname "$bin")"
+ln -sfvrn "$opt_dir"/bin/x64/factorio "$bin"
