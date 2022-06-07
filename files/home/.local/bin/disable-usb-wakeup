@@ -16,7 +16,9 @@ service=/etc/systemd/system/$me.service
 script=/usr/local/sbin/$me
 
 sudo tee "$script" >/dev/null <<-EOF
-#!/usr/bin/sh
+#!/usr/bin/env bash
+
+set -euo pipefail
 
 grep '^[EX]HC[0-9]\?\\b.*\\benabled\\b' $wakeup |
     awk '{print \$1}' | tr -d '[:space:]' >$wakeup
