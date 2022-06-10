@@ -1,5 +1,5 @@
-set $brightness_up   set-brightness up
-set $brightness_down set-brightness down
+set $brightness_up   set-display-brightness up
+set $brightness_down set-display-brightness down
 
 bindsym --locked $super+Prior        exec $brightness_up
 bindsym --locked XF86MonBrightnessUp exec $brightness_up

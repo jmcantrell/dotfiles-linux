@@ -50,7 +50,7 @@ esac
 value=$(brightnessctl get)
 total=$(brightnessctl max)
 
-notify-send -u low -i sunny \
+notify-send -u low -i display-brightness-symbolic \
     -h int:value:"$((value * 100 / total))" \
     -h string:x-canonical-private-synchronous:"$me" \
     "Brightness" "Level: $value" &
