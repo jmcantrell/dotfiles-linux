@@ -62,7 +62,7 @@ wait_for_power_or_hibernate() {
 
     while ((countdown > 0)); do
         if is_ac_online; then
-            notify -i battery-low-charging \
+            notify -i battery-low-charging-symbolic \
                 "Power supply was restored" \
                 "Aborting system hibernation..."
             return
@@ -77,16 +77,16 @@ wait_for_power_or_hibernate() {
 capacity=$(max_discharging_capacity)
 
 if ((capacity <= hibernate_capacity)); then
-    notify -u critical -i battery-empty \
+    notify -u critical -i battery-empty-symbolic \
         "Battery almost empty: $capacity%" \
         "System will hibernate in $hibernate_grace seconds..."
     wait_for_power_or_hibernate
 elif ((capacity <= critical_capacity)); then
-    notify -u critical -i battery-caution \
+    notify -u critical -i battery-caution-symbolic \
         "Battery critical: $capacity%" \
         "System will hibernate at $hibernate_capacity%"
 elif ((capacity <= low_capacity)); then
-    notify -u critical -i battery-low \
+    notify -u critical -i battery-low-symbolic \
         "Battery low: $capacity%" \
         "Attach power supply to avoid hibernation"
 fi

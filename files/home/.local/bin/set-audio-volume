@@ -79,9 +79,9 @@ fi
 
 # Show a different icon depending on the mute status.
 if [[ $(pactl get-sink-mute "$sink") == *yes ]]; then
-    icon="audio-volume-muted"
+    icon="audio-volume-muted-symbolic"
 else
-    icon="audio-volume-high"
+    icon="audio-volume-high-symbolic"
 fi
 
 # Provide audible feedback so user is aware of new volume and mute status.
