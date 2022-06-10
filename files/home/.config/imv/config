@@ -1,4 +1,5 @@
 [options]
+overlay = true
 overlay_font = monospace:8
 overlay_position_bottom = true
 
