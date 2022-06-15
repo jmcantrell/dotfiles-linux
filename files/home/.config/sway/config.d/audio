@@ -1,16 +1,19 @@
-set $audio_up   set-audio-volume up
-set $audio_down set-audio-volume down
-set $audio_mute set-audio-volume mute
+set $audio_output set-audio-volume -o
+set $audio_input  set-audio-volume -i
 
-bindsym --locked $super+Up            exec $audio_up
-bindsym --locked XF86AudioRaiseVolume exec $audio_up
+bindsym --locked      $super+Up   exec $audio_output up
+bindsym --locked      $super+Down exec $audio_output down
+bindsym --locked ctrl+$super+Down exec $audio_output mute
+bindsym --locked ctrl+$super+Up   exec $audio_output max
 
-bindsym --locked $super+Down          exec $audio_down
-bindsym --locked XF86AudioLowerVolume exec $audio_down
+# Dedicated keyboard volume controls.
+bindsym --locked XF86AudioRaiseVolume exec $audio_output up
+bindsym --locked XF86AudioLowerVolume exec $audio_output down
+bindsym --locked XF86AudioMute        exec $audio_output mute
 
-bindsym --locked ctrl+$super+Down exec $audio_mute
-bindsym --locked XF86AudioMute    exec $audio_mute
-
-bindsym --locked ctrl+$super+Up exec set-audio-volume max
+bindsym      $alt+$super+Up   exec $audio_input up
+bindsym      $alt+$super+Down exec $audio_input down
+bindsym ctrl+$alt+$super+Up   exec $audio_input max
+bindsym ctrl+$alt+$super+Down exec $audio_input mute
 
 # vi:ft=sway
