@@ -3,7 +3,7 @@
 set -eu
 
 me=${0##*/}
-usage="Sound an alarm after a specified amount of time.
+usage="Raise an alarm after a specified amount of time.
 
 Usage:
     $me [OPTIONS] TIMESPEC

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-# Prepare a skeleton base directory inheriting from the user's configuration.
+# Prepare a skeleton qutebrowser base directory that inherits particular
+# "essential" files from the user's configuration.
 
 set -eu
 shopt -s nullglob

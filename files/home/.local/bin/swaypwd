@@ -31,29 +31,32 @@ while getopts ":h" option; do
 done && shift "$((OPTIND - 1))"
 
 if [[ -v 1 ]]; then
+    # A window ID was given, so look at windows in every workspace.
     window_pid=$(
         swaymsg -t get_tree |
             jq -r --argjson id "$1" '.. | select(.pid? and .id? and .id == $id) | .pid'
     )
 else
+    # No window ID was given, so allow the user to select visible windows.
     window_pid=$(
         swaymsg -t get_tree |
             jq -r '.. | select(.pid? and .visible? and .focused?) | .pid'
     )
 fi
 
-# Fallback value, in case of problems.
+# Fallback value, in case no window information or working directory is found.
 cwd=$HOME
 
 if [[ -n $window_pid ]]; then
-    # Start the child pid search with the window.
+    # Start the child pid search with the current or given window.
     pid=$window_pid
 
     # What is the direct descendent of the current pid?
     while next_pid=$(pgrep --parent "$pid" | head -n1); do
         # Some child processes don't inherit the working directory of the
-        # parent process. If they are encountered, stop looking for children.
-        case "$(readlink /proc/"$next_pid"/exe)" in
+        # parent process. If they are encountered, stop looking for children
+        # and use whatever pid was found last.
+        case $(readlink /proc/"$next_pid"/exe) in
         */wl-copy) break ;;
         esac
 
@@ -62,6 +65,7 @@ if [[ -n $window_pid ]]; then
 
     cwd_link=/proc/"$pid"/cwd
 
+    # The actual working directory is pointed to by the symlink.
     if possible_cwd=$(realpath "$cwd_link" 2>/dev/null); then
         cwd=$possible_cwd
     fi

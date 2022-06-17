@@ -4,9 +4,10 @@ set -eu
 
 config_dir=${XDG_CONFIG_HOME:-$HOME/.config}/udiskie
 keyfile_dir=${XDG_DATA_HOME:-$HOME/.local/share}/udiskie/keyfiles
+config_file=$config_dir/config.json
 
 me=${0##*/}
-usage="Remember a udiskie device's keyfile for automatic mounting.
+usage="Remember an encrypted disk's keyfile for automatic mounting.
 
 Usage:
     $me [OPTIONS] DEVICE KEYFILE
@@ -56,22 +57,23 @@ fi
 device=$1
 keyfile_original=$2
 
+# Lookup the uuid for the device.
 if ! uuid=$(sudo blkid -s UUID -o value "$device") || [[ -z $uuid ]]; then
     die "Unable to get UUID for device"
 fi
 
-config_file=$config_dir/config.json
-
+# If the config file doesn't exist, add a skeleton.
 if [[ ! -f $config_file ]]; then
     mkdir -p "$config_dir"
     jq -n '.device_config=[]' >"$config_file"
 fi
 
+# Keep a copy of the keyfile for later.
+mkdir -p "$keyfile_dir"
 keyfile_copy=$keyfile_dir/${keyfile_name:-$uuid}.bin
-
-mkdir -p "$(dirname "$keyfile_copy")"
 cp -v --preserve=mode "$keyfile_original" "$keyfile_copy"
 
+# Lookup the index for this uuid, if it already exists.
 index=$(
     jq --arg uuid "$uuid" \
         '.device_config | map(.id_uuid == $uuid) | index(true)' \
@@ -80,6 +82,7 @@ index=$(
 
 options=(--arg keyfile "${keyfile_copy/$HOME/\~}")
 
+# Depending on whether or not the uuid exists, either add or update it.
 if [[ $index == null ]]; then
     options+=(--arg uuid "$uuid")
     query='.device_config += [{ "id_uuid": $uuid, "keyfile": $keyfile }]'
@@ -88,5 +91,5 @@ else
     query='.device_config[$index | tonumber].keyfile=$keyfile'
 fi
 
-jq "${options[@]}" "$query" "$config_file" >"$config_file.tmp"
-mv "$config_file.tmp" "$config_file"
+# Update the config file and (re)write it.
+jq "${options[@]}" "$query" "$config_file" | sponge "$config_file"

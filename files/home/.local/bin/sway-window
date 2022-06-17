@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # Gets the properties for a given window ID.
+# Usage: sway-window ID
 
 set -euo pipefail
 

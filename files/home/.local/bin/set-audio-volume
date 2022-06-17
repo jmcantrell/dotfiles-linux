@@ -8,11 +8,11 @@ me=${0##*/}
 usage="Set the audio volume and show a notification.
 
 Usage:
-    $me ACTION
+    $me [OPTIONS] ACTION
 
 Options:
     -o           change volume for outputs (sinks)
-                 (the default, if neither -s or -S are used)
+                 (the default, if neither -o or -i are used)
 
     -i           change volume for inputs (sources)
 

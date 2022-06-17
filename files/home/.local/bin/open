@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 
-# An easier-to-type opener command.
+# An easier-to-type opener command. It's also one less cognitive burden given
+# that the opener for Mac OS is `open`.
 
 exec xdg-open "$@"

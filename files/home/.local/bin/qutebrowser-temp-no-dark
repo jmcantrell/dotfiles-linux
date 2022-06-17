@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
 
+# Run qutebrowser with a temporary session and no color scheme modifications.
+
 export QUTEBROWSER_OVERRIDE_DARK=0
 exec qutebrowser-temp "$@"

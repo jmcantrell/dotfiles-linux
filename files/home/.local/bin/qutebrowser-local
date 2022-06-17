@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Run qutebrowser using a given session directory.
+# Run qutebrowser using a given base directory.
 
 set -eu
 

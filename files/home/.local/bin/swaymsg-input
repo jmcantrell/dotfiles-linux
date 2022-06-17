@@ -8,9 +8,11 @@ me=${0##*/}
 usage="Prompt the user for sway command input.
 
 Usage:
-    $me [OPTIONS] [FORMAT]
+    $me [OPTIONS] FORMAT
 
 Options:
+    -e         treat an empty response as an error
+
     -p TEXT    use TEXT for input prompt 
                (default: $prompt)
 
