@@ -5,11 +5,21 @@ set -eu
 # Needed to change screen brightness.
 sudo gpasswd --add "$USER" video
 
+# Needed to update locate database without sudo.
 sudo gpasswd --add "$USER" locate
 sudo updatedb
 
+# Enable firewall helper.
+sudo ufw enable
+sudo ufw default deny
+sudo ufw allow ssh
+sudo ufw allow mdns
+sudo ufw allow 49152:65535/tcp
+
+# Set preferred shell.
 sudo chsh --shell /bin/zsh "$USER"
 
+# Enable desktop tools.
 systemctl --user enable --now {mako,udiskie,swayidle}.service
 
 # Only enable battery monitoring if a battery exists.

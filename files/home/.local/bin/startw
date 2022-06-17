@@ -3,6 +3,7 @@
 # Start a wayland window manager with logging after loading its environment.
 
 set -eu
+shopt -s nullglob
 
 for file in ~/.wprofile.d/*; do
     [[ -f $file ]] || continue
