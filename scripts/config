@@ -9,13 +9,6 @@ sudo gpasswd --add "$USER" video
 sudo gpasswd --add "$USER" locate
 sudo updatedb
 
-# Enable firewall helper.
-sudo ufw enable
-sudo ufw default deny
-sudo ufw allow ssh
-sudo ufw allow mdns
-sudo ufw allow 49152:65535/tcp
-
 # Set preferred shell.
 sudo chsh --shell /bin/zsh "$USER"
 
