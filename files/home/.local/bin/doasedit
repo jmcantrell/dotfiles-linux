@@ -25,6 +25,10 @@ die() {
     exit 1
 }
 
+doas() {
+    command doas "${doas_options[@]}" "$@"
+}
+
 doas_options=()
 
 while getopts ":nC:u:h" option; do
@@ -35,10 +39,6 @@ while getopts ":nC:u:h" option; do
     *) die "Invalid option '$OPTARG'" ;;
     esac
 done && shift $((OPTIND - 1))
-
-doas() {
-    command doas "${doas_options[@]}" "$@"
-}
 
 temp_dir=$(mktemp -d -t "${me}.XXXXXXXXXX")
 
@@ -89,8 +89,14 @@ done
 ${DOAS_EDITOR:-$EDITOR} "${temp_files[@]}"
 
 for ((i = 0; i < ${#files[@]}; i++)); do
+    # If non-existent file was not saved, don't try to copy it.
+    [[ -e ${temp_files[i]} ]] || continue
+
+    # Restore ownership and permissions.
     doas chown "${owners[i]}" "${temp_files[i]}"
     doas chmod "${permissions[i]}" "${temp_files[i]}"
+
+    # Copy file back to original location, preserving attributes.
     doas mkdir -p "$(dirname "${files[i]}")"
     doas cp --preserve=mode,ownership "${temp_files[i]}" "${files[i]}"
 done
