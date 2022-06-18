@@ -3,7 +3,7 @@
 set -eu
 
 me=${0##*/}
-usage="Edit files with elevated privileges as the current user.
+usage="Edit files with elevated privileges in the current environment.
 
 Usage:
     $me [-n] [-C FILE] [-u USER] [FILE...]
