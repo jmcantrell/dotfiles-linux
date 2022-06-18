@@ -1,4 +1,0 @@
-# Aliases after doas cannot be completed without this.
-alias doas='doas '
-
-# vi:ft=sh
