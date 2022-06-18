@@ -63,6 +63,8 @@ if [[ -z $name ]]; then
     die "No snippet was selected"
 fi
 
+export EDITOR=$VISUAL
+
 case $action in
 edit | delete) snip "$action" "$name" ;;
 *) do_"$action" "$name" ;;
