@@ -12,10 +12,6 @@ history_file=${XDG_CACHE_HOME:-$HOME/.cache}/$me/history
 mkdir -p "$(dirname "$history_file")"
 touch "$history_file"
 
-temp_file=$(mktemp -t "$me.XXXXXXXXXX")
-printf -v cleanup "rm -f %q" "$temp_file"
-trap "$cleanup" INT TERM EXIT
-
 mru_path() {
     cat "$history_file"                       # Shift the most recent entries to the top
     compgen -c | grep -vxF -f "$history_file" # ... of the full list of commands.
@@ -24,10 +20,10 @@ mru_path() {
 mru_add() {
     local cmd=${1:?Missing command}
     {
-        printf "%s\n" "$cmd"                 # Shift the most recent entry to the top
-        grep -vx "$cmd" "$history_file"      # ... of the previous entries.
-    } | head -n"$history_size" >"$temp_file" # Letting the least recent entry drop off.
-    mv -f "$temp_file" "$history_file"       # Swap out the previous entries.
+        printf "%s\n" "$cmd"            # Shift the most recent entry to the top
+        grep -vx "$cmd" "$history_file" # ... of the previous entries.
+    } | head -n"$history_size" |        # Letting the least recent entry drop off.
+        sponge "$history_file"
 }
 
 # Prompt user for a command.

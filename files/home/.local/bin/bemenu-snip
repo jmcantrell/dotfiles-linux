@@ -63,7 +63,7 @@ if [[ -z $name ]]; then
     die "No snippet was selected"
 fi
 
-export EDITOR=$VISUAL
+export EDITOR=${VISUAL:-gvim}
 
 case $action in
 edit | delete) snip "$action" "$name" ;;
