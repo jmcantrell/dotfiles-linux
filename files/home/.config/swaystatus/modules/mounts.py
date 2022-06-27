@@ -5,7 +5,7 @@ from .util import bytes_to_human
 
 source = Path("/proc/mounts")
 
-ignore_types = {
+ignore_vfstypes = {
     "autofs",
     "binfmt_misc",
     "bpf",
@@ -30,6 +30,8 @@ ignore_types = {
     "tracefs",
 }
 
+nosize_vfstypes = {"iso9660"}
+
 
 def mounted_paths():
     with source.open() as f:
@@ -39,10 +41,12 @@ def mounted_paths():
     seen_devices = set()
 
     for line in lines:
-        device, mount, type = line.strip().split()[0:3]
-        if type not in ignore_types and device not in seen_devices:
+        device, mount, vfstype = line.strip().split()[0:3]
+        if vfstype not in ignore_vfstypes and device not in seen_devices:
             seen_devices.add(device)
-            paths.append(Path(mount))
+            paths.append([Path(mount), vfstype])
+
+    paths.sort()
 
     return paths
 
@@ -60,14 +64,15 @@ class Element(BaseElement):
         super().__init__(*args, **kwargs)
 
     def on_update(self, output):
-        for path in mounted_paths():
+        for path, vfstype in mounted_paths():
             instance = str(path)
             label = path.name or "root"
             format_kwargs = {"label": label, "free": ""}
-            try:
-                free_bytes = path_free_bytes(path)
-            except PermissionError:
-                pass
-            format_kwargs["free"] = bytes_to_human(free_bytes)
-            full_text = self._format.format(**format_kwargs)
+            if vfstype not in nosize_vfstypes:
+                try:
+                    free_bytes = path_free_bytes(path)
+                    format_kwargs["free"] = bytes_to_human(free_bytes)
+                except PermissionError:
+                    pass
+            full_text = self._format.format(**format_kwargs).strip()
             output.append(self.create_block(full_text, instance=instance))
