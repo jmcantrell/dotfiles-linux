@@ -2,6 +2,9 @@
 
 set -eu
 
+# Add file system modifications.
+sudo rsync -v --archive --no-owner --no-group ./files/root/ /
+
 # Needed to change screen brightness.
 sudo gpasswd --add "$USER" video
 
