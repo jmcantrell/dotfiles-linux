@@ -1,3 +1,0 @@
-export LESS="R --ignore-case --mouse"
-
-# vi:ft=sh
