@@ -37,9 +37,9 @@ die() {
 
 unset keyfile_name
 
-while getopts ":s:C:h" option; do
+while getopts ":n:C:h" option; do
     case $option in
-    s) keyfile_name=$OPTARG ;;
+    n) keyfile_name=$OPTARG ;;
     C) config_dir=$OPTARG ;;
     h) usage ;;
     *) die "Invalid option '$OPTARG'" ;;
