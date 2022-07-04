@@ -2,6 +2,6 @@ daemonize
 ignore-empty-password
 show-failed-attempts
 indicator-caps-lock
-scaling=stretch
+scaling=fill
 color=000000
 image=~/.background
