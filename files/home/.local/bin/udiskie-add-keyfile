@@ -71,7 +71,7 @@ fi
 # Keep a copy of the keyfile for later.
 mkdir -p "$keyfile_dir"
 keyfile_copy=$keyfile_dir/${keyfile_name:-$uuid}.bin
-cp -v --preserve=mode "$keyfile_original" "$keyfile_copy"
+sudo cp -va "$keyfile_original" "$keyfile_copy"
 
 # Lookup the index for this uuid, if it already exists.
 index=$(

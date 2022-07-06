@@ -11,6 +11,6 @@ if [[ -n $image ]]; then
     cp -vL "$image" "$background"
 fi
 
-if [[ -v SWAYSOCK && -r $background ]]; then
+if [[ -v SWAYSOCK && -f $background ]]; then
     swaymsg output "*" background "$background" fill "#000000"
 fi
