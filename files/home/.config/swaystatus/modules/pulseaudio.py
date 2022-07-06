@@ -16,6 +16,7 @@ def is_muted(sink):
 
 
 class Element(BaseElement):
+
     def __init__(self, *args, **kwargs):
         self._sink = kwargs.pop("sink", "@DEFAULT_SINK@")
         self._format = kwargs.pop("format", "audio {}")

@@ -16,25 +16,25 @@ service=/etc/systemd/system/$me.service
 script=/usr/local/sbin/$me
 
 sudo tee "$script" >/dev/null <<-EOF
-#!/usr/bin/env bash
+	#!/usr/bin/env bash
 
-set -euo pipefail
+	set -euo pipefail
 
-grep '^[EXOU]HC[0-9]\?\\b.*\\benabled\\b' $wakeup |
-    awk '{print \$1}' | tr -d '[:space:]' >$wakeup
+	grep '^[EXOU]HC[0-9]\?\\b.*\\benabled\\b' $wakeup |
+	    awk '{print \$1}' | tr -d '[:space:]' >$wakeup
 EOF
 
 sudo chmod +x "$script"
 
 sudo tee "$service" >/dev/null <<-EOF
-[Unit]
-Description=disable resuming the system on USB device activity
+	[Unit]
+	Description=disable resuming the system on USB device activity
 
-[Service]
-ExecStart=$script
+	[Service]
+	ExecStart=$script
 
-[Install]
-WantedBy=multi-user.target
+	[Install]
+	WantedBy=multi-user.target
 EOF
 
 sudo systemctl enable --now "$(basename "$service")"

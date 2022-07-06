@@ -45,8 +45,7 @@ if (($# == 0)); then
 fi
 
 at "$(date -d "$*" +"%H:%M %Y-%m-%d")" <<-EOF
-export DISPLAY=$DISPLAY
-export WAYLAND_DISPLAY=$WAYLAND_DISPLAY
-canberra-gtk-play -i alarm-clock-elapsed &
-notify-send -u critical -i dialog-information-symbolic "Timer elapsed" "${name:-}"
+	export WAYLAND_DISPLAY=$WAYLAND_DISPLAY
+	canberra-gtk-play -i alarm-clock-elapsed &
+	notify-send -u critical -i dialog-information-symbolic "Timer elapsed" "${name:-}"
 EOF

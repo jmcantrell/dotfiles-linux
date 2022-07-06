@@ -20,10 +20,9 @@ mru_path() {
 mru_add() {
     local cmd=${1:?Missing command}
     {
-        printf "%s\n" "$cmd"            # Shift the most recent entry to the top
-        grep -vx "$cmd" "$history_file" # ... of the previous entries.
-    } | head -n"$history_size" |        # Letting the least recent entry drop off.
-        sponge "$history_file"
+        printf "%s\n" "$cmd"                            # Shift the most recent entry to the top
+        grep -vx "$cmd" "$history_file"                 # ... of the previous entries.
+    } | head -n"$history_size" | sponge "$history_file" # Letting the least recent entry drop off.
 }
 
 # Prompt user for a command.

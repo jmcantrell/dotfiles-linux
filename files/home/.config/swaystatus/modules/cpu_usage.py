@@ -34,6 +34,7 @@ def sample():
 
 
 class Element(BaseElement):
+
     def __init__(self, *args, **kwargs):
         self._format = kwargs.pop("format", "cpu {:.1f}%")
         self._previous_sample = sample()
