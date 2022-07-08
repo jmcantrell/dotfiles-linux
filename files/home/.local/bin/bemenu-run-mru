@@ -4,10 +4,8 @@
 
 set -eu
 
-me=${0##*/}
-
 history_size=${BEMENU_RUN_MRU_HISTSIZE:-100}
-history_file=${XDG_CACHE_HOME:-$HOME/.cache}/$me/history
+history_file=${XDG_CACHE_HOME:-$HOME/.cache}/${0##*/}/history
 
 mkdir -p "$(dirname "$history_file")"
 touch "$history_file"
@@ -18,7 +16,7 @@ mru_path() {
 }
 
 mru_add() {
-    local cmd=${1:?Missing command}
+    local cmd=${1:?missing command}
     {
         printf "%s\n" "$cmd"                            # Shift the most recent entry to the top
         grep -vx "$cmd" "$history_file"                 # ... of the previous entries.

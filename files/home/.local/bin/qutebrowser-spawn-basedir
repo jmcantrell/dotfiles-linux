@@ -9,7 +9,7 @@ shopt -s nullglob
 config_dir=${XDG_CONFIG_HOME:-$HOME/.config}/qutebrowser
 data_dir=${XDG_DATA_HOME:-$HOME/.local/share}/qutebrowser
 
-base_dir=${1:?Missing directory}
+base_dir=${1:?missing directory}
 
 symlink_files() {
     local dst_dir=$1
