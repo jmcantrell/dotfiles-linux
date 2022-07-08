@@ -31,7 +31,7 @@ usage() {
 }
 
 die() {
-    printf "ERROR: %s\n" "$*" >&2
+    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$*" >&2
     exit 1
 }
 
@@ -42,16 +42,16 @@ while getopts ":n:C:h" option; do
     n) keyfile_name=$OPTARG ;;
     C) config_dir=$OPTARG ;;
     h) usage ;;
-    *) die "Invalid option '$OPTARG'" ;;
+    *) die "invalid option '$OPTARG'" ;;
     esac
 done && shift $((OPTIND - 1))
 
 if [[ ! -v 1 ]]; then
-    die "Missing device"
+    die "missing device"
 fi
 
 if [[ ! -v 2 ]]; then
-    die "Missing keyfile"
+    die "missing keyfile"
 fi
 
 device=$1
@@ -59,7 +59,7 @@ keyfile_original=$2
 
 # Lookup the uuid for the device.
 if ! uuid=$(sudo blkid -s UUID -o value "$device") || [[ -z $uuid ]]; then
-    die "Unable to get UUID for device"
+    die "unable to get UUID for device"
 fi
 
 # If the config file doesn't exist, add a skeleton.

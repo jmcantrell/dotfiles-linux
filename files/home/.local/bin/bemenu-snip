@@ -25,7 +25,7 @@ usage() {
 }
 
 die() {
-    printf "ERROR: %s\n" "$*" >&2
+    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$*" >&2
     exit 1
 }
 
@@ -47,20 +47,16 @@ while getopts ":C:h" option; do
     case $option in
     C) snip_options+=(-C "$OPTARG") ;;
     h) usage ;;
-    *) die "Invalid option: $OPTARG" ;;
+    *) die "invalid option: $OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))
 
-if [[ ! -v 1 ]]; then
-    die "Missing action"
-fi
-
-action=$1
+action=${1:?missing action}
 
 name=$(snip list | bemenu -b -p "$action snippet")
 
 if [[ -z $name ]]; then
-    die "No snippet was selected"
+    die "no snippet was selected"
 fi
 
 export EDITOR=${VISUAL:-gvim}

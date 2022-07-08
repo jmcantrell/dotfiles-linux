@@ -29,7 +29,7 @@ usage() {
 }
 
 die() {
-    printf "ERROR: %s\n" "$*" >&2
+    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$*" >&2
     exit 1
 }
 
@@ -42,15 +42,11 @@ while getopts ":p:es:h" option; do
     e) treat_empty_as_error=1 ;;
     s) ipc_command+=(-s "$OPTARG") ;;
     h) usage ;;
-    *) die "Invalid option '$OPTARG'" ;;
+    *) die "invalid option '$OPTARG'" ;;
     esac
 done && shift $((OPTIND - 1))
 
-if [[ ! -v 1 ]]; then
-    die "Missing command format"
-fi
-
-format=$1
+format=${1:?missing command format}
 
 # Prompt user for input.
 reply=$(bemenu -p "$prompt" </dev/null)

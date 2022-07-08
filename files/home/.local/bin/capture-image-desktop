@@ -43,45 +43,45 @@ Arguments:
 "
 
 usage() {
-	printf "%s\n" "$usage"
-	exit 0
+    printf "%s\n" "$usage"
+    exit 0
 }
 
 die() {
-	printf "ERROR: %s\n" "$*" >&2
-	exit 1
+    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$*" >&2
+    exit 1
 }
 
 geometry_format='\(.x),\(.y) \(.width)x\(.height)'
 
 focused_window_geometry() {
-	swaymsg -t get_tree |
-		jq -r ".. | select(.rect? and .visible? and .focused?) | .rect | \"$geometry_format\""
+    swaymsg -t get_tree |
+        jq -r ".. | select(.rect? and .visible? and .focused?) | .rect | \"$geometry_format\""
 }
 
 select_window_geometry() {
-	swaymsg -t get_tree |
-		jq -r ".. | select(.rect? and .visible?) | .rect | \"$geometry_format\"" |
-		slurp -r
+    swaymsg -t get_tree |
+        jq -r ".. | select(.rect? and .visible?) | .rect | \"$geometry_format\"" |
+        slurp -r
 }
 
 unset edit capture_mouse
 
 while getopts ":g:rfsmed:D:N:E:h" option; do
-	case $option in
-	g) geometry=$OPTARG ;;
-	r) geometry=$(slurp) ;;
-	f) geometry=$(focused_window_geometry) ;;
-	s) geometry=$(select_window_geometry) ;;
-	e) edit=1 ;;
-	m) capture_mouse=1 ;;
-	d) delay=$OPTARG ;;
-	D) directory=$OPTARG ;;
-	N) file_name=$OPTARG ;;
-	E) file_type=$OPTARG ;;
-	h) usage ;;
-	*) die "Invalid option '$OPTARG'" ;;
-	esac
+    case $option in
+    g) geometry=$OPTARG ;;
+    r) geometry=$(slurp) ;;
+    f) geometry=$(focused_window_geometry) ;;
+    s) geometry=$(select_window_geometry) ;;
+    e) edit=1 ;;
+    m) capture_mouse=1 ;;
+    d) delay=$OPTARG ;;
+    D) directory=$OPTARG ;;
+    N) file_name=$OPTARG ;;
+    E) file_type=$OPTARG ;;
+    h) usage ;;
+    *) die "invalid option '$OPTARG'" ;;
+    esac
 done && shift $((OPTIND - 1))
 
 output_file=$(date +"${1:-$directory/$file_name.$file_type}")
@@ -89,28 +89,28 @@ output_file=$(date +"${1:-$directory/$file_name.$file_type}")
 capture_command=(grim)
 
 if [[ -v geometry ]]; then
-	capture_command+=(-g "$geometry")
+    capture_command+=(-g "$geometry")
 fi
 
 if [[ -v capture_mouse ]]; then
-	capture_command+=(-c)
+    capture_command+=(-c)
 fi
 
 # If a delay was requested, provide an audible countdown to let user know
 # something is about to happen.
 if ((delay > 0)); then
-	canberra-gtk-play -l "$delay" -i message
+    canberra-gtk-play -l "$delay" -i message
 fi
 
 mkdir -p "$(dirname "$output_file")"
 
 if [[ -v edit ]]; then
-	# The editor is feedback that the capture has occurred.
-	"${capture_command[@]}" - | swappy -f - -o "$output_file"
+    # The editor is feedback that the capture has occurred.
+    "${capture_command[@]}" - | swappy -f - -o "$output_file"
 else
-	"${capture_command[@]}" "$output_file"
-	# Provide audible feedback that capture is complete.
-	canberra-gtk-play -i screen-capture &
+    "${capture_command[@]}" "$output_file"
+    # Provide audible feedback that capture is complete.
+    canberra-gtk-play -i screen-capture &
 fi
 
 wl-copy -n "$output_file"
