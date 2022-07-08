@@ -29,8 +29,8 @@ usage() {
 }
 
 die() {
-    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$*" >&2
-    exit 1
+    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$1" >&2
+    exit "${2:-1}"
 }
 
 ipc_command=(swaymsg)
@@ -42,7 +42,7 @@ while getopts ":p:es:h" option; do
     e) treat_empty_as_error=1 ;;
     s) ipc_command+=(-s "$OPTARG") ;;
     h) usage ;;
-    *) die "invalid option '$OPTARG'" ;;
+    *) die "invalid option -- $OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))
 

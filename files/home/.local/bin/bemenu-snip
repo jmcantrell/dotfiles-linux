@@ -25,8 +25,8 @@ usage() {
 }
 
 die() {
-    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$*" >&2
-    exit 1
+    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$1" >&2
+    exit "${2:-1}"
 }
 
 do_copy() {
@@ -47,7 +47,7 @@ while getopts ":C:h" option; do
     case $option in
     C) snip_options+=(-C "$OPTARG") ;;
     h) usage ;;
-    *) die "invalid option: $OPTARG" ;;
+    *) die "invalid option -- $OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))
 

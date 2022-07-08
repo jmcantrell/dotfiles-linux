@@ -48,8 +48,8 @@ usage() {
 }
 
 die() {
-    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$*" >&2
-    exit 1
+    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$1" >&2
+    exit "${2:-1}"
 }
 
 geometry_format='\(.x),\(.y) \(.width)x\(.height)'
@@ -77,7 +77,7 @@ while getopts ":g:rfsad:D:N:E:h" option; do
     N) file_name=$OPTARG ;;
     E) file_type=$OPTARG ;;
     h) usage ;;
-    *) die "invalid option '$OPTARG'" ;;
+    *) die "invalid option -- $OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))
 

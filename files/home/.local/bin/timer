@@ -26,8 +26,8 @@ usage() {
 }
 
 die() {
-    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$*" >&2
-    exit 1
+    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$1" >&2
+    exit "${2:-1}"
 }
 
 unset name
@@ -36,15 +36,15 @@ while getopts ":n:h" option; do
     case $option in
     n) name=$OPTARG ;;
     h) usage ;;
-    *) die "invalid option '$OPTARG'" ;;
+    *) die "invalid option -- $OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))
 
 time_spec=${*:?missing time specification}
 
 at "$(date -d "$time_spec" +"%H:%M %Y-%m-%d")" <<-EOF
-	export DISPLAY=$DISPLAY
-	export WAYLAND_DISPLAY=$WAYLAND_DISPLAY
-	canberra-gtk-play -i alarm-clock-elapsed &
-	notify-send -u critical -i dialog-information-symbolic "Timer elapsed" "${name:-}"
+export DISPLAY=$DISPLAY
+export WAYLAND_DISPLAY=$WAYLAND_DISPLAY
+canberra-gtk-play -i alarm-clock-elapsed &
+notify-send -u critical -i dialog-information-symbolic "Timer elapsed" "${name:-}"
 EOF

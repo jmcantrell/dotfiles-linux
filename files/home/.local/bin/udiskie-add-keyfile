@@ -31,8 +31,8 @@ usage() {
 }
 
 die() {
-    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$*" >&2
-    exit 1
+    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$1" >&2
+    exit "${2:-1}"
 }
 
 unset keyfile_name
@@ -42,20 +42,12 @@ while getopts ":n:C:h" option; do
     n) keyfile_name=$OPTARG ;;
     C) config_dir=$OPTARG ;;
     h) usage ;;
-    *) die "invalid option '$OPTARG'" ;;
+    *) die "invalid option -- $OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))
 
-if [[ ! -v 1 ]]; then
-    die "missing device"
-fi
-
-if [[ ! -v 2 ]]; then
-    die "missing keyfile"
-fi
-
-device=$1
-keyfile_original=$2
+device=${1:?missing device}
+keyfile_original=${2:?missing keyfile}
 
 # Lookup the uuid for the device.
 if ! uuid=$(sudo blkid -s UUID -o value "$device") || [[ -z $uuid ]]; then

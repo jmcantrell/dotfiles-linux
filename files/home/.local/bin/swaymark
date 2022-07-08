@@ -21,14 +21,14 @@ usage() {
 }
 
 die() {
-    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$*" >&2
-    exit 1
+    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$1" >&2
+    exit "${2:-1}"
 }
 
 while getopts ":h" option; do
     case $option in
     h) usage ;;
-    *) die "invalid option '$OPTARG'" ;;
+    *) die "invalid option -- $OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))
 
@@ -38,7 +38,7 @@ case $action in
 set | goto) ;;
 unset) exec swaymsg '[con_id="__focused__"] unmark' ;;
 clear) exec swaymsg unmark ;;
-*) die "invalid action '$action'" ;;
+*) die "invalid action -- $action" ;;
 esac
 
 mark=$(swaymsg -t get_marks | jq -r '.[]' | bemenu -p "$action mark")

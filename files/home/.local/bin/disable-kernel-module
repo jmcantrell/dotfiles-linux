@@ -18,21 +18,21 @@ usage() {
 }
 
 die() {
-    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$*" >&2
-    exit 1
+    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$1" >&2
+    exit "${2:-1}"
 }
 
 while getopts ":h" option; do
     case $option in
     h) usage ;;
-    *) die "invalid option '$OPTARG'" ;;
+    *) die "invalid option -- $OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))
 
 # First, ensure all given module names are valid.
 for name in "${@:?missing module name(s)}"; do
     if ! modprobe --show --quiet "$name"; then
-        die "Invalid module '$name'"
+        die "invalid module -- $name"
     fi
 done
 

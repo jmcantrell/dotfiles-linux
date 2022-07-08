@@ -31,8 +31,8 @@ usage() {
 }
 
 die() {
-    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$*" >&2
-    exit 1
+    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$1" >&2
+    exit "${2:-1}"
 }
 
 pass_names() {
@@ -56,7 +56,7 @@ while getopts ":n:qh" option; do
     n) password_length=$OPTARG ;;
     q) show_option=--qrcode ;;
     h) usage ;;
-    *) die "invalid option '$OPTARG'" ;;
+    *) die "invalid option -- $OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))
 
@@ -64,7 +64,7 @@ action=${1:-choose}
 
 case $action in
 choose | generate) ;;
-*) die "invalid action '$action'" ;;
+*) die "invalid action -- $action" ;;
 esac
 
 name=$(pass_names | bemenu -b -p "$action password")
