@@ -9,7 +9,7 @@ die() {
     exit "${2:-1}"
 }
 
-directory=${1:-${XDG_DATA_HOME:-$HOME/.local/share}/backgrounds}
+directory=${1:?missing directory}
 
 if [[ ! -d $directory ]]; then
     die "directory does not exist"
@@ -21,4 +21,4 @@ if [[ -z $file ]]; then
     die "directory is empty"
 fi
 
-set-background "$file"
+set-display-background "$file"
