@@ -15,6 +15,10 @@ sudo updatedb
 # Set preferred shell.
 sudo chsh --shell /bin/zsh "$USER"
 
+if [[ $(stat -fc "%T" /) == btrfs ]]; then
+    sudo systemctl enable --now btrfs-snapshots-{create,prune}.timer
+fi
+
 # Enable desktop tools.
 systemctl --user enable --now {mako,udiskie,swayidle}.service
 
