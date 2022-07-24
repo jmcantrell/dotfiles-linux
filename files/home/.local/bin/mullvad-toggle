@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# Toggle the Mullvad VPN connection.
+# This is primarily used for swaystatus interaction.
+
+set -eu
+
+if mullvad-connected; then
+    action=down
+else
+    action=up
+fi
+
+wg-quick "$action" wg-mullvad
