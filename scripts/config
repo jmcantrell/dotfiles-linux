@@ -10,11 +10,12 @@ sudo gpasswd --add "$USER" video
 
 # Needed to update locate database without sudo.
 sudo gpasswd --add "$USER" locate
-sudo updatedb
+updatedb
 
 # Set preferred shell.
 sudo chsh --shell /bin/zsh "$USER"
 
+# Enable periodic btrfs snappshotting.
 if [[ $(stat -fc "%T" /) == btrfs ]]; then
     sudo systemctl enable --now btrfs-snapshots-{create,prune}.timer
 fi
