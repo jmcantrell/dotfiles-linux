@@ -21,7 +21,7 @@ on_click.1 = 'terminal --hold -e df --si --human-readable ${instance}'
 on_click.3 = 'terminal -e ncdu ${instance}'
 
 [settings."path_exists:mullvad"]
-path = "/proc/sys/net/ipv4/conf/wg-mullvad"
+path = "/sys/class/net/wg-mullvad"
 label = "vpn"
 on_click.1 = "mullvad-toggle"
 on_click.2 = 'terminal -e sudo iftop -i wg-mullvad'
