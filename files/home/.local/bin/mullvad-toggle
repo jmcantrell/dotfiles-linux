@@ -6,9 +6,9 @@
 set -eu
 
 if mullvad-connected; then
-    action=down
+    action=stop
 else
-    action=up
+    action=start
 fi
 
-wg-quick "$action" wg-mullvad
+sudo systemctl "$action" wg-quick@wg-mullvad.service
