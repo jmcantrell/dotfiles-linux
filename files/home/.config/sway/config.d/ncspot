@@ -1,0 +1,3 @@
+bindsym $alt+$super+Pause exec terminal --class floating -e ncspot
+
+# vi:ft=sway

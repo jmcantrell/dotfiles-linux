@@ -1,14 +1,4 @@
-set $term_here cd "$(swaypwd)" && terminal
-
-bindsym      $super+Return exec $term_here
-bindsym $alt+$super+Return exec $term_here --class floating
-
-bindsym      $super+e exec $term_here -e editor
-bindsym $alt+$super+e exec $term_here --class floating -e editor
-
-bindsym      $super+f exec $term_here -e ranger
-bindsym $alt+$super+f exec $term_here --class floating -e ranger
-
-bindsym $alt+$super+Pause exec terminal --class floating -e ncspot
+bindsym      $super+Return exec $terminal_here
+bindsym $alt+$super+Return exec $terminal_here --class floating
 
 # vi:ft=sway

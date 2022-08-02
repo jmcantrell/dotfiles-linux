@@ -1,5 +1,9 @@
+# Easier to remember names.
 set $alt   mod1
 set $super mod4
+
+# Open a terminal in the same working directory as the focused window.
+set $terminal_here cd "$(swaypwd)" && terminal
 
 set $dark   #000000
 set $bright #ffffff

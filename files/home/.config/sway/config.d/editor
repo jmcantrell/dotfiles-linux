@@ -1,0 +1,4 @@
+bindsym      $super+e exec $terminal_here -e editor
+bindsym $alt+$super+e exec $terminal_here --class floating -e editor
+
+# vi:ft=sway
