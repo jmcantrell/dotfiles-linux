@@ -30,7 +30,7 @@ class Element(BaseElement):
         try:
             artist = get_metadata("artist").strip()
             if artist:
-                name = f"{title} by {artist}"
+                name = f"\"{title}\" by <u>{artist}</u>"
         except subprocess.CalledProcessError:
             pass
 
