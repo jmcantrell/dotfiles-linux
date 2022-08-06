@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+# Generate a user-data file for use with cloud-init.
+# Usage: generate-ci-user-data [OPTIONS]
+# Options:
+#     -f FILE    add FILE to "write_files" section
+#     -i FILE    add ssh public key FILE to root's ~/.ssh/authorized_keys
+
+set -eu
+
+((EUID == 0)) || exec sudo -- "$0" "$@"
+
+declare -a files=()
+declare -a ssh_pubkey_files=()
+
+while getopts "f:i:" option; do
+    case $option in
+    f) files+=("$OPTARG") ;;
+    i) ssh_pubkey_files+=("$OPTARG") ;;
+    esac
+done && shift $((OPTIND - 1))
+
+declare -a args=()
+
+if ((${#ssh_pubkey_files[@]} > 0)); then
+    args+=(users="$(jo -a "$(jo name=root ssh_authorized_keys="$(jo -a "${ssh_pubkey_files[@]/#/@}")")")")
+fi
+
+declare -i should_restart_iwd=0
+
+if ((${#files[@]} > 0)); then
+    write_files_items=()
+    for file in "${files[@]}"; do
+        if [[ $file == /var/lib/iwd/*.psk ]]; then
+            should_restart_iwd=1
+        fi
+        write_files_items+=("$(jo encoding=b64 path="$file" content=%"$file")")
+    done
+    args+=(write_files="$(jo -a "${write_files_items[@]}")")
+fi
+
+if ((should_restart_iwd)); then
+    args+=(runcmd="$(jo -a "systemctl restart iwd.service")")
+fi
+
+echo "#cloud-config"
+jo "${args[@]}" | yq -y
