@@ -87,3 +87,6 @@ fi
 
 # Update the config file and (re)write it.
 jq "${options[@]}" "$query" "$config_file" | sponge "$config_file"
+
+# Restart the service to pick up the config changes.
+systemctl --user restart udiskie.service
