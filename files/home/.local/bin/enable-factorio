@@ -4,9 +4,8 @@
 
 set -eu
 
-me=${0##*/}
 temp_dir=${TMPDIR:-/tmp}
-cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/$me
+cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/factorio
 base_url=https://factorio.com
 
 latest_version() {
@@ -24,7 +23,7 @@ cache_file=$cache_dir/$filename
 if [[ ! -f $cache_file ]]; then
     temp_file=$temp_dir/$filename.part
 
-    curl --get --fail --location \
+    curl --get --fail --location --progress-bar \
         --retry 10 --retry-delay 3 --continue-at - \
         --data-urlencode username="$FACTORIO_USERNAME" \
         --data-urlencode token="$FACTORIO_TOKEN" \
