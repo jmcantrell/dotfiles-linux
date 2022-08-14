@@ -30,4 +30,7 @@ for_window [class="Display" title="pass: .*"] floating enable
 # Generic QR code display.
 for_window [class="Display" title="qr code"] floating enable
 
+# TLP configurator.
+for_window [app_id="tlp-ui"] floating enable
+
 # vi:ft=sway
