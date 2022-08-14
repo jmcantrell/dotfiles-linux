@@ -101,8 +101,7 @@ capture_command+=("$output_file")
 # we can send the 'q' from elsewhere.
 if ! tty --silent; then
     touch "$capture_command_stdin"
-    printf -v cleanup "rm -f %q" "$capture_command_stdin"
-    trap "$cleanup" INT TERM EXIT
+    trap 'rm -f ${capture_command_stdin@Q}' INT TERM EXIT
     "${capture_command[@]}" <"$capture_command_stdin"
 else
     printf "Press 'q' at any time to stop recording...\n"
