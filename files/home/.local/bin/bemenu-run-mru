@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 # Run a menu-selected command, with the most recent ones listed first.
+# If the command ends in a semicolon, it will be opened in a terminal.
+# If the command ends in two semicolons, the terminal will be held open.
 
 set -eu
 
@@ -29,5 +31,14 @@ cmd=$(mru_path | bemenu -i -p run)
 # Remember it as recently used.
 mru_add "$cmd"
 
-# Execute command (eval is used to allow shell substitutions).
-eval "$cmd"
+preamble=()
+
+if [[ $cmd == *\; ]]; then
+    preamble+=("$TERMINAL")
+    if [[ $cmd == *\;\; ]]; then
+        preamble+=(--hold)
+    fi
+    preamble+=(-e)
+fi
+
+exec "${preamble[@]}" bash -c "${cmd%%;}"
