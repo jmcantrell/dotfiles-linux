@@ -1,5 +1,0 @@
-bindsym      $super+t exec $terminal_here -e btop
-bindsym $alt+$super+t exec $terminal_here --class floating -e btop
-
-# vi:ft=sway
-
