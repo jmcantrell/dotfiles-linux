@@ -10,7 +10,7 @@ sudo gpasswd --add "$USER" video
 
 # Needed to update locate database without sudo.
 sudo gpasswd --add "$USER" locate
-updatedb
+sudo updatedb
 
 # Set preferred shell.
 sudo chsh --shell /bin/zsh "$USER"
