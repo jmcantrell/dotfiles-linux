@@ -17,7 +17,7 @@ power_supply=/sys/class/power_supply
 # Don't do anything if there are no batteries.
 # This is probably not a mobile device.
 if [[ ! -d $power_supply/BAT0 ]]; then
-    echo "There are no batteries to monitor."
+    printf "There are no batteries to monitor.\n"
     exit 0
 fi
 
@@ -52,7 +52,7 @@ max_discharging_capacity() {
         fi
     done
 
-    printf "$max_capacity"
+    printf "%s\n" "$max_capacity"
 }
 
 # Hibernate the system after a countdown, but give the user a grace period

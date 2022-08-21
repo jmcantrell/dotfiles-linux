@@ -71,4 +71,4 @@ if [[ -n $window_pid ]]; then
     fi
 fi
 
-printf "$cwd"
+printf "%s\n" "$cwd"

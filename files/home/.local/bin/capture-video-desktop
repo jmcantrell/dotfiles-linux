@@ -121,7 +121,7 @@ capture_command+=(-f "$output_file")
 # stop. Therefore, record its pid so that it can be killed later.
 if ! tty --silent; then
     "${capture_command[@]}" &
-    echo "$!" >"$capture_command_pid_file"
+    printf "%s\n" "$!" >"$capture_command_pid_file"
     trap 'rm -f ${capture_command_pid_file@Q}' INT TERM EXIT
     wait -f
 else

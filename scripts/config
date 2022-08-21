@@ -32,5 +32,5 @@ fi
 # Manage user temp files with systemd-tmpfiles.
 tmp_conf=$HOME/.config/user-tmpfiles.d/tmp.conf
 mkdir -p "$(dirname "$tmp_conf")"
-echo "d $HOME/.local/tmp 0700 $USER $USER 10d -" >"$tmp_conf"
+printf "d %s 0700 %s %s %s -\n" ~/.local/tmp "$USER" "$USER" 10d >"$tmp_conf"
 systemctl --user enable --now systemd-tmpfiles-{setup.service,clean.timer}

@@ -38,7 +38,7 @@ opt_dir=$opt_home/factorio
 
 rm -rf "$opt_dir"
 mkdir -p "$opt_home"
-echo "Unpacking: $filename"
+printf "Unpacking: %s\n" "$filename"
 tar xf "$cache_file" -C "$opt_home"
 
 bin=$HOME/.local/bin/factorio
