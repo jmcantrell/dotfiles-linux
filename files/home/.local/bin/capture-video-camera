@@ -32,12 +32,12 @@ Options:
     -E EXTENSION    extension to use for default output file
                     (default: $file_type)
 
+    -X              stop recording video
+
 Arguments:
     FILE            output file (used instead of default)
                     formats any sequences recognized by strftime
                     (default: $directory/$file_name.$file_type)
-
-    'stop'          stop recording session
 "
 
 usage() {
@@ -50,7 +50,16 @@ die() {
     exit "${2:-1}"
 }
 
-while getopts ":ai:d:D:N:E:h" option; do
+stop_recording() {
+    if [[ -f $capture_command_stdin ]]; then
+        printf "q\n" >>"$capture_command_stdin"
+    fi
+    exit 0
+}
+
+capture_command_stdin=$XDG_RUNTIME_DIR/$me-command.stdin
+
+while getopts ":ai:d:D:N:E:Xh" option; do
     case $option in
     a) capture_audio=1 ;;
     i) device=$OPTARG ;;
@@ -58,20 +67,11 @@ while getopts ":ai:d:D:N:E:h" option; do
     D) directory=$OPTARG ;;
     N) file_name=$OPTARG ;;
     E) file_type=$OPTARG ;;
+    X) stop_recording ;;
     h) usage ;;
     *) die "invalid option -- $OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))
-
-capture_command_stdin=$XDG_RUNTIME_DIR/$me-command.stdin
-
-# If the first argument is "stop" send a "q" to the capture command's stdin.
-if [[ -v 1 && $1 == stop ]]; then
-    if [[ -f $capture_command_stdin ]]; then
-        printf "q\n" >>"$capture_command_stdin"
-    fi
-    exit 0
-fi
 
 # Substitute any date format placeholders in output filename.
 output_file=$(date +"${1:-$directory/$file_name.$file_type}")

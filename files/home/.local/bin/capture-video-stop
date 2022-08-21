@@ -4,5 +4,6 @@
 
 set -eu
 
-capture-video-camera stop &
-capture-video-desktop stop &
+capture-video-camera -X &
+capture-video-desktop -X &
+wait

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Prepare a skeleton qutebrowser base directory that inherits particular
-# "essential" files from the user's configuration.
+# Prepare a skeleton qutebrowser base directory that inherits particular files
+# that I would like to remain consistent between sessions.
 
 set -eu
 shopt -s nullglob

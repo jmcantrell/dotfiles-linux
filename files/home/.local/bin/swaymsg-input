@@ -14,7 +14,7 @@ Options:
     -e         treat an empty response as an error
 
     -p TEXT    use TEXT for input prompt 
-               (default: $prompt)
+               (default: '$prompt')
 
     -s PATH    use sway socket PATH
 

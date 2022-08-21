@@ -11,7 +11,7 @@ me=${0##*/}
 usage="Capture video of the desktop.
 
 Usage:
-    $me [OPTIONS] [FILE | 'stop']
+    $me [OPTIONS] [FILE]
     
 Options:
     -g GEOMETRY     geometry of region to capture
@@ -34,12 +34,12 @@ Options:
     -E EXTENSION    extension to use for default output file
                     (default: $file_type)
 
+    -X              stop recording video
+
 Arguments:
     FILE            output file (used instead of default)
                     formats any sequences recognized by strftime
                     (default: $directory/$file_name.$file_type)
-
-    'stop'          stop recording session
 "
 
 usage() {
@@ -65,7 +65,16 @@ select_window_geometry() {
         slurp -r
 }
 
-while getopts ":g:rfsad:D:N:E:h" option; do
+stop_recording() {
+    if [[ -f $capture_command_pid_file ]]; then
+        kill "$(<"$capture_command_pid_file")"
+    fi
+    exit 0
+}
+
+capture_command_pid_file=$XDG_RUNTIME_DIR/$me-command.pid
+
+while getopts ":g:rfsad:D:N:E:Xh" option; do
     case $option in
     g) geometry=$OPTARG ;;
     r) geometry=$(slurp) ;;
@@ -76,20 +85,11 @@ while getopts ":g:rfsad:D:N:E:h" option; do
     D) directory=$OPTARG ;;
     N) file_name=$OPTARG ;;
     E) file_type=$OPTARG ;;
+    X) stop_recording ;;
     h) usage ;;
     *) die "invalid option -- $OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))
-
-capture_command_pid_file=$XDG_RUNTIME_DIR/$me-command.pid
-
-# If the first argument is "stop", kill the running capture command.
-if [[ -v 1 && $1 == stop ]]; then
-    if [[ -f $capture_command_pid_file ]]; then
-        kill "$(<"$capture_command_pid_file")"
-    fi
-    exit 0
-fi
 
 output_file=$(date +"${1:-$directory/$file_name.$file_type}")
 

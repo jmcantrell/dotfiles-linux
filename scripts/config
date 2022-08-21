@@ -24,6 +24,7 @@ fi
 systemctl --user enable --now {mako,udiskie,swayidle}.service
 
 # Only enable battery monitoring if a battery exists.
+# This assumes that if any battery is present, one will be named BAT0.
 if [[ -e /sys/class/power_supply/BAT0 ]]; then
     systemctl --user enable --now check-battery.timer
 fi
@@ -31,5 +32,5 @@ fi
 # Manage user temp files with systemd-tmpfiles.
 tmp_conf=$HOME/.config/user-tmpfiles.d/tmp.conf
 mkdir -p "$(dirname "$tmp_conf")"
-echo "d $HOME/.local/tmp 0700 $USER $USER 10d" >"$tmp_conf"
+echo "d $HOME/.local/tmp 0700 $USER $USER 10d -" >"$tmp_conf"
 systemctl --user enable --now systemd-tmpfiles-{setup.service,clean.timer}

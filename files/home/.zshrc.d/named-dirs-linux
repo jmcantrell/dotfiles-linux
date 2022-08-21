@@ -1,4 +1,3 @@
 create_named_directory media /run/media/$USER m
-create_named_directory data ~media/data d
 
 # vi:ft=zsh
