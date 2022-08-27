@@ -5,7 +5,8 @@
 set -eu
 
 directory=$(mktemp -d -t "${0##*/}.XXXXXXXXXX")
-trap 'rm -rf ${directory@Q}' EXIT
+printf -v cleanup "rm -r %q" "$directory"
+trap '$cleanup' EXIT
 
 export QUTEBROWSER_PROFILE_NAME=${directory##*.}
 exec qutebrowser-local "$directory" "$@"
