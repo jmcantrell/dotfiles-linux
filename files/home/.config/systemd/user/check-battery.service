@@ -1,5 +1,5 @@
 [Unit]
-Description=check battery power
+Description=Check battery power
 
 [Service]
 ExecStart=%h/.local/bin/check-battery
