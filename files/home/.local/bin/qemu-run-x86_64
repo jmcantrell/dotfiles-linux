@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+options=()
+hostfwds=()
+
+boot_from_iso=0
+
+cdrom_id=0
+cdrom_device_fmt="scsi-cd,bus=scsi0.0,drive=cdrom%d"
+cdrom_drive_fmt="id=cdrom%d,if=none,format=raw,media=cdrom,read-only=on,file=%s"
+
+while getopts "n:i:m:F:" option; do
+    case $option in
+    n)
+        options+=(-name "$OPTARG")
+        ;;
+    i)
+        id=$((cdrom_id++))
+        options+=(
+            -device "$(printf "$cdrom_device_fmt" "$id")"
+            -drive "$(printf "$cdrom_drive_fmt" "$id" "$OPTARG")"
+        )
+        boot_from_iso=1
+        ;;
+    m)
+        options+=(-m "$OPTARG")
+        ;;
+    F)
+        hostfwds+=("$OPTARG")
+        ;;
+    esac
+done && shift $((OPTIND - 1))
+
+if ((boot_from_iso)); then
+    options+=(-boot "order=d,menu=on")
+fi
+
+hostfwds_arg=$(paste -sd, <<<"${hostfwds[@]/#/hostfwd=}")
+
+exec qemu-system-x86_64 \
+    -no-reboot \
+    -enable-kvm \
+    -cpu host \
+    -vga virtio \
+    -display sdl \
+    -serial stdio \
+    -device ich9-intel-hda \
+    -global ICH9-LPC.disable_s3=1 \
+    -device virtio-scsi-pci,id=scsi0 \
+    -audiodev pa,id=snd0 \
+    -device hda-output,audiodev=snd0 \
+    -device virtio-net-pci,netdev=net0 \
+    -netdev user,id=net0${hostfwds_arg:+,$hostfwds_arg} \
+    -machine type=q35,smm=on,accel=kvm,pcspk-audiodev=snd0 \
+    "${options[@]}" "$@"
