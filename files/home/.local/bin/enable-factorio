@@ -23,6 +23,8 @@ cache_file=$cache_dir/$filename
 if [[ ! -f $cache_file ]]; then
     temp_file=$temp_dir/$filename.part
 
+    printf "Downloading Factorio %s (%s) v%s\n" "$branch" "$release" "$version" >&2
+
     curl --get --fail --location --progress-bar \
         --retry 10 --retry-delay 3 --continue-at - \
         --data-urlencode username="$FACTORIO_USERNAME" \
