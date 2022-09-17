@@ -2,7 +2,7 @@
 
 # Set the system timezone interactively.
 
-set -eu
+set -euo pipefail
 
 sudo timedatectl set-timezone "${1:-$(tzselect)}"
 

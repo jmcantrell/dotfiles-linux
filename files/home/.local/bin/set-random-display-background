@@ -2,7 +2,7 @@
 
 # Set a random background image.
 
-set -eu
+set -euo pipefail
 
 die() {
     printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$1" >&2

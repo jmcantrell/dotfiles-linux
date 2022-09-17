@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eu
+set -euo pipefail
 
 # Ensure any generated file does not interfere with stow.
 rm -f ~/.config/mimeapps.list

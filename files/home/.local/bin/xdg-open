@@ -2,7 +2,7 @@
 
 # Pretend rifle is xdg-open.
 
-set -eu
+set -euo pipefail
 
 files=()
 

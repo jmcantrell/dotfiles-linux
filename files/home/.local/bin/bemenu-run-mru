@@ -4,7 +4,7 @@
 # If the command ends in a semicolon, it will be opened in a terminal.
 # If the command ends in two semicolons, the terminal will be held open.
 
-set -eu
+set -euo pipefail
 
 history_size=${BEMENU_RUN_MRU_HISTSIZE:-100}
 history_file=${XDG_CACHE_HOME:-$HOME/.cache}/${0##*/}/history

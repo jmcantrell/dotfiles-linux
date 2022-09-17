@@ -2,7 +2,7 @@
 
 # Stop capturing video from all sources.
 
-set -eu
+set -euo pipefail
 
 capture-video-camera -X &
 capture-video-desktop -X &

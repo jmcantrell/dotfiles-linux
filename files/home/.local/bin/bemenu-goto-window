@@ -2,7 +2,7 @@
 
 # Focus a menu-selected window.
 
-set -eu
+set -euo pipefail
 
 read -r -d $'\t' window_id < <(
     swaymsg -t get_tree |

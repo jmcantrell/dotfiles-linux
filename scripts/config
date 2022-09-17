@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eu
+set -euo pipefail
 
 # Add file system modifications.
 sudo rsync -v --archive --no-owner --no-group ./files/root/ /

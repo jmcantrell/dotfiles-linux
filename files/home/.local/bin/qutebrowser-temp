@@ -2,7 +2,7 @@
 
 # Run qutebrowser using a temporary session directory.
 
-set -eu
+set -euo pipefail
 
 directory=$(mktemp -d -t "${0##*/}.XXXXXXXXXX")
 printf -v cleanup "rm -r %q" "$directory"

@@ -2,7 +2,7 @@
 
 # Install or update the game Factorio.
 
-set -eu
+set -euo pipefail
 
 temp_dir=${TMPDIR:-/tmp}
 cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/factorio

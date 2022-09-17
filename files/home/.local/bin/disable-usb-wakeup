@@ -8,7 +8,7 @@
 # started to ensure that any hardware reconfiguration (though unlikely) does
 # not break the functionality.
 
-set -eu
+set -euo pipefail
 
 me=${0##*/}
 wakeup=/proc/acpi/wakeup

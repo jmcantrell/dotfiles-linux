@@ -2,7 +2,7 @@
 
 # Unmount menu-selected udiskie device.
 
-set -eu
+set -euo pipefail
 
 target=$(
     udiskie-info -a -o "{mount_path}" -f is_mounted |

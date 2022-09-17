@@ -2,7 +2,7 @@
 
 # Check battery power level and hibernate if necessary.
 
-set -eu
+set -euo pipefail
 
 # Battery capacity percentages that trigger notifications.
 low_capacity=25      # initial alert so user is aware of low power

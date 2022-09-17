@@ -2,7 +2,7 @@
 
 # Mount menu-selected udiskie device.
 
-set -eu
+set -euo pipefail
 
 declare -A choices=()
 

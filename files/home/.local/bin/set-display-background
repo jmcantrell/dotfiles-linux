@@ -2,7 +2,7 @@
 
 # Set a desktop background or restore the previous one.
 
-set -eu
+set -euo pipefail
 
 image=${1:-}
 background=$HOME/.background

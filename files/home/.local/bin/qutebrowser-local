@@ -2,7 +2,7 @@
 
 # Run qutebrowser using a given base directory.
 
-set -eu
+set -euo pipefail
 
 directory=$1
 shift

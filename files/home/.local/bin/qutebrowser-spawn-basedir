@@ -3,7 +3,7 @@
 # Prepare a skeleton qutebrowser base directory that inherits particular files
 # that I would like to remain consistent between sessions.
 
-set -eu
+set -euo pipefail
 shopt -s nullglob
 
 config_dir=${XDG_CONFIG_HOME:-$HOME/.config}/qutebrowser
