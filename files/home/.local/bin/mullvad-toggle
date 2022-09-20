@@ -11,4 +11,4 @@ else
     action=start
 fi
 
-sudo systemctl "$action" wg-quick@wg-mullvad.service
+sudo systemctl "$action" wg-quick@mullvad.service
