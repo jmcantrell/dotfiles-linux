@@ -21,10 +21,10 @@ on_click.1 = 'terminal --hold -e df --si --human-readable ${instance}'
 on_click.3 = 'terminal -e ncdu ${instance}'
 
 [settings."path_exists:mullvad"]
-path = "/sys/class/net/mullvad"
+path = "/sys/class/net/wg-mullvad"
 label = "vpn"
 on_click.1 = "mullvad-toggle"
-on_click.2 = 'terminal -e sudo iftop -i mullvad'
+on_click.2 = 'terminal -e sudo iftop -i wg-mullvad'
 on_click.3 = "terminal --hold -e mullvad-details"
 
 [settings."systemd_unit:swayidle"]

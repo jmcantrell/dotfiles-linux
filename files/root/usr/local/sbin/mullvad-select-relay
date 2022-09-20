@@ -25,7 +25,7 @@ else
     jq_filter='.countries | map(.cities) | .[] | map(.relays) | flatten | map(.hostname) | .[]'
 fi
 
-wg_interface=mullvad
+wg_interface=wg-mullvad
 wg_config_dir=/etc/wireguard
 wg_config_file=$wg_config_dir/$wg_interface.conf
 
