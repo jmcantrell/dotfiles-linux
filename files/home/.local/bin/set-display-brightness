@@ -2,38 +2,37 @@
 
 set -euo pipefail
 
-me=${0##*/}
 usage="Set the display brightness and show a notification.
 
 Usage:
-    $me ACTION
+    ${0##*/} ACTION
 
 Actions:
     up        increase brightness by one step
     down      decrease brightness by one step
     max       set brightness to maximum
     min       set brightness to minimum
-    NUMBER    set brightness to NUMBER
-"
-
-usage() {
-    printf "%s\n" "$usage"
-    exit 0
-}
-
-die() {
-    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$1" >&2
-    exit "${2:-1}"
-}
+    NUMBER    set brightness to NUMBER"
 
 while getopts ":h" option; do
     case $option in
-    h) usage ;;
-    *) die "invalid option -- $OPTARG" ;;
+    h)
+        printf "%s\n" "$usage"
+        exit 0
+        ;;
+    *)
+        printf "Invalid option: %s\n" "$OPTARG" >&2
+        exit 1
+        ;;
     esac
 done && shift $((OPTIND - 1))
 
-action=${1:?missing action}
+if [[ ! -v 1 ]]; then
+    printf "The first argument must be an action\n" >&2
+    exit 1
+fi
+
+action=$1
 
 case $action in
 up) brightnessctl set 1+ ;;
@@ -41,6 +40,10 @@ down) brightnessctl set 1- ;;
 max) brightnessctl set 100% ;;
 min) brightnessctl set 0% ;;
 [0-9]*) brightnessctl set "$action" ;;
+*)
+    printf "Invalid action: %s\n" "$action" >&2
+    exit 1
+    ;;
 esac
 
 value=$(brightnessctl get)
@@ -48,5 +51,5 @@ total=$(brightnessctl max)
 
 notify-send -u low -i display-brightness-symbolic \
     -h int:value:"$((value * 100 / total))" \
-    -h string:x-canonical-private-synchronous:"$me" \
+    -h string:x-canonical-private-synchronous:"${0##*/}" \
     "Brightness" "Level: $value" &

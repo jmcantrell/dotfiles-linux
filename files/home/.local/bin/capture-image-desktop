@@ -7,11 +7,10 @@ directory=$HOME
 file_name=desktop_%FT%T%:z
 file_type=png
 
-me=${0##*/}
 usage="Capture an image of the desktop.
 
 Usage:
-    $me [OPTIONS] [FILE]
+    ${0##*/} [OPTIONS] [FILE]
 
 Options:
     -g GEOMETRY     geometry of region to capture
@@ -39,48 +38,35 @@ Options:
 Arguments:
     FILE            output file (used instead of default)
                     formats any sequences recognized by strftime
-                    (default: $directory/$file_name.$file_type)
-"
+                    (default: $directory/$file_name.$file_type)"
 
-usage() {
-    printf "%s\n" "$usage"
-    exit 0
+window_geometry() {
+    swaymsg -t get_tree | jq -r ".. | select(.rect? and .visible?${1:+ and .focused?}) | .rect | \"\(.x),\(.y) \(.width)x\(.height)\""
 }
 
-die() {
-    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$1" >&2
-    exit "${2:-1}"
-}
-
-geometry_format='\(.x),\(.y) \(.width)x\(.height)'
-
-focused_window_geometry() {
-    swaymsg -t get_tree |
-        jq -r ".. | select(.rect? and .visible? and .focused?) | .rect | \"$geometry_format\""
-}
-
-select_window_geometry() {
-    swaymsg -t get_tree |
-        jq -r ".. | select(.rect? and .visible?) | .rect | \"$geometry_format\"" |
-        slurp -r
-}
-
-unset edit capture_mouse
+edit=0
+capture_mouse=0
 
 while getopts ":g:rfsmed:D:N:E:h" option; do
     case $option in
     g) geometry=$OPTARG ;;
     r) geometry=$(slurp) ;;
-    f) geometry=$(focused_window_geometry) ;;
-    s) geometry=$(select_window_geometry) ;;
+    f) geometry=$(window_geometry 1) ;;
+    s) geometry=$(window_geometry | slurp -r) ;;
     e) edit=1 ;;
     m) capture_mouse=1 ;;
     d) delay=$OPTARG ;;
     D) directory=$OPTARG ;;
     N) file_name=$OPTARG ;;
     E) file_type=$OPTARG ;;
-    h) usage ;;
-    *) die "invalid option -- $OPTARG" ;;
+    h)
+        printf "%s\n" "$usage"
+        exit 0
+        ;;
+    *)
+        printf "Invalid option: %s\n" "$OPTARG" >&2
+        exit 1
+        ;;
     esac
 done && shift $((OPTIND - 1))
 
@@ -92,7 +78,7 @@ if [[ -v geometry ]]; then
     capture_command+=(-g "$geometry")
 fi
 
-if [[ -v capture_mouse ]]; then
+if ((capture_mouse)); then
     capture_command+=(-c)
 fi
 
@@ -104,7 +90,7 @@ fi
 
 mkdir -p "$(dirname "$output_file")"
 
-if [[ -v edit ]]; then
+if ((edit)); then
     # The editor is feedback that the capture has occurred.
     "${capture_command[@]}" - | swappy -f - -o "$output_file"
 else

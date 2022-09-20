@@ -11,6 +11,7 @@ history_file=${XDG_CACHE_HOME:-$HOME/.cache}/${0##*/}/history
 
 mkdir -p "$(dirname "$history_file")"
 touch "$history_file"
+chmod 600 "$history_file"
 
 mru_path() {
     cat "$history_file"                       # Shift the most recent entries to the top
@@ -18,15 +19,17 @@ mru_path() {
 }
 
 mru_add() {
-    local cmd=${1:?missing command}
     {
-        printf "%s\n" "$cmd"                            # Shift the most recent entry to the top
-        grep -vx "$cmd" "$history_file"                 # ... of the previous entries.
+        printf "%s\n" "$1"                              # Shift the most recent entry to the top
+        grep -vx "$1" "$history_file"                   # ... of the previous entries.
     } | head -n"$history_size" | sponge "$history_file" # Letting the least recent entry drop off.
 }
 
 # Prompt user for a command.
-cmd=$(mru_path | bemenu -i -p run)
+if ! cmd=$(mru_path | bemenu -i -p run) || [[ -z $cmd ]]; then
+    printf "No command entered or selected\n" >&2
+    exit 1
+fi
 
 # Remember it as recently used.
 mru_add "$cmd"

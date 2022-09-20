@@ -6,11 +6,10 @@ config_dir=${XDG_CONFIG_HOME:-$HOME/.config}/udiskie
 keyfile_dir=${XDG_DATA_HOME:-$HOME/.local/share}/udiskie/keyfiles
 config_file=$config_dir/config.json
 
-me=${0##*/}
 usage="Remember an encrypted disk's keyfile for automatic mounting.
 
 Usage:
-    $me [OPTIONS] DEVICE KEYFILE
+    ${0##*/} [OPTIONS] DEVICE KEYFILE
 
 Options:
     -n NAME         use NAME for the keyfile instead of the UUID
@@ -22,18 +21,7 @@ Arguments:
     DEVICE          device to unlock with KEYFILE   
     KEYFILE         file capable of unlocking DEVICE
 
-It's expected that KEYFILE is already (or will be) added to DEVICE.
-"
-
-usage() {
-    printf "%s\n" "$usage"
-    exit 0
-}
-
-die() {
-    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$1" >&2
-    exit "${2:-1}"
-}
+It's expected that KEYFILE is already (or will be) added to DEVICE."
 
 unset keyfile_name
 
@@ -41,18 +29,47 @@ while getopts ":n:C:h" option; do
     case $option in
     n) keyfile_name=$OPTARG ;;
     C) config_dir=$OPTARG ;;
-    h) usage ;;
-    *) die "invalid option -- $OPTARG" ;;
+    h)
+        printf "%s\n" "$usage"
+        exit 0
+        ;;
+    *)
+        printf "Invalid option: %s\n" "$OPTARG" >&2
+        exit 1
+        ;;
     esac
 done && shift $((OPTIND - 1))
 
-device=${1:?missing device}
-keyfile_original=${2:?missing keyfile}
-
-# Lookup the uuid for the device.
-if ! uuid=$(sudo blkid -s UUID -o value "$device") || [[ -z $uuid ]]; then
-    die "unable to get UUID for device"
+if [[ ! -v 1 ]]; then
+    printf "The first argument must be a device\n" >&2
+    exit 1
 fi
+
+if [[ ! -b $1 ]]; then
+    printf "File is not a device: %q\n" "$1" >&2
+    exit 1
+fi
+
+device=$1
+
+if [[ ! -v 2 ]]; then
+    printf "The second argument must be a keyfile\n" >&2
+    exit 1
+fi
+
+if [[ ! -f $2 ]]; then
+    printf "File does not exist: %q\n" "$2" >&2
+    exit 1
+fi
+
+keyfile_original=$2
+
+if ! uuid=$(sudo blkid -s UUID -o value "$device") || [[ -z $uuid ]]; then
+    printf "Unable to get UUID for device: %q\n" "$device" >&2
+    exit 1
+fi
+
+umask 077
 
 # If the config file doesn't exist, add a skeleton.
 if [[ ! -f $config_file ]]; then
@@ -60,33 +77,28 @@ if [[ ! -f $config_file ]]; then
     jq -n '.device_config=[]' >"$config_file"
 fi
 
-# Keep a copy of the keyfile for later.
+# Keep a copy of the keyfile for udiskie.
 mkdir -p "$keyfile_dir"
 keyfile_copy=$keyfile_dir/${keyfile_name:-$uuid}.bin
 sudo cp -v "$keyfile_original" "$keyfile_copy"
 sudo chown "$USER:$USER" "$keyfile_copy"
-sudo chmod 600 "$keyfile_copy"
 
 # Lookup the index for this uuid, if it already exists.
-index=$(
-    jq --arg uuid "$uuid" \
-        '.device_config | map(.id_uuid == $uuid) | index(true)' \
-        "$config_file"
-)
+index=$(jq --arg uuid "$uuid" '.device_config | map(.id_uuid == $uuid) | index(true)' "$config_file")
 
-options=(--arg keyfile "${keyfile_copy/$HOME/\~}")
+# Pass the keyfile to jq, but with the shortened home path (for portability).
+jq_options=(--arg keyfile "${keyfile_copy/$HOME/\~}")
 
 # Depending on whether or not the uuid exists, either add or update it.
 if [[ $index == null ]]; then
-    options+=(--arg uuid "$uuid")
-    query='.device_config += [{ "id_uuid": $uuid, "keyfile": $keyfile }]'
+    jq_options+=(--arg uuid "$uuid")
+    jq_filter='.device_config += [{ "id_uuid": $uuid, "keyfile": $keyfile }]'
 else
-    options+=(--arg index "$index")
-    query='.device_config[$index | tonumber].keyfile=$keyfile'
+    jq_options+=(--arg index "$index")
+    jq_filter='.device_config[$index | tonumber].keyfile=$keyfile'
 fi
 
-# Update the config file and (re)write it.
-jq "${options[@]}" "$query" "$config_file" | sponge "$config_file"
+jq "${jq_options[@]}" "$jq_filter" "$config_file" | sponge "$config_file"
 
 # Restart the service to pick up the config changes.
 systemctl --user restart udiskie.service

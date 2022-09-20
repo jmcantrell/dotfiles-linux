@@ -2,47 +2,40 @@
 
 set -euo pipefail
 
-me=${0##*/}
 usage="Print the working directory of a window.
 
 Usage:
-    $me [ID]
+    ${0##*/} [ID]
 
 Arguments:
     ID    print directory for window ID
-          (default: focused window)
-"
-
-usage() {
-    printf "%s\n" "$usage"
-    exit 0
-}
-
-die() {
-    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$1" >&2
-    exit "${2:-1}"
-}
+          (default: focused window)"
 
 while getopts ":h" option; do
     case $option in
-    h) usage ;;
-    *) die "invalid option -- $OPTARG" ;;
+    h)
+        printf "%s\n" "$usage"
+        exit 0
+        ;;
+    *)
+        printf "Invalid option: %s\n" "$OPTARG" >&2
+        exit 1
+        ;;
     esac
 done && shift $((OPTIND - 1))
 
+jq_options=()
+
 if [[ -v 1 ]]; then
     # A window ID was given, so look at windows in every workspace.
-    window_pid=$(
-        swaymsg -t get_tree |
-            jq -r --argjson id "$1" '.. | select(.pid? and .id? and .id == $id) | .pid'
-    )
+    jq_filter='.. | select(.pid? and .id? and .id == $id) | .pid'
+    jq_options+=(--argjson id "$1")
 else
     # No window ID was given, so allow the user to select visible windows.
-    window_pid=$(
-        swaymsg -t get_tree |
-            jq -r '.. | select(.pid? and .visible? and .focused?) | .pid'
-    )
+    jq_filter='.. | select(.pid? and .visible? and .focused?) | .pid'
 fi
+
+window_pid=$(swaymsg -t get_tree | jq -r "${jq_options[@]}" "$jq_filter")
 
 # Fallback value, in case no window information or working directory is found.
 cwd=$HOME
@@ -63,7 +56,7 @@ if [[ -n $window_pid ]]; then
         pid=$next_pid
     done
 
-    cwd_link=/proc/"$pid"/cwd
+    cwd_link=/proc/$pid/cwd
 
     # The actual working directory is pointed to by the symlink.
     if possible_cwd=$(realpath "$cwd_link" 2>/dev/null); then
@@ -71,4 +64,4 @@ if [[ -n $window_pid ]]; then
     fi
 fi
 
-printf "%s\n" "$cwd"
+printf "%s" "$cwd"

@@ -2,47 +2,44 @@
 
 set -euo pipefail
 
-me=${0##*/}
 usage="Raise an alarm after a specified amount of time.
 
 Usage:
-    $me [OPTIONS] TIMESPEC
+    ${0##*/} [OPTIONS] TIMESPEC
 
 Options:
     -n NAME    descriptive name for timer
 
 Examples:
-    timer 1 minute
-    timer -n laundry 45 minutes
-    timer -n 'boat tour' 3 hours
-    timer -n 'very specific' now + 1 hour + 10 minutes
+    timer '1 minute'
+    timer -n laundry '45 minutes'
+    timer -n 'boat tour' '3 hours'
+    timer -n 'very specific' 'now + 1 hour + 10 minutes'
 
-See --date option in date(1) for the definition of TIMESPEC.
-"
-
-usage() {
-    printf "%s\n" "$usage"
-    exit 0
-}
-
-die() {
-    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$1" >&2
-    exit "${2:-1}"
-}
+See --date option in date(1) for a complete definition of TIMESPEC."
 
 unset name
 
 while getopts ":n:h" option; do
     case $option in
     n) name=$OPTARG ;;
-    h) usage ;;
-    *) die "invalid option -- $OPTARG" ;;
+    h)
+        printf "%s\n" "$usage"
+        exit 0
+        ;;
+    *)
+        printf "Invalid option: %s\n" "$OPTARG" >&2
+        exit 1
+        ;;
     esac
 done && shift $((OPTIND - 1))
 
-time_spec=${*:?missing time specification}
+if [[ ! -v 1 ]]; then
+    printf "The first argument must be a time specification\n" >&2
+    exit 1
+fi
 
-at "$(date -d "$time_spec" +"%H:%M %Y-%m-%d")" <<-EOF
+at "$(date -d "$1" +"%H:%M %Y-%m-%d")" <<EOF
 export DISPLAY=$DISPLAY
 export WAYLAND_DISPLAY=$WAYLAND_DISPLAY
 canberra-gtk-play -i alarm-clock-elapsed &

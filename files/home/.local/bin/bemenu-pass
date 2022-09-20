@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
+shopt -s nullglob globstar
 
 password_length=16
 
-me=${0##*/}
 usage="Interact with pass using bemenu.
 
 Usage:
-    $me [OPTIONS] [ACTION]
+    ${0##*/} [OPTIONS] [ACTION]
 
 Options:
     -n NUMBER    generated password length
@@ -20,32 +20,22 @@ Actions:
     choose       choose existing password (default)
     generate     generate a new password
 
-In all cases, the password is copied to the clipboard.
-"
-
-pass_dir=${PASSWORD_STORE_DIR:-$HOME/.password-store}
-
-usage() {
-    printf "%s\n" "$usage"
-    exit 0
-}
-
-die() {
-    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$1" >&2
-    exit "${2:-1}"
-}
+In all cases, the password is copied to the clipboard."
 
 pass_names() {
-    if [[ ! -d $pass_dir ]]; then
-        return
+    local dir=${PASSWORD_STORE_DIR:-$HOME/.password-store}
+
+    if [[ ! -d $dir ]]; then
+        return 0
     fi
 
-    local file
-
-    find -L "$pass_dir" -type f -name "*.gpg" | while read -r file; do
-        local name=${file#"$pass_dir"/}
-        name=${name%.gpg}
-        printf "%s\n" "$name"
+    local path name
+    for path in "$dir"/**.gpg; do
+        if [[ -f $path ]]; then
+            name=${path#"$dir"/}
+            name=${name%.gpg}
+            printf "%s\n" "$name"
+        fi
     done
 }
 
@@ -55,8 +45,14 @@ while getopts ":n:qh" option; do
     case $option in
     n) password_length=$OPTARG ;;
     q) show_option=--qrcode ;;
-    h) usage ;;
-    *) die "invalid option -- $OPTARG" ;;
+    h)
+        printf "%s\n" "$usage"
+        exit 0
+        ;;
+    *)
+        printf "Invalid option: %s\n" "$OPTARG" >&2
+        exit 1
+        ;;
     esac
 done && shift $((OPTIND - 1))
 
@@ -64,10 +60,16 @@ action=${1:-choose}
 
 case $action in
 choose | generate) ;;
-*) die "invalid action -- $action" ;;
+*)
+    printf "Invalid action: %s\n" "$action" >&2
+    exit 1
+    ;;
 esac
 
-name=$(pass_names | bemenu -b -p "$action password")
+if ! name=$(pass_names | bemenu -b -p "$action password") || [[ -z $name ]]; then
+    printf "No password name entered or selected\n" >&2
+    exit 1
+fi
 
 case $action in
 choose) pass show "$show_option" "$name" ;;
@@ -79,7 +81,7 @@ clipboard_seconds=${PASSWORD_STORE_CLIP_TIME:-45}
 if [[ $show_option == --clip ]]; then
     notify-send -i edit-copy-symbolic \
         -t $((clipboard_seconds * 1000)) \
-        -h string:x-canonical-private-synchronous:"$me" \
-        "Password for '$name' copied to clipboard" \
-        "Self-destructing in <b>$clipboard_seconds</b> seconds..." &
+        -h string:x-canonical-private-synchronous:"${0##*/}" \
+        "Copied $name to clipboard" \
+        "Will clear in <b>$clipboard_seconds</b> seconds..." &
 fi

@@ -1,10 +1,11 @@
-set $mode_snip snippet: (s)ave, (c)opy, (e)dit, (t)ype (d)elete
+set $mode_snip snippet: (r)ead, (w)rite, (a)ppend, (d)elete, (e)dit, (t)ype
 mode "$mode_snip" {
-    bindsym s exec bemenu-snip save,   mode "default"
-    bindsym c exec bemenu-snip copy,   mode "default"
+    bindsym r exec bemenu-snip read,   mode "default"
+    bindsym w exec bemenu-snip write,  mode "default"
+    bindsym a exec bemenu-snip append, mode "default"
+    bindsym d exec bemenu-snip delete, mode "default"
     bindsym e exec bemenu-snip edit,   mode "default"
     bindsym t exec bemenu-snip type,   mode "default"
-    bindsym d exec bemenu-snip delete, mode "default"
     bindsym Escape mode "default"
 }
 bindsym $super+Insert mode "$mode_snip"

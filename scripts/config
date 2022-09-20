@@ -24,7 +24,6 @@ fi
 systemctl --user enable --now {mako,udiskie,swayidle}.service
 
 # Only enable battery monitoring if a battery exists.
-# This assumes that if any battery is present, one will be named BAT0.
 if [[ -e /sys/class/power_supply/BAT0 ]]; then
     systemctl --user enable --now check-battery.timer
 fi

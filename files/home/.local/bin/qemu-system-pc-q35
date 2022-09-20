@@ -2,40 +2,46 @@
 
 set -euo pipefail
 
+usage="Execute a QEMU pc-q35 system with some common optimizations.
+
+Usage:
+    ${0##*/} [OPTIONS] [ARGUMENT...]
+
+Options:
+    -n NAME    specify the machine's process name
+    -m SIZE    specify machine's ram size (e.g. 4G)
+    -F RULE    add to the host forwarding rules (e.g. tcp::60022-:22)
+    -i FILE    add iso FILE as a cdrom"
+
 options=()
 hostfwds=()
-
-boot_from_iso=0
 
 cdrom_id=0
 cdrom_device_fmt="scsi-cd,bus=scsi0.0,drive=cdrom%d"
 cdrom_drive_fmt="id=cdrom%d,if=none,format=raw,media=cdrom,read-only=on,file=%s"
 
-while getopts "n:i:m:F:" option; do
+while getopts "n:m:F:i:h" option; do
     case $option in
-    n)
-        options+=(-name "$OPTARG")
-        ;;
+    n) options+=(-name "$OPTARG") ;;
+    m) options+=(-m "$OPTARG") ;;
+    F) hostfwds+=("$OPTARG") ;;
     i)
         id=$((cdrom_id++))
         options+=(
             -device "$(printf "$cdrom_device_fmt" "$id")"
             -drive "$(printf "$cdrom_drive_fmt" "$id" "$OPTARG")"
         )
-        boot_from_iso=1
         ;;
-    m)
-        options+=(-m "$OPTARG")
+    h)
+        printf "%s\n" "$usage"
+        exit 0
         ;;
-    F)
-        hostfwds+=("$OPTARG")
+    *)
+        printf "Invalid option: %s\n" "$OPTARG" >&2
+        exit 1
         ;;
     esac
 done && shift $((OPTIND - 1))
-
-if ((boot_from_iso)); then
-    options+=(-boot "order=d,menu=on")
-fi
 
 hostfwds_arg=$(paste -sd, <<<"${hostfwds[@]/#/hostfwd=}")
 

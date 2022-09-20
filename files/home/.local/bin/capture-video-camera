@@ -8,11 +8,10 @@ directory=$HOME
 file_name=camera_%FT%T%:z
 file_type=mp4
 
-me=${0##*/}
 usage="Capture video from a camera device.
 
 Usage:
-    $me [OPTIONS] [FILE | 'stop']
+    ${0##*/} [OPTIONS] [FILE | 'stop']
     
 Options:
     -a              also capture audio from microphone
@@ -37,27 +36,10 @@ Options:
 Arguments:
     FILE            output file (used instead of default)
                     formats any sequences recognized by strftime
-                    (default: $directory/$file_name.$file_type)
-"
+                    (default: $directory/$file_name.$file_type)"
 
-usage() {
-    printf "%s\n" "$usage"
-    exit 0
-}
-
-die() {
-    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$1" >&2
-    exit "${2:-1}"
-}
-
-stop_recording() {
-    if [[ -f $capture_command_stdin ]]; then
-        printf "q\n" >>"$capture_command_stdin"
-    fi
-    exit 0
-}
-
-capture_command_stdin=$XDG_RUNTIME_DIR/$me-command.stdin
+capture_audio=0
+capture_command_stdin=$XDG_RUNTIME_DIR/${0##*/}-command.stdin
 
 while getopts ":ai:d:D:N:E:Xh" option; do
     case $option in
@@ -67,9 +49,20 @@ while getopts ":ai:d:D:N:E:Xh" option; do
     D) directory=$OPTARG ;;
     N) file_name=$OPTARG ;;
     E) file_type=$OPTARG ;;
-    X) stop_recording ;;
-    h) usage ;;
-    *) die "invalid option -- $OPTARG" ;;
+    X)
+        if [[ -f $capture_command_stdin ]]; then
+            printf "q\n" >>"$capture_command_stdin"
+        fi
+        exit 0
+        ;;
+    h)
+        printf "%s\n" "$usage"
+        exit 0
+        ;;
+    *)
+        printf "Invalid option: %s\n" "$OPTARG" >&2
+        exit 1
+        ;;
     esac
 done && shift $((OPTIND - 1))
 
@@ -78,7 +71,7 @@ output_file=$(date +"${1:-$directory/$file_name.$file_type}")
 
 capture_command=(ffmpeg -hide_banner -y -f v4l2 -i "$device")
 
-if [[ -v capture_audio ]]; then
+if ((capture_audio)); then
     capture_command+=(-f alsa -i default)
 fi
 
@@ -110,7 +103,7 @@ else
 fi
 
 # If the capture file is a gif, optimize it.
-if [[ $output_file == *.gif ]]; then
+if [[ $output_file == *.gif ]] && command -v gifsicle >/dev/null; then
     gifsicle --batch --optimize=3 "$output_file"
 fi
 

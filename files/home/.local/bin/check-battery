@@ -17,20 +17,18 @@ power_supply=/sys/class/power_supply
 # Don't do anything if there are no batteries.
 # This is probably not a mobile device.
 if [[ ! -d $power_supply/BAT0 ]]; then
-    printf "There are no batteries to monitor.\n"
-    exit 0
+    printf "There are no batteries to monitor\n" >&2
+    exit 1
 fi
 
 # Returns a status indicating whether or not external power is being supplied.
 is_ac_online() {
-    (($(<"$power_supply"/AC/online) == 1))
+    (($(<"$power_supply"/AC/online)))
 }
 
 # Don't do anything if plugged in.
 # There should be no danger of losing power.
-if is_ac_online; then
-    exit 0
-fi
+is_ac_online && exit 0
 
 # Notifies the user of events, replacing the previous notification.
 notify() {
@@ -44,15 +42,13 @@ max_discharging_capacity() {
     local battery capacity
 
     for battery in "$power_supply"/BAT*; do
-        if [[ $(<"$battery"/status) == Discharging ]]; then
+        if [[ -d $battery && $(<"$battery"/status) == Discharging ]]; then
             capacity=$(<"$battery"/capacity)
-            if ((capacity > max_capacity)); then
-                max_capacity=$capacity
-            fi
+            ((capacity > max_capacity)) && max_capacity=$capacity
         fi
     done
 
-    printf "%s\n" "$max_capacity"
+    printf "%d" "$max_capacity"
 }
 
 # Hibernate the system after a countdown, but give the user a grace period

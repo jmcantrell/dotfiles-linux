@@ -6,10 +6,12 @@ set -euo pipefail
 shopt -s nullglob
 
 for file in ~/.wprofile.d/*; do
-    [[ -f $file ]] || continue
-    . "$file" || printf "%s: line %s: unable to load file -- %s\n" "$0" "$LINENO" "$file" >&2
+    if [[ -f $file ]] && ! . "$file"; then
+        printf "Unable to source file: %q\n" "$file" >&2
+        exit 1
+    fi
 done
 unset file
 
-export XDG_CURRENT_DESKTOP=sway
-exec "$XDG_CURRENT_DESKTOP" 2>&1 | logger -t "$XDG_CURRENT_DESKTOP"
+export XDG_CURRENT_DESKTOP=$DESKTOP
+exec "$DESKTOP" 2>&1 | logger -t "$DESKTOP"

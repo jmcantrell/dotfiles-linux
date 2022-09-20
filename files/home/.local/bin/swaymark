@@ -2,46 +2,51 @@
 
 set -euo pipefail
 
-me=${0##*/}
 usage="Interact with sway's container marks.
 
 Usage: 
-    $me ACTION
+    ${0##*/} ACTION
 
 Actions:
     set      set mark for current container
     unset    remove mark for current container
     clear    remove all container marks
-    goto     focus a marked container
-"
-
-usage() {
-    printf "%s\n" "$usage"
-    exit 0
-}
-
-die() {
-    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$1" >&2
-    exit "${2:-1}"
-}
+    goto     focus a marked container"
 
 while getopts ":h" option; do
     case $option in
-    h) usage ;;
-    *) die "invalid option -- $OPTARG" ;;
+    h)
+        printf "%s\n" "$usage"
+        exit 0
+        ;;
+    *)
+        printf "Invalid option: %s\n" "$OPTARG" >&2
+        exit 1
+        ;;
     esac
 done && shift $((OPTIND - 1))
 
-action=${1:?missing action}
+if [[ ! -v 1 ]]; then
+    printf "The first argument must be an action\n" >&2
+    exit 1
+fi
+
+action=$1
 
 case $action in
 set | goto) ;;
 unset) exec swaymsg '[con_id="__focused__"] unmark' ;;
 clear) exec swaymsg unmark ;;
-*) die "invalid action -- $action" ;;
+*)
+    printf "Invalid action: %s\n" "$action" >&2
+    exit 1
+    ;;
 esac
 
-mark=$(swaymsg -t get_marks | jq -r '.[]' | bemenu -p "$action mark")
+if ! mark=$(swaymsg -t get_marks | jq -r .[] | bemenu -p "$action mark") || [[ -z $mark ]]; then
+    printf "No mark entered or selected\n" >&2
+    exit 1
+fi
 
 case $action in
 set) exec swaymsg mark "$mark" ;;

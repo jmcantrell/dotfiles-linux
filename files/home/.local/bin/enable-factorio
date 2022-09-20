@@ -1,48 +1,44 @@
 #!/usr/bin/env bash
 
-# Install or update the game Factorio.
+# Install or update Factorio.
 
 set -euo pipefail
 
-temp_dir=${TMPDIR:-/tmp}
 cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/factorio
 base_url=https://factorio.com
 
-latest_version() {
-    curl -sL "$base_url"/api/latest-releases | jq -r ".$release.$branch"
-}
-
 branch=${FACTORIO_BRANCH:-alpha}
 release=${FACTORIO_RELEASE:-stable}
-version=${FACTORIO_VERSION:-$(latest_version)}
+version=${FACTORIO_VERSION:-$(curl -sSL "$base_url"/api/latest-releases | jq -r ".$release.$branch")}
 
-url=$base_url/get-download/$version/$branch/linux64
-filename=factorio_${branch}_x64_$version.tar.xz
-cache_file=$cache_dir/$filename
+archive_url=$base_url/get-download/$version/$branch/linux64
+archive_file=$cache_dir/factorio_${branch}_x64_$version.tar.xz
 
-if [[ ! -f $cache_file ]]; then
-    temp_file=$temp_dir/$filename.part
+if [[ ! -f $archive_file ]]; then
+    printf "Downloading Factorio %s (%s) v%s: %s\n" \
+        "$branch" "$release" "$version" "$archive_url"
 
-    printf "Downloading Factorio %s (%s) v%s\n" "$branch" "$release" "$version" >&2
+    temp_file=$archive_file.part
+    mkdir -p "$(dirname "$temp_file")"
 
-    curl --get --fail --location --progress-bar \
+    curl --get --fail --location \
         --retry 10 --retry-delay 3 --continue-at - \
         --data-urlencode username="$FACTORIO_USERNAME" \
         --data-urlencode token="$FACTORIO_TOKEN" \
-        --output "$temp_file" "$url"
+        --output "$temp_file" "$archive_url"
 
-    mkdir -p "$cache_dir"
-    mv "$temp_file" "$cache_file"
+    mv -v "$temp_file" "$archive_file"
 fi
 
 opt_home=$HOME/.local/opt
 opt_dir=$opt_home/factorio
 
-rm -rf "$opt_dir"
+rm -vrf "$opt_dir"
 mkdir -p "$opt_home"
-printf "Unpacking: %s\n" "$filename"
-tar xf "$cache_file" -C "$opt_home"
+
+printf "Unpacking archive: %q\n" "$archive_file"
+tar -vxf "$archive_file" -C "$opt_home"
 
 bin=$HOME/.local/bin/factorio
 mkdir -p "$(dirname "$bin")"
-ln -sfvrn "$opt_dir"/bin/x64/factorio "$bin"
+ln -vsfrn "$opt_dir"/bin/x64/factorio "$bin"

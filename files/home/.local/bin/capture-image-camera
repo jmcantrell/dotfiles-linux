@@ -8,11 +8,10 @@ directory=$HOME
 file_name=camera_%FT%T%:z
 file_type=png
 
-me=${0##*/}
 usage="Capture an image from a video device.
 
 Usage:
-    $me [OPTIONS] [FILE]
+    ${0##*/} [OPTIONS] [FILE]
 
 Options:
     -e              edit the captured image before saving
@@ -32,20 +31,9 @@ Options:
 Arguments:
     FILE            output file (used instead of default)
                     formats any sequences recognized by strftime
-                    (default: $directory/$file_name.$file_type)
-"
+                    (default: $directory/$file_name.$file_type)"
 
-usage() {
-    printf "%s\n" "$usage"
-    exit 0
-}
-
-die() {
-    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$1" >&2
-    exit "${2:-1}"
-}
-
-unset edit
+edit=0
 
 while getopts ":ed:D:N:E:h" option; do
     case $option in
@@ -54,16 +42,20 @@ while getopts ":ed:D:N:E:h" option; do
     D) directory=$OPTARG ;;
     N) file_name=$OPTARG ;;
     E) file_type=$OPTARG ;;
-    h) usage ;;
-    *) die "invalid option -- $OPTARG" ;;
+    h)
+        printf "%s\n" "$usage"
+        exit 0
+        ;;
+    *)
+        printf "Invalid option: %s\n" "$OPTARG" >&2
+        exit 1
+        ;;
     esac
 done && shift $((OPTIND - 1))
 
 output_file=$(date +"${1:-$directory/$file_name.$file_type}")
 
-capture_command=(
-    ffmpeg -hide_banner -y -f v4l2 -i "$device" -frames:v 1 -c:v "$file_type"
-)
+capture_command=(ffmpeg -hide_banner -y -f v4l2 -i "$device" -frames:v 1 -c:v "$file_type")
 
 # If a delay was requested, provide an audible countdown to let user know
 # something is about to happen.
@@ -73,7 +65,7 @@ fi
 
 mkdir -p "$(dirname "$output_file")"
 
-if [[ -v edit ]]; then
+if ((edit)); then
     # The editor is feedback that the capture has occurred.
     "${capture_command[@]}" -f image2 - | swappy -f - -o "$output_file"
 else

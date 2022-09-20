@@ -2,31 +2,25 @@
 
 set -euo pipefail
 
-me=${0##*/}
 usage="Capture the color value of a selected pixel to the clipboard.
 
 Usage:
-    $me TYPE
+    ${0##*/} TYPE
 
 Types:
     hex    output color as a hex string (ex: #rrggbb) (default)
-    rgb    output color as an RGB tuple (ex: (1,2,3))
-"
-
-usage() {
-    printf "%s\n" "$usage"
-    exit 0
-}
-
-die() {
-    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$1" >&2
-    exit "${2:-1}"
-}
+    rgb    output color as an RGB tuple (ex: (1,2,3))"
 
 while getopts ":h" option; do
     case $option in
-    h) usage ;;
-    *) die "invalid option -- $OPTARG" ;;
+    h)
+        printf "%s\n" "$usage"
+        exit 0
+        ;;
+    *)
+        printf "Invalid option: %s\n" "$OPTARG" >&2
+        exit 1
+        ;;
     esac
 done && shift $((OPTIND - 1))
 
@@ -38,7 +32,7 @@ index=${indices[$name]}
 value=$(
     grim -g "$(slurp -p)" -t ppm - |
         convert - -format '%[pixel:p{0,0}]' txt:- |
-        tail -n1 | awk "{print \$$index}"
+        tail -n1 | awk -v i="$index" '{print $i}'
 )
 
 # Provide audible feedback that capture is complete.

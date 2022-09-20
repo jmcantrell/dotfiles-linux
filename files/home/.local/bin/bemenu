@@ -7,4 +7,6 @@ exec /usr/bin/bemenu -i -b -n \
     --tb='#222222' --tf='#ffffff' \
     --fb='#222222' --ff='#bbbbbb' \
     --nb='#222222' --nf='#bbbbbb' \
-    --hb='#005577' --hf='#eeeeee' "$@"
+    --hb='#005577' --hf='#eeeeee' \
+    --sb='#667f33' --sf='#eeeeee' \
+    "$@"

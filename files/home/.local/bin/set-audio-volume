@@ -4,11 +4,10 @@ set -euo pipefail
 
 step=5
 
-me=${0##*/}
 usage="Set the audio volume and show a notification.
 
 Usage:
-    $me [OPTIONS] ACTION
+    ${0##*/} [OPTIONS] ACTION
 
 Options:
     -o           change volume for outputs (sinks)
@@ -27,18 +26,7 @@ Actions:
     down         decrease volume
     mute         toggle volume mute status
     max          set volume to maximum
-    NUMBER       set volume to NUMBER percent
-"
-
-usage() {
-    printf "%s\n" "$usage"
-    exit 0
-}
-
-die() {
-    printf "%s: line %s: %s\n" "$0" "${BASH_LINENO[0]}" "$1" >&2
-    exit "${2:-1}"
-}
+    NUMBER       set volume to NUMBER percent"
 
 type_name=sink
 
@@ -48,8 +36,14 @@ while getopts ":ois:n:h" option; do
     o) type_name=sink ;;
     i) type_name=source ;;
     n) target_name=$OPTARG ;;
-    h) usage ;;
-    *) die "invalid option -- $OPTARG" ;;
+    h)
+        printf "%s\n" "$usage"
+        exit 0
+        ;;
+    *)
+        printf "Invalid option: %s\n" "$OPTARG" >&2
+        exit 1
+        ;;
     esac
 done && shift $((OPTIND - 1))
 
@@ -60,7 +54,12 @@ if [[ ! -v target_name ]]; then
     esac
 fi
 
-action=${1:?missing action}
+if [[ ! -v 1 ]]; then
+    printf "The first argument must be an action\n" >&2
+    exit 1
+fi
+
+action=$1
 
 case $action in
 mute) pactl set-"$type_name"-mute "$target_name" toggle ;;
@@ -68,6 +67,10 @@ up) pactl set-"$type_name"-volume "$target_name" +"$step%" ;;
 down) pactl set-"$type_name"-volume "$target_name" -"$step%" ;;
 max) pactl set-"$type_name"-volume "$target_name" 100% ;;
 [0-9]*) pactl set-"$type_name"-volume "$target_name" "$action" ;;
+*)
+    printf "Invalid action: %s\n" "$action" >&2
+    exit 1
+    ;;
 esac
 
 # If sway is running, refresh the status line to reflect the new volume.
@@ -76,9 +79,7 @@ if [[ -v SWAYSOCK ]]; then
     throttle swaystatus-refresh 1 killall -SIGUSR1 swaystatus &
 fi
 
-read -r left right < <(
-    pactl get-"$type_name"-volume "$target_name" | head -n1 | awk '{print $5,$12}'
-)
+read -r left right < <(pactl get-"$type_name"-volume "$target_name" | head -n1 | awk '{print $5,$12}')
 
 # If the left and right channel values are the same, just display one value.
 # Otherwise, show separate values for each channel.
@@ -89,7 +90,7 @@ else
 fi
 
 # Show a different icon depending on the mute status.
-if [[ $(pactl get-"$type_name"-mute "$target_name") == *yes ]]; then
+if [[ $(pactl get-"$type_name"-mute "$target_name" | awk '{print $NF}') == yes ]]; then
     case $type_name in
     sink) icon="audio-volume-muted-symbolic" ;;
     source) icon="microphone-disabled-symbolic" ;;
@@ -108,5 +109,5 @@ fi
 
 notify-send -u low -i "$icon" \
     -h int:value:"$volume" \
-    -h string:x-canonical-private-synchronous:"$me" \
+    -h string:x-canonical-private-synchronous:"${0##*/}" \
     "Volume Control" "Volume: $volume" &
