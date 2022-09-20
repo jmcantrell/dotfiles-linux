@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+# Generate WireGuard configuration files for Mullvad servers.
+# NOTE: This needs to be run any time there are new servers added.
+
+set -euo pipefail
+shopt -s nullglob
+
+unset ADDRESS PRIVATE_KEY
+
+client_config_file=/usr/local/etc/mullvad/client.conf
+
+if [[ ! -f $client_config_file || ! -r $client_config_file ]]; then
+    printf "File does not exist or is not readable: %q\n" "$client_config_file" >&2
+    exit 1
+fi
+
+if ! . "$client_config_file"; then
+    printf "Unable to source file: %q\n" "$client_config_file" >&2
+    exit 1
+fi
+
+for var in ADDRESS PRIVATE_KEY; do
+    if [[ ! -v $var || -z ${!var} ]]; then
+        printf "Invalid client configuration: %q (%s is not set)\n" "$client_config_file" "$var" >&2
+        exit 1
+    fi
+    export "$var=${!var}"
+done
+
+export DNS=193.138.218.74
+
+relays_file=/usr/local/share/mullvad/relays.json
+mkdir -p "$(dirname "$relays_file")"
+curl -sSL -o "$relays_file" https://api.mullvad.net/public/relays/wireguard/v1/
+
+conf_template='[Interface]
+PrivateKey = $PRIVATE_KEY
+Address = $ADDRESS
+DNS = $DNS
+
+[Peer]
+PublicKey = $PUBLIC_KEY
+Endpoint = $ENDPOINT
+AllowedIPs = 0.0.0.0/0, ::/0'
+
+wg_config_dir=/etc/wireguard
+mkdir -p "$wg_config_dir"
+
+umask 077
+
+while read -r hostname && read -r public_key && read -r ipv4_addr_in; do
+    conf_file=$wg_config_dir/mullvad-${hostname%-wireguard}.conf
+    export PUBLIC_KEY=$public_key
+    export ENDPOINT=$ipv4_addr_in:51820
+    envsubst <<<"$conf_template" >"$conf_file"
+done < <(jq -er '.. | select(.hostname?) | .hostname, .public_key, .ipv4_addr_in' "$relays_file")

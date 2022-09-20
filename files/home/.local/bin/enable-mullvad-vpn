@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Enable the Mullvad WireGuard VPN service.
+
+set -euo pipefail
+
+sudo mullvad-mkconfig
+sudo mullvad-set-location us atl
+sudo mullvad-genkey "$MULLVAD_ACCOUNT"
+
+sudo systemctl enable --now wg-quick@mullvad.service

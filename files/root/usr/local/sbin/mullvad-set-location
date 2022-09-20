@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+# Configure the Mullvad VPN to limit relay selection to a location.
+# Usage: mullvad-set-location COUNTRY [CITY]
+
+set -euo pipefail
+
+relays_file=/usr/local/share/mullvad/relays.json
+
+readarray -t countries < <(jq -r '.countries[] | .code' "$relays_file" | sort)
+
+if [[ ! -v 1 ]] || ! printf "%s\n" "${countries[@]}" | grep -q "^$1$"; then
+    printf "The first argument must be a valid country code\n" >&2
+    printf "Recognized country codes: %s\n" "${countries[*]}" >&2
+    exit 1
+fi
+
+country=$1
+
+readarray -t cities < <(jq -r --arg country "$country" '.countries[] | select(.code == $country) | .cities[].code' "$relays_file" | sort)
+
+if [[ -v 2 ]] && ! printf "%s\n" "${cities[@]}" | grep -q "^$2$"; then
+    printf "The second argument, if given, must be a valid city code\n" >&2
+    printf "Recognized city codes for $country: %s\n" "${cities[*]}" >&2
+    exit 1
+fi
+
+city=${2:-}
+
+config_file=/usr/local/etc/mullvad/location.conf
+
+mkdir -p "$(dirname "$config_file")"
+
+lines=(COUNTRY "$country")
+if [[ -n $city ]]; then
+    lines+=(CITY "$city")
+fi
+
+printf "%s=%s\n" "${lines[@]}" >"$config_file"

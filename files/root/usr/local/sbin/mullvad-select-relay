@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+# Selects a random Mullvad relay based on optional location criteria.
+
+set -euo pipefail
+
+location_config_file=/usr/local/etc/mullvad/location.conf
+
+unset COUNTRY CITY
+
+if [[ -f $location_config_file ]] && ! . "$location_config_file"; then
+    printf "Unable to source file: %q\n" "$location_config_file" >&2
+    exit 1
+fi
+
+declare -a jq_options=()
+
+if [[ -v COUNTRY && -v CITY ]]; then
+    jq_options=(--arg country "$COUNTRY" --arg city "$CITY")
+    jq_filter='.countries | map(select(.code == $country)) | first | .cities | map(select(.code == $city)) | first | .relays | map(.hostname) | .[]'
+elif [[ -v COUNTRY ]]; then
+    jq_options=(--arg country "$COUNTRY")
+    jq_filter='.countries | map(select(.code == $country)) | map(.cities) | .[] | map(.relays) | flatten | map(.hostname) | .[]'
+else
+    jq_filter='.countries | map(.cities) | .[] | map(.relays) | flatten | map(.hostname) | .[]'
+fi
+
+wg_interface=mullvad
+wg_config_dir=/etc/wireguard
+wg_config_file=$wg_config_dir/$wg_interface.conf
+
+if ! relay_hostname=$(jq -er "${jq_options[@]}" "$jq_filter" /usr/local/share/mullvad/relays.json | shuf -n1) || [[ -z $relay_hostname ]]; then
+    printf "No relays found%s\n" "${COUNTRY:+ for location: $COUNTRY${CITY:+ $CITY}}" >&2
+    exit 1
+fi
+
+relay_config_file=$wg_config_dir/mullvad-${relay_hostname%-wireguard}.conf
+
+if [[ ! -f $relay_config_file || ! -r $relay_config_file ]]; then
+    printf "File does not exist or is not readable: %q\n" "$relay_config_file" >&2
+    exit 1
+fi
+
+ln -vsfn "$relay_config_file" "$wg_config_file"
