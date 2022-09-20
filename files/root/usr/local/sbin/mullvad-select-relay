@@ -25,15 +25,13 @@ else
     jq_filter='.countries | map(.cities) | .[] | map(.relays) | flatten | map(.hostname) | .[]'
 fi
 
-wg_interface=wg-mullvad
-wg_config_dir=/etc/wireguard
-wg_config_file=$wg_config_dir/$wg_interface.conf
-
 if ! relay_hostname=$(jq -er "${jq_options[@]}" "$jq_filter" /usr/local/share/mullvad/relays.json | shuf -n1) || [[ -z $relay_hostname ]]; then
     printf "No relays found%s\n" "${COUNTRY:+ for location: $COUNTRY${CITY:+ $CITY}}" >&2
     exit 1
 fi
 
+wg_config_dir=/etc/wireguard
+wg_config_file=$wg_config_dir/wg-mullvad.conf
 relay_config_file=$wg_config_dir/mullvad-${relay_hostname%-wireguard}.conf
 
 if [[ ! -f $relay_config_file || ! -r $relay_config_file ]]; then

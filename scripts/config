@@ -10,7 +10,9 @@ sudo gpasswd --add "$USER" video
 
 # Needed to update locate database without sudo.
 sudo gpasswd --add "$USER" locate
-sudo updatedb
+
+# Needed to use docker daemon without sudo.
+sudo gpasswd --add "$USER" docker
 
 # Set preferred shell.
 sudo chsh --shell /bin/zsh "$USER"
