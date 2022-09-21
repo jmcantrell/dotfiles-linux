@@ -5,7 +5,10 @@ set -euo pipefail
 usage="Print the working directory of a window.
 
 Usage:
-    ${0##*/} [ID]
+    ${0##*/} [OPTIONS] [ID]
+
+Options:
+    -h    show this help text and exit
 
 Arguments:
     ID    print directory for window ID

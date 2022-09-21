@@ -5,24 +5,21 @@ set -euo pipefail
 usage="Raise an alarm after a specified amount of time.
 
 Usage:
-    ${0##*/} [OPTIONS] TIMESPEC
+    ${0##*/} [OPTIONS] TIMESPEC [DESCRIPTION]
 
 Options:
-    -n NAME    descriptive name for timer
+    -h    show this help text and exit
 
 Examples:
     timer '1 minute'
-    timer -n laundry '45 minutes'
-    timer -n 'boat tour' '3 hours'
-    timer -n 'very specific' 'now + 1 hour + 10 minutes'
+    timer '45 minutes' laundry
+    timer '3 hours' 'boat tour'
+    timer 'now + 1 hour + 10 minutes' 'very specific time specification'
 
 See --date option in date(1) for a complete definition of TIMESPEC."
 
-unset name
-
-while getopts ":n:h" option; do
+while getopts ":h" option; do
     case $option in
-    n) name=$OPTARG ;;
     h)
         printf "%s\n" "$usage"
         exit 0
@@ -43,5 +40,5 @@ at "$(date -d "$1" +"%H:%M %Y-%m-%d")" <<EOF
 export DISPLAY=$DISPLAY
 export WAYLAND_DISPLAY=$WAYLAND_DISPLAY
 canberra-gtk-play -i alarm-clock-elapsed &
-notify-send -u critical -i dialog-information-symbolic "Timer elapsed" "${name:-}"
+notify-send -u critical -i dialog-information-symbolic "Timer elapsed" "${2:-}"
 EOF

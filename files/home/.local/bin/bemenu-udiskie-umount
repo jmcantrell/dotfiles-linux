@@ -4,9 +4,6 @@
 
 set -euo pipefail
 
-target=$(
-    udiskie-info -a -o "{mount_path}" -f is_mounted |
-        sort | bemenu -l 20 -b -p unmount
-)
+target=$(udiskie-info -a -o "{mount_path}" -f is_mounted | sort | bemenu -l 20 -b -p unmount)
 
 udiskie-umount "$target"

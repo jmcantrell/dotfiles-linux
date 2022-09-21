@@ -1,5 +1,5 @@
 # Rename the workspace (prefix with 0-9 to focus with super+0-9).
-bindsym $super+F2 exec swaymsg-input -p "workspace name" 'rename workspace to "%s"'
+bindsym $super+F2 exec bemenu-swaymsg-input -p "workspace name" 'rename workspace to "%s"'
 
 bindsym $super+1   workspace number 1
 bindsym $super+2   workspace number 2

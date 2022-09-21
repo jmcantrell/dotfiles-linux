@@ -1,13 +1,10 @@
-set $brightness_up   set-display-brightness up
-set $brightness_down set-display-brightness down
+bindsym --locked      $super+Prior exec set-display-brightness up
+bindsym --locked      $super+Next  exec set-display-brightness down
+bindsym --locked ctrl+$super+Prior exec set-display-brightness max
+bindsym --locked ctrl+$super+Next  exec set-display-brightness min
 
-bindsym --locked $super+Prior        exec $brightness_up
-bindsym --locked XF86MonBrightnessUp exec $brightness_up
-
-bindsym --locked $super+Next           exec $brightness_down
-bindsym --locked XF86MonBrightnessDown exec $brightness_down
-
-bindsym --locked ctrl+$super+Prior exec set-brightness max
-bindsym --locked ctrl+$super+Next  exec set-brightness min
+# Dedicated keyboard brightness controls.
+bindsym --locked XF86MonBrightnessUp   exec set-display-brightness up
+bindsym --locked XF86MonBrightnessDown exec set-display-brightness down
 
 # vi:ft=sway

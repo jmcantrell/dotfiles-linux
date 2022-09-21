@@ -7,9 +7,9 @@ set -euo pipefail
 read -r -d $'\t' window_id < <(
     swaymsg -t get_tree |
         jq -r ".. | select(.id? and .pid?) | \"\(.id)\t\(.name)\"" |
-        sort -n | bemenu -p windows -l 20
+        sort -n | bemenu -p windows -l 20 | head -n1
 )
 
-if [[ -z $window_id ]]; then
+if [[ -n $window_id ]]; then
     swaymsg "[con_id=$window_id] focus"
 fi

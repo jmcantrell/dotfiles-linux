@@ -5,11 +5,14 @@ set -euo pipefail
 usage="Capture the color value of a selected pixel to the clipboard.
 
 Usage:
-    ${0##*/} TYPE
+    ${0##*/} [OPTIONS] TYPE
+
+Options:
+    -h    show this help text and exit
 
 Types:
-    hex    output color as a hex string (ex: #rrggbb) (default)
-    rgb    output color as an RGB tuple (ex: (1,2,3))"
+    hex   output color as a hex string (ex: #rrggbb) (default)
+    rgb   output color as an RGB tuple (ex: (1,2,3))"
 
 while getopts ":h" option; do
     case $option in

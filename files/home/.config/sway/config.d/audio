@@ -3,8 +3,8 @@ set $audio_input  set-audio-volume -i
 
 bindsym --locked      $super+Up   exec $audio_output up
 bindsym --locked      $super+Down exec $audio_output down
-bindsym --locked ctrl+$super+Down exec $audio_output mute
 bindsym --locked ctrl+$super+Up   exec $audio_output max
+bindsym --locked ctrl+$super+Down exec $audio_output mute
 
 # Dedicated keyboard volume controls.
 bindsym --locked XF86AudioRaiseVolume exec $audio_output up

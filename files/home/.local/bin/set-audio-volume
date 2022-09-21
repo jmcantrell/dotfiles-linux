@@ -10,6 +10,8 @@ Usage:
     ${0##*/} [OPTIONS] ACTION
 
 Options:
+    -h           show this help text and exit
+
     -o           change volume for outputs (sinks)
                  (the default, if neither -o or -i are used)
 

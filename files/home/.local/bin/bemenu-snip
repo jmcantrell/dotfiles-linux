@@ -5,10 +5,10 @@ set -euo pipefail
 usage="Manage text snippets with bemenu.
 
 Usage:
-    ${0##*/} -h
     ${0##*/} [OPTIONS] ACTION NAME
 
 Options:
+    -h              show this help text and exit
     -D DIRECTORY    directory in which to store snippets
 
 Actions:

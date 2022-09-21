@@ -6,6 +6,9 @@ set -euo pipefail
 
 sudo mullvad-mkconfig
 sudo mullvad-set-location us atl
-sudo mullvad-genkey "$MULLVAD_ACCOUNT"
+
+if [[ ! -f /usr/local/etc/mullvad/client.conf ]]; then
+    sudo mullvad-genkey "$MULLVAD_ACCOUNT"
+fi
 
 sudo systemctl enable --now wg-quick@wg-mullvad.service

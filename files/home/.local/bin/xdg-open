@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # Pretend rifle is xdg-open.
+# Usage: xdg-open FILE...
 
 set -euo pipefail
 

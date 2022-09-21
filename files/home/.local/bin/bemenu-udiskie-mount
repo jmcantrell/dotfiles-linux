@@ -11,7 +11,7 @@ while IFS=$'\t' read -r device label size_bytes; do
     choices[$label]=$device
 done < <(udiskie-info -a -f \!in_use -o $'{device_presentation}\t{ui_device_label}\t{device_size}')
 
-if ! choice=$(printf "%s\n" "${!choices[@]}" | sort | bemenu -l 20 -b -p mount) || [[ -z $choice ]]; then
+if ! choice=$(printf "%s\n" "${!choices[@]}" | sort | bemenu -l 20 -b -p mount | head -n1) || [[ -z $choice ]]; then
     printf "No device selected\n" >&2
     exit 1
 fi

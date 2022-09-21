@@ -5,8 +5,10 @@ set -euo pipefail
 usage="Interact with sway's container marks.
 
 Usage: 
-    ${0##*/} -h
-    ${0##*/} ACTION
+    ${0##*/} [OPTIONS] ACTION
+
+Options:
+    -h       show this help text and exit
 
 Actions:
     set      set mark for current container

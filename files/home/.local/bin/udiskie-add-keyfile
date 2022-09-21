@@ -12,6 +12,8 @@ Usage:
     ${0##*/} [OPTIONS] DEVICE KEYFILE
 
 Options:
+    -h              show this help text and exit
+
     -n NAME         use NAME for the keyfile instead of the UUID
 
     -C DIRECTORY    udiskie configuration directory

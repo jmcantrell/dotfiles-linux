@@ -11,6 +11,8 @@ Usage:
     ${0##*/} [OPTIONS] [ACTION]
 
 Options:
+    -h           show this help text and exit
+
     -n NUMBER    generated password length
                  (default: $password_length)
 
@@ -66,7 +68,7 @@ choose | generate) ;;
     ;;
 esac
 
-if ! name=$(pass_names | bemenu -b -p "$action password") || [[ -z $name ]]; then
+if ! name=$(pass_names | bemenu -b -p "$action password" | head -n1) || [[ -z $name ]]; then
     printf "No password name entered or selected\n" >&2
     exit 1
 fi

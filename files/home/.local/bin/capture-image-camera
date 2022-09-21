@@ -14,6 +14,8 @@ Usage:
     ${0##*/} [OPTIONS] [FILE]
 
 Options:
+    -h              show this help text and exit
+
     -e              edit the captured image before saving
 
     -d NUMBER       number of seconds to wait before starting capture

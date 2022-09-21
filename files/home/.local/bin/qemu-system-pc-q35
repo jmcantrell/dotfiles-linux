@@ -8,6 +8,7 @@ Usage:
     ${0##*/} [OPTIONS] [ARGUMENT...]
 
 Options:
+    -h         show this help text and exit
     -n NAME    specify the machine's process name
     -m SIZE    specify machine's ram size (e.g. 4G)
     -F RULE    add to the host forwarding rules (e.g. tcp::60022-:22)

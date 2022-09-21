@@ -1,14 +1,26 @@
 #!/usr/bin/env bash
 
 # Set a random background image.
-# It's assumed that all files in the given directories are images.
+# It's recommended that all files in the given directories are images.
 
 set -euo pipefail
+
+if (($# == 0)); then
+    printf "There must be at least one directory given as an argument\n" >&2
+    exit 1
+fi
 
 file=$(find -L "$@" -type f | shuf -n1)
 
 if [[ -z $file ]]; then
     printf "No files in the given directories\n" >&2
+    exit 1
+fi
+
+mime_type=$(file -b --mime-type "$file")
+
+if [[ $mime_type != image/* ]]; then
+    printf "File is not an image: %q (mime type is %s)\n" "$file" "$mime_type" >&2
     exit 1
 fi
 

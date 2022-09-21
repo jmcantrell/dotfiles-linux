@@ -9,7 +9,7 @@ low_capacity=25      # initial alert so user is aware of low power
 critical_capacity=15 # intermediate alert that hibernation is approaching
 hibernate_capacity=5 # final alert that hibernation countdown has started
 
-# If power is restored after countdown is started, abort hibernation.
+# If power is restored during the grace period, abort hibernation.
 hibernate_grace=30
 
 power_supply=/sys/class/power_supply

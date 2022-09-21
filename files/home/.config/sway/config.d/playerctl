@@ -1,14 +1,10 @@
-set $player_play     playerctl play-pause
-set $player_next     playerctl next
-set $player_previous playerctl previous
+bindsym $super+Pause  exec playerctl play-pause
+bindsym $super+Left   exec playerctl previous
+bindsym $super+Right  exec playerctl next
 
-bindsym $super+Pause  exec $player_play
-bindsym XF86AudioPlay exec $player_play
-
-bindsym $super+Left   exec $player_previous
-bindsym XF86AudioPrev exec $player_previous
-
-bindsym $super+Right  exec $player_next
-bindsym XF86AudioNext exec $player_next
+# Dedicated keyboard media controls.
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioPrev exec playerctl previous
+bindsym XF86AudioNext exec playerctl next
 
 # vi:ft=sway

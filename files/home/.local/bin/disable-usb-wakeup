@@ -20,15 +20,15 @@ sudo tee "$script" >/dev/null <<-EOF
 
 set -euo pipefail
 
-grep '^[EXOU]HC[0-9]\?\\b.*\\benabled\\b' $wakeup |
-    awk '{print \$1}' | tr -d '[:space:]' >$wakeup
+grep '^[EXOU]HC[0-9]\?\\b.*\\benabled\\b' ${wakeup@Q} |
+    awk '{print \$1}' | tr -d '[:space:]' >${wakeup@Q}
 EOF
 
 sudo chmod +x "$script"
 
 sudo tee "$service" >/dev/null <<-EOF
 [Unit]
-Description=disable resuming the system on USB device activity
+Description=Disable resuming the system on USB device activity
 
 [Service]
 ExecStart=$script

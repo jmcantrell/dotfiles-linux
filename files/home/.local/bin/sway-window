@@ -5,4 +5,9 @@
 
 set -euo pipefail
 
+if [[ ! -v 1 ]]; then
+    printf "The first argument must be a window ID\n" >&2
+    exit 1
+fi
+
 swaymsg -t get_tree | jq --argjson id "$1" '.. | select(.id? == $id)'

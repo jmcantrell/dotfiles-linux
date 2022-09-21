@@ -10,6 +10,8 @@ Usage:
     ${0##*/} [OPTIONS] FORMAT
 
 Options:
+    -h         show this help text and exit
+
     -e         treat an empty response as an error
 
     -p TEXT    use TEXT for input prompt 

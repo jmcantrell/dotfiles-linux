@@ -13,6 +13,8 @@ Usage:
     ${0##*/} [OPTIONS] [FILE]
     
 Options:
+    -h              show this help text and exit
+
     -g GEOMETRY     geometry of region to capture
 
     -f              capture focused window

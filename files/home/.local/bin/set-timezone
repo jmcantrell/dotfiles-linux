@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
 # Set the system timezone interactively.
+# Usage: set-timezone [TIMEZONE]
+#
+# If no timezone is given, the user will be prompted for one.
 
 set -euo pipefail
 

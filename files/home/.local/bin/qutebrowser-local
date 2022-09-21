@@ -4,7 +4,13 @@
 
 set -euo pipefail
 
+if [[ ! -v 1 ]]; then
+    printf "The first argument must be the base directory\n" >&2
+    exit 1
+fi
+
 directory=$1
+
 shift
 
 qutebrowser-spawn-basedir "$directory"

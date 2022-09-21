@@ -14,6 +14,8 @@ Usage:
     ${0##*/} [OPTIONS] [FILE | 'stop']
     
 Options:
+    -h              show this help text and exit
+
     -a              also capture audio from microphone
 
     -i DEVICE       capture input from device

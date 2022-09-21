@@ -5,7 +5,14 @@
 set -euo pipefail
 
 profiles_dir=${XDG_DATA_HOME:-$HOME/.local/share}/qutebrowser/profiles
-profile_name=${1:?missing profile name}
+
+if [[ ! -v 1 ]]; then
+    printf "The first argument must be a profile name\n" >&2
+    exit 1
+fi
+
+profile_name=$1
+
 shift
 
 directory=$profiles_dir/$profile_name

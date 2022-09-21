@@ -5,7 +5,10 @@ set -euo pipefail
 usage="Set the display brightness and show a notification.
 
 Usage:
-    ${0##*/} ACTION
+    ${0##*/} [OPTIONS] ACTION
+
+Options:
+    -h        show this help text and exit
 
 Actions:
     up        increase brightness by one step
