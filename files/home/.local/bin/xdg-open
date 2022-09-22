@@ -6,15 +6,12 @@
 set -euo pipefail
 
 files=()
-
 for arg in "$@"; do
+    # Since we're masquerading as xdg-open, we need to handle file URLs
     if [[ $arg == file://* ]]; then
-        # Since we're masquerading as xdg-open, we need to handle encoded file URLs
-        # like: file:///path/to/file+with+spaces.txt
-        files+=("$(urldecode "${arg#file://}")")
-    else
-        files+=("$arg")
+        file=${file#file://}
     fi
+    files+=("$file")
 done
 
 exec rifle "${files[@]}"
