@@ -13,17 +13,22 @@ if [[ -f $location_config_file ]] && ! . "$location_config_file"; then
     exit 1
 fi
 
-declare -a jq_options=()
+jq_options=()
+jq_filter='.countries[]'
 
-if [[ -v COUNTRY && -v CITY ]]; then
-    jq_options=(--arg country "$COUNTRY" --arg city "$CITY")
-    jq_filter='.countries | map(select(.code == $country)) | first | .cities | map(select(.code == $city)) | first | .relays | map(.hostname) | .[]'
-elif [[ -v COUNTRY ]]; then
-    jq_options=(--arg country "$COUNTRY")
-    jq_filter='.countries | map(select(.code == $country)) | map(.cities) | .[] | map(.relays) | flatten | map(.hostname) | .[]'
-else
-    jq_filter='.countries | map(.cities) | .[] | map(.relays) | flatten | map(.hostname) | .[]'
+if [[ -v COUNTRY ]]; then
+    jq_options+=(--arg country "$COUNTRY")
+    jq_filter+=' | select(.code == $country)'
 fi
+
+jq_filter+='.cities[]'
+
+if [[ -v CITY ]]; then
+    jq_options+=(--arg city "$CITY")
+    jq_filter+=' | select(.code == $city)'
+fi
+
+jq_filter+='.relays[].hostname'
 
 if ! relay_hostname=$(jq -er "${jq_options[@]}" "$jq_filter" /usr/local/share/mullvad/relays.json | shuf -n1) || [[ -z $relay_hostname ]]; then
     printf "No relays found%s\n" "${COUNTRY:+ for location: $COUNTRY${CITY:+ $CITY}}" >&2

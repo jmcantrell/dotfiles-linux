@@ -7,7 +7,7 @@ set -euo pipefail
 
 relays_file=/usr/local/share/mullvad/relays.json
 
-readarray -t countries < <(jq -r '.countries[] | .code' "$relays_file" | sort)
+readarray -t countries < <(jq -r '.countries[].code' "$relays_file" | sort)
 
 if [[ ! -v 1 ]] || ! printf "%s\n" "${countries[@]}" | grep -q "^$1$"; then
     printf "The first argument must be a valid country code\n" >&2
@@ -17,11 +17,11 @@ fi
 
 country=$1
 
-readarray -t cities < <(jq -r --arg country "$country" '.countries[] | select(.code == $country) | .cities[].code' "$relays_file" | sort)
+readarray -t cities < <(jq -r --arg country "$country" '.countries[] | select(.code == $country).cities[].code' "$relays_file" | sort)
 
 if [[ -v 2 ]] && ! printf "%s\n" "${cities[@]}" | grep -q "^$2$"; then
     printf "The second argument, if given, must be a valid city code\n" >&2
-    printf "Recognized city codes for $country: %s\n" "${cities[*]}" >&2
+    printf "Recognized city codes for %s: %s\n" "$country" "${cities[*]}" >&2
     exit 1
 fi
 
