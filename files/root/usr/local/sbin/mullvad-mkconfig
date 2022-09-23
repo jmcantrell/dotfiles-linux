@@ -10,11 +10,6 @@ unset ADDRESS PRIVATE_KEY
 
 client_config_file=/usr/local/etc/mullvad/client.conf
 
-if [[ ! -f $client_config_file || ! -r $client_config_file ]]; then
-    printf "File does not exist or is not readable: %q\n" "$client_config_file" >&2
-    exit 1
-fi
-
 if ! . "$client_config_file"; then
     printf "Unable to source file: %q\n" "$client_config_file" >&2
     exit 1

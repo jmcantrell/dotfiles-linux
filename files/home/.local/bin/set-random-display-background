@@ -17,10 +17,8 @@ if [[ -z $file ]]; then
     exit 1
 fi
 
-mime_type=$(file -b --mime-type "$file")
-
-if [[ $mime_type != image/* ]]; then
-    printf "File is not an image: %q (mime type is %s)\n" "$file" "$mime_type" >&2
+if [[ $(file -b --mime-type "$file") != image/* ]]; then
+    printf "File is not an image: %q\n" "$file" >&2
     exit 1
 fi
 

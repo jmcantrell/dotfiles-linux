@@ -7,25 +7,25 @@ set -euo pipefail
 
 relays_file=/usr/local/share/mullvad/relays.json
 
+country=${1:?missing country code}
+
 readarray -t countries < <(jq -r '.countries[].code' "$relays_file" | sort)
 
-if [[ ! -v 1 ]] || ! printf "%s\n" "${countries[@]}" | grep -q "^$1$"; then
-    printf "The first argument must be a valid country code\n" >&2
+if ! printf "%s\n" "${countries[@]}" | grep -q "^$country$"; then
+    printf "Invalid country code: %s\n" "$country" >&2
     printf "Recognized country codes: %s\n" "${countries[*]}" >&2
     exit 1
 fi
 
-country=$1
+city=${2:-}
 
 readarray -t cities < <(jq -r --arg country "$country" '.countries[] | select(.code == $country).cities[].code' "$relays_file" | sort)
 
-if [[ -v 2 ]] && ! printf "%s\n" "${cities[@]}" | grep -q "^$2$"; then
-    printf "The second argument, if given, must be a valid city code\n" >&2
+if [[ -n $city ]] && ! printf "%s\n" "${cities[@]}" | grep -q "^$city$"; then
+    printf "Invalid city code: %s\n" "$city" >&2
     printf "Recognized city codes for %s: %s\n" "$country" "${cities[*]}" >&2
     exit 1
 fi
-
-city=${2:-}
 
 config_file=/usr/local/etc/mullvad/location.conf
 

@@ -5,17 +5,12 @@
 
 set -euo pipefail
 
-if [[ ! -v 1 ]]; then
-    printf "The first argument must be a 16-digit account number\n" >&2
-    exit 1
-fi
+account=${1:?missing account number}
 
 if [[ ! $1 =~ ^[0-9]{16}$ ]]; then
     printf "Invalid account number: %s (must be a 16-digit number)\n" "$1" >&2
     exit 1
 fi
-
-account=$1
 
 private_key=$(wg genkey)
 public_key=$(wg pubkey <<<"$private_key")

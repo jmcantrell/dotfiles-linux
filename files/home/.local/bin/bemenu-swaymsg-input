@@ -42,12 +42,7 @@ while getopts ":p:es:h" option; do
     esac
 done && shift $((OPTIND - 1))
 
-if [[ ! -v 1 ]]; then
-    printf "The first argument must be the command format\n" >&2
-    exit 1
-fi
-
-format=$1
+format=${1:?missing command format}
 
 reply=$(bemenu -p "$prompt" </dev/null)
 

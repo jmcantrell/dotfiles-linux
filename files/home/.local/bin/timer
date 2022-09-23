@@ -31,12 +31,7 @@ while getopts ":h" option; do
     esac
 done && shift $((OPTIND - 1))
 
-if [[ ! -v 1 ]]; then
-    printf "The first argument must be a time specification\n" >&2
-    exit 1
-fi
-
-at "$(date -d "$1" +"%H:%M %Y-%m-%d")" <<EOF
+at "$(date -d "${1:?missing time specification}" +"%H:%M %Y-%m-%d")" <<EOF
 export DISPLAY=$DISPLAY
 export WAYLAND_DISPLAY=$WAYLAND_DISPLAY
 canberra-gtk-play -i alarm-clock-elapsed &

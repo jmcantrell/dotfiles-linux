@@ -8,6 +8,10 @@ image=${1:-}
 background=$HOME/.background
 
 if [[ -n $image ]]; then
+    if [[ $(file -b --mime-type "$image") != image/* ]]; then
+        printf "File is not an image: %q\n" "$image" >&2
+        exit 1
+    fi
     cp -vL "$image" "$background"
 fi
 

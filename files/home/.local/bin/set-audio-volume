@@ -56,12 +56,7 @@ if [[ ! -v target_name ]]; then
     esac
 fi
 
-if [[ ! -v 1 ]]; then
-    printf "The first argument must be an action\n" >&2
-    exit 1
-fi
-
-action=$1
+action=${1:?missing action}
 
 case $action in
 mute) pactl set-"$type_name"-mute "$target_name" toggle ;;

@@ -39,7 +39,7 @@ wg_config_dir=/etc/wireguard
 wg_config_file=$wg_config_dir/wg-mullvad.conf
 relay_config_file=$wg_config_dir/mullvad-${relay_hostname%-wireguard}.conf
 
-if [[ ! -f $relay_config_file || ! -r $relay_config_file ]]; then
+if [[ ! -f $relay_config_file ]]; then
     printf "File does not exist or is not readable: %q\n" "$relay_config_file" >&2
     exit 1
 fi

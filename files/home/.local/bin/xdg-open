@@ -5,13 +5,13 @@
 
 set -euo pipefail
 
-files=()
+args=()
 for arg in "$@"; do
     # Since we're masquerading as xdg-open, we need to handle file URLs
     if [[ $arg == file://* ]]; then
-        file=${file#file://}
+        arg=${arg#file://}
     fi
-    files+=("$file")
+    args+=("$arg")
 done
 
-exec rifle "${files[@]}"
+exec rifle "${args[@]}"

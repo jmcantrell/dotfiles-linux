@@ -43,7 +43,8 @@ Arguments:
                     (default: $directory/$file_name.$file_type)"
 
 window_geometry() {
-    swaymsg -t get_tree | jq -r ".. | select(.rect? and .visible?${1:+ and .focused?}) | .rect | \"\(.x),\(.y) \(.width)x\(.height)\""
+    swaymsg -t get_tree |
+        jq -r ".. | select(.rect? and .visible?${1:+ and .focused?}) | .rect | \"\(.x),\(.y) \(.width)x\(.height)\""
 }
 
 capture_audio=0

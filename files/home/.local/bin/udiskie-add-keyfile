@@ -42,29 +42,13 @@ while getopts ":n:C:h" option; do
     esac
 done && shift $((OPTIND - 1))
 
-if [[ ! -v 1 ]]; then
-    printf "The first argument must be a device\n" >&2
-    exit 1
-fi
+device=${1:?missing device}
+keyfile=${2:?missing keyfile}
 
 if [[ ! -b $1 ]]; then
     printf "File is not a device: %q\n" "$1" >&2
     exit 1
 fi
-
-device=$1
-
-if [[ ! -v 2 ]]; then
-    printf "The second argument must be a keyfile\n" >&2
-    exit 1
-fi
-
-if [[ ! -f $2 ]]; then
-    printf "File does not exist: %q\n" "$2" >&2
-    exit 1
-fi
-
-keyfile_original=$2
 
 if ! uuid=$(sudo blkid -s UUID -o value "$device") || [[ -z $uuid ]]; then
     printf "Unable to get UUID for device: %q\n" "$device" >&2
@@ -82,7 +66,7 @@ fi
 # Keep a copy of the keyfile for udiskie.
 mkdir -p "$keyfile_dir"
 keyfile_copy=$keyfile_dir/${keyfile_name:-$uuid}.bin
-sudo cp -v "$keyfile_original" "$keyfile_copy"
+sudo cp -v "$keyfile" "$keyfile_copy"
 sudo chown "$USER:$USER" "$keyfile_copy"
 
 # Lookup the index for this uuid, if it already exists.

@@ -30,12 +30,7 @@ while getopts ":h" option; do
     esac
 done && shift $((OPTIND - 1))
 
-if [[ ! -v 1 ]]; then
-    printf "The first argument must be an action\n" >&2
-    exit 1
-fi
-
-action=$1
+action=${1:?missing action}
 
 case $action in
 up) brightnessctl set 1+ ;;

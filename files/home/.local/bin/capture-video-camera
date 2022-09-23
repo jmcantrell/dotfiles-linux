@@ -11,7 +11,7 @@ file_type=mp4
 usage="Capture video from a camera device.
 
 Usage:
-    ${0##*/} [OPTIONS] [FILE | 'stop']
+    ${0##*/} [OPTIONS] [FILE]
     
 Options:
     -h              show this help text and exit
@@ -75,10 +75,6 @@ capture_command=(ffmpeg -hide_banner -y -f v4l2 -i "$device")
 
 if ((capture_audio)); then
     capture_command+=(-f alsa -i default)
-fi
-
-if [[ -v duration ]]; then
-    capture_command+=(-t "$duration")
 fi
 
 # If a delay was requested, provide an audible countdown to let user know
