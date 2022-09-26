@@ -5,10 +5,12 @@
 
 set -euo pipefail
 
-if mullvad-connected; then
+interface=wg-mullvad
+
+if ip address show "$interface" &>/dev/null; then
     action=stop
 else
     action=start
 fi
 
-sudo systemctl "$action" wg-quick@wg-mullvad.service
+sudo systemctl "$action" wg-quick@"$interface".service
