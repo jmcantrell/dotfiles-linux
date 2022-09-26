@@ -22,7 +22,7 @@ symlink_files() {
             # /path/to/qutebrowser/foo/bar => foo/bar
             dst=$dst_dir/${src#*/qutebrowser/}
             mkdir -p "$(dirname "$dst")"
-            ln -svfrn "$src" "$dst"
+            ln -vsfrn "$src" "$dst"
         fi
     done
 }

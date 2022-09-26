@@ -13,4 +13,5 @@ shift
 directory=$profiles_dir/$profile_name
 
 export QUTEBROWSER_PROFILE_NAME=$profile_name
+
 exec qutebrowser-local "$directory" "$@"

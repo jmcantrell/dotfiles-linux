@@ -9,4 +9,5 @@ printf -v cleanup "rm -r %q" "$directory"
 trap '$cleanup' EXIT
 
 export QUTEBROWSER_PROFILE_NAME=${directory##*.}
+
 exec qutebrowser-local "$directory" "$@"

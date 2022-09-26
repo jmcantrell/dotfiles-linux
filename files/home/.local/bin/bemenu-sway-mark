@@ -37,7 +37,6 @@ unset) exec swaymsg '[con_id="__focused__"] unmark' ;;
 clear) exec swaymsg unmark ;;
 *)
     printf "Invalid action: %s\n" "$action" >&2
-    printf "Recognized actions: set unset clear goto\n" >&2
     exit 1
     ;;
 esac

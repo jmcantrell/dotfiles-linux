@@ -6,7 +6,7 @@ set -euo pipefail
 shopt -s nullglob
 
 for file in ~/.wprofile.d/*; do
-    if [[ -f $file ]] && ! . "$file"; then
+    if [[ -f $file ]] && ! source "$file"; then
         printf "Unable to source file: %q\n" "$file" >&2
         exit 1
     fi

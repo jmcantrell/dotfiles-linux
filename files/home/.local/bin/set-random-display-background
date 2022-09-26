@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Set a random background image.
-# It's recommended that all files in the given directories are images.
+# Usage: set-random-display-background DIRECTORY...
 
 set -euo pipefail
 
@@ -14,11 +14,6 @@ file=$(find -L "$@" -type f | shuf -n1)
 
 if [[ -z $file ]]; then
     printf "No files in the given directories\n" >&2
-    exit 1
-fi
-
-if [[ $(file -b --mime-type "$file") != image/* ]]; then
-    printf "File is not an image: %q\n" "$file" >&2
     exit 1
 fi
 

@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-usage="Execute a QEMU pc-q35 system with some common optimizations.
+usage="Execute a QEMU pc-q35 system with some common settings.
 
 Usage:
     ${0##*/} [OPTIONS] [ARGUMENT...]

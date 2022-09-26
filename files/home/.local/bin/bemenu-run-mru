@@ -35,7 +35,6 @@ fi
 mru_add "$cmd"
 
 preamble=()
-
 if [[ $cmd == *\; ]]; then
     preamble+=("$TERMINAL")
     if [[ $cmd == *\;\; ]]; then

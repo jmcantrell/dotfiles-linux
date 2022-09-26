@@ -10,10 +10,9 @@
 
 set -euo pipefail
 
-me=${0##*/}
 wakeup=/proc/acpi/wakeup
-service=/etc/systemd/system/$me.service
-script=/usr/local/sbin/$me
+service=/etc/systemd/system/${0##*/}.service
+script=/usr/local/sbin/${0##*/}
 
 sudo tee "$script" >/dev/null <<-EOF
 #!/usr/bin/env bash

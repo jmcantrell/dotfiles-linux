@@ -4,4 +4,5 @@
 # modifications.
 
 export QUTEBROWSER_OVERRIDE_DARK=0
+
 exec qutebrowser-local "$@"
