@@ -1,8 +1,0 @@
-bindsym      $super+Delete exec bemenu-pass choose
-bindsym ctrl+$super+Delete exec bemenu-pass generate
-
-# Show a QR code instead of copying to clipboard.
-bindsym      $alt+$super+Delete exec bemenu-pass -q choose
-bindsym ctrl+$alt+$super+Delete exec bemenu-pass -q generate
-
-# vi:ft=sway
