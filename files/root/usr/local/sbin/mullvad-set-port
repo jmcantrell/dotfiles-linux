@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-access_config_file=/usr/local/etc/mullvad/access.conf
+port_config_file=/usr/local/etc/mullvad/port.conf
 
 port=${1:?missing port number}
 
@@ -11,8 +11,8 @@ if [[ ! $port =~ ^[0-9]+$ ]] || ((port < 0 || port >65535)); then
     exit 1
 fi
 
-mkdir -p "$(dirname "$access_config_file")"
+mkdir -p "$(dirname "$port_config_file")"
 
-cat >"$access_config_file" <<EOF
+cat >"$port_config_file" <<EOF
 PORT=$port
 EOF

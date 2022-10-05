@@ -2,16 +2,16 @@
 
 set -euo pipefail
 
-access_config_file=/usr/local/etc/mullvad/access.conf
+port_config_file=/usr/local/etc/mullvad/port.conf
 
-if [[ ! -f $access_config_file ]]; then
+if [[ ! -f $port_config_file ]]; then
     exit 0
 fi
 
 unset PORT
 
-if ! . "$access_config_file"; then
-    printf "Unable to source file: %q\n" "$access_config_file" >&2
+if ! . "$port_config_file"; then
+    printf "Unable to source file: %q\n" "$port_config_file" >&2
     exit 1
 fi
 
