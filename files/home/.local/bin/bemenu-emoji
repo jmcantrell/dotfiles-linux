@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Copy a menu-selected emoji to the clipboard.
+
+set -euo pipefail
+
+grep -i '^[0-9a-f]' /usr/share/unicode-data/emoji/emoji-test.txt |
+    cut -d'#' -f2 | cut -d' ' -f2,4- |
+    bemenu -l 20 -b -p emoji | head -n1 |
+    cut -d ' ' -f1 | wl-copy -n
