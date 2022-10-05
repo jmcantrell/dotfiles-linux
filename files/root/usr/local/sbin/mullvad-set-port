@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+access_config_file=/usr/local/etc/mullvad/access.conf
+
+port=${1:?missing port number}
+
+if [[ ! $port =~ ^[0-9]+$ ]] || ((port < 0 || port >65535)); then
+    printf "Invalid port: %s (must be a number between 0-65535)\n" "$port" >&2
+    exit 1
+fi
+
+mkdir -p "$(dirname "$access_config_file")"
+
+cat >"$access_config_file" <<EOF
+PORT=$port
+EOF

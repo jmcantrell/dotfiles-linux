@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+printf -v nftcmd \
+    "add element inet filter dynamic_ports { %s . %s }" \
+    "${1:?missing protocol}" "${2:?missing port number}"
+
+nft -f <(echo -n "$nftcmd")

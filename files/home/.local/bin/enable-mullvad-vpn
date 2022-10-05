@@ -1,11 +1,25 @@
 #!/usr/bin/env bash
 
 # Enable the Mullvad WireGuard VPN service.
+# Usage: enable-mullvad-vpn [COUNTRY [CITY [PORT]]]
 
 set -euo pipefail
 
 sudo mullvad-mkconfig
-sudo mullvad-set-location us atl
+
+if (($# >= 2)); then
+    location=("$1" "$2")
+elif (($# >= 1)); then
+    location=("$1")
+fi
+
+if ((${#location[@]} > 0)); then
+    sudo mullvad-set-location "${location[@]}"
+fi
+
+if (($# >= 3)); then
+    sudo mullvad-set-port "$3"
+fi
 
 if [[ ! -f /usr/local/etc/mullvad/client.conf ]]; then
     sudo mullvad-genkey "$MULLVAD_ACCOUNT"

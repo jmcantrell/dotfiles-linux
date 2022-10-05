@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+access_config_file=/usr/local/etc/mullvad/access.conf
+
+if [[ ! -f $access_config_file ]]; then
+    exit 0
+fi
+
+unset PORT
+
+if ! . "$access_config_file"; then
+    printf "Unable to source file: %q\n" "$access_config_file" >&2
+    exit 1
+fi
+
+if [[ ! -v PORT || -z $PORT ]]; then
+    printf "Variable is unset or empty: %s\n" PORT >&2
+    exit 1
+fi
+
+for protocol in udp tcp; do
+    nftables-close-port "$protocol" "$PORT"
+done
