@@ -14,6 +14,12 @@ sudo gpasswd --add "$USER" locate
 # Needed to use docker daemon without sudo.
 sudo gpasswd --add "$USER" docker
 
+# Needed to use CUPS printing.
+sudo gpasswd --add "$USER" lp
+
+# Needed to use SANE scanning.
+sudo gpasswd --add "$USER" scanner
+
 # Set preferred shell.
 sudo chsh --shell /bin/zsh "$USER"
 
