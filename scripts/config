@@ -5,20 +5,23 @@ set -euo pipefail
 # Add file system modifications.
 sudo rsync -v --archive --no-owner --no-group ./files/root/ /
 
-# Needed to change screen brightness.
+# Needed to change display brightness.
 sudo gpasswd --add "$USER" video
 
-# Needed to update locate database without sudo.
+# Needed to update locate database without root-privileges.
 sudo gpasswd --add "$USER" locate
 
-# Needed to use docker daemon without sudo.
-sudo gpasswd --add "$USER" docker
-
-# Needed to use CUPS printing.
+# Needed to print with CUPS.
 sudo gpasswd --add "$USER" lp
 
-# Needed to use SANE scanning.
+# Needed to scan with SANE.
 sudo gpasswd --add "$USER" scanner
+
+# Needed to use Docker daemon.
+sudo gpasswd --add "$USER" docker
+
+# Needed to capture network packets with dumpcap.
+sudo gpasswd --add "$USER" wireshark
 
 # Set preferred shell.
 sudo chsh --shell /bin/zsh "$USER"
