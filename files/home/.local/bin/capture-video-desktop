@@ -27,20 +27,20 @@ Options:
                     (default: $delay)
 
     -D DIRECTORY    directory in which to store default output file
-                    (default: $directory)
+                    (default: '$directory')
 
     -N FILENAME     filename to use for default output file
-                    (default: $file_name)
+                    (default: '$file_name')
 
     -E EXTENSION    extension to use for default output file
-                    (default: $file_type)
+                    (default: '$file_type')
 
     -X              stop recording video
 
 Arguments:
     FILE            output file (used instead of default)
                     formats any sequences recognized by strftime
-                    (default: $directory/$file_name.$file_type)"
+                    (default: '$directory/$file_name.$file_type')"
 
 window_geometry() {
     swaymsg -t get_tree |

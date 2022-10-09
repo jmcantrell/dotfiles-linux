@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Configure the Mullvad VPN forwarded port.
+# Usage: mullvad-set-port PORT
+
+# Be sure to set up port forwarding here:
+# https://mullvad.net/en/account/#/port-forwarding
+
 set -euo pipefail
 
 port_config_file=/usr/local/etc/mullvad/port.conf
@@ -13,6 +19,4 @@ fi
 
 mkdir -p "$(dirname "$port_config_file")"
 
-cat >"$port_config_file" <<EOF
-PORT=$port
-EOF
+printf "PORT=%d\n" "$port" >"$port_config_file"

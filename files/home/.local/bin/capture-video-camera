@@ -19,26 +19,26 @@ Options:
     -a              also capture audio from microphone
 
     -i DEVICE       capture input from device
-                    (default: $device)
+                    (default: '$device')
 
     -d NUMBER       number of seconds to wait before starting capture
                     (default: $delay)
 
     -D DIRECTORY    directory in which to store default output file
-                    (default: $directory)
+                    (default: '$directory')
 
     -N FILENAME     filename to use for default output file
-                    (default: $file_name)
+                    (default: '$file_name')
 
     -E EXTENSION    extension to use for default output file
-                    (default: $file_type)
+                    (default: '$file_type')
 
     -X              stop recording video
 
 Arguments:
     FILE            output file (used instead of default)
                     formats any sequences recognized by strftime
-                    (default: $directory/$file_name.$file_type)"
+                    (default: '$directory/$file_name.$file_type')"
 
 capture_audio=0
 capture_command_stdin=$XDG_RUNTIME_DIR/${0##*/}-command.stdin

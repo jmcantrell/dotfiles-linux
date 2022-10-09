@@ -20,7 +20,7 @@ sudo tee "$script" >/dev/null <<-EOF
 set -euo pipefail
 
 grep '^[EXOU]HC[0-9]\?\\b.*\\benabled\\b' ${wakeup@Q} |
-    awk '{print \$1}' | tr -d '[:space:]' >${wakeup@Q}
+    cut -d' ' -f1 | tr -d '[:space:]' >${wakeup@Q}
 EOF
 
 sudo chmod +x "$script"

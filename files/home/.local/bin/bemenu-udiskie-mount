@@ -7,7 +7,7 @@ set -euo pipefail
 declare -A choices=()
 
 while IFS=$'\t' read -r device label size_bytes; do
-    ((size_bytes)) && label+=" ($(numfmt --to=iec <<<"$size_bytes"))"
+    ((size_bytes)) && label+=" ($(numfmt --to=iec "$size_bytes"))"
     choices[$label]=$device
 done < <(udiskie-info -a -f \!in_use -o $'{device_presentation}\t{ui_device_label}\t{device_size}')
 

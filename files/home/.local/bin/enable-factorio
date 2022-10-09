@@ -5,6 +5,7 @@
 set -euo pipefail
 
 cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/factorio
+
 base_url=https://factorio.com
 
 branch=${FACTORIO_BRANCH:-alpha}
