@@ -32,7 +32,7 @@ Actions:
 
 type_name=sink
 
-while getopts ":ois:n:h" option; do
+while getopts ":s:oin:h" option; do
     case $option in
     s) step=$OPTARG ;;
     o) type_name=sink ;;

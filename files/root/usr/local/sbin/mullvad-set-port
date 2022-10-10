@@ -18,5 +18,4 @@ if [[ ! $port =~ ^[0-9]+$ ]] || ((port < 0 || port >65535)); then
 fi
 
 mkdir -p "$(dirname "$port_config_file")"
-
 printf "PORT=%d\n" "$port" >"$port_config_file"

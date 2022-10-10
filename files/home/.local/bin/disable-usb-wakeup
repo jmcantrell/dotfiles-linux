@@ -10,11 +10,14 @@
 
 set -euo pipefail
 
-wakeup=/proc/acpi/wakeup
-service=/etc/systemd/system/${0##*/}.service
-script=/usr/local/sbin/${0##*/}
+((EUID == 0)) || exec sudo "$0" "$@"
 
-sudo tee "$script" >/dev/null <<-EOF
+name=${0##*/}
+wakeup=/proc/acpi/wakeup
+service=/etc/systemd/system/$name.service
+script=/usr/local/sbin/$name
+
+tee "$script" >/dev/null <<-EOF
 #!/usr/bin/env bash
 
 set -euo pipefail
@@ -23,9 +26,9 @@ grep '^[EXOU]HC[0-9]\?\\b.*\\benabled\\b' ${wakeup@Q} |
     cut -d' ' -f1 | tr -d '[:space:]' >${wakeup@Q}
 EOF
 
-sudo chmod +x "$script"
+chmod +x "$script"
 
-sudo tee "$service" >/dev/null <<-EOF
+cat >"$service" <<-EOF
 [Unit]
 Description=Disable resuming the system on USB device activity
 
@@ -36,4 +39,4 @@ ExecStart=$script
 WantedBy=multi-user.target
 EOF
 
-sudo systemctl enable --now "$(basename "$service")"
+systemctl enable --now "$(basename "$service")"

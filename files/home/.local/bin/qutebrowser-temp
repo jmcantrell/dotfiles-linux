@@ -10,4 +10,4 @@ trap '$cleanup' EXIT
 
 export QUTEBROWSER_PROFILE_NAME=${directory##*.}
 
-exec qutebrowser-local "$directory" "$@"
+qutebrowser-local "$directory" "$@"
