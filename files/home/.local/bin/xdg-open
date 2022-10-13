@@ -10,6 +10,9 @@ for arg in "$@"; do
     # Since we're masquerading as xdg-open, we need to handle file URLs
     if [[ $arg == file://* ]]; then
         arg=${arg#file://}
+        arg=${arg//+/ }
+        arg=${arg//%/\\x}
+        printf -v arg "%b" "$arg"
     fi
     args+=("$arg")
 done

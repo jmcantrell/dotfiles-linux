@@ -1,6 +1,8 @@
 seat * hide_cursor when-typing enable
 
-# Enable tap-to-click for touchpads.
-input * tap enabled
+input * {
+    tap enabled
+    xkb_options compose:menu
+}
 
 # vi:ft=sway
