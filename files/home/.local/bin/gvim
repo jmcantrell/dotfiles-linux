@@ -2,4 +2,4 @@
 
 # Pretend that vim in a terminal is gvim.
 
-exec terminal -e vim "$@"
+exec terminal -e vim "$@" >/dev/null 2>&1 &

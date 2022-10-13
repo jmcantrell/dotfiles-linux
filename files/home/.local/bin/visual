@@ -5,7 +5,7 @@
 # Otherwise, just start it normally.
 
 if [[ -v DISPLAY || -v WAYLAND_DISPLAY ]]; then
-    exec terminal -e editor "$@"
+    exec terminal -e editor "$@" &>/dev/null &
 else
     exec editor "$@"
 fi

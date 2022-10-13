@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+locale_conf=/etc/locale.conf
+
+if [[ ! -v LANG && -f $locale_conf ]] && ! . "$locale_conf"; then
+    printf "Unable to source file: %q\n" "$locale_conf" >&2
+    exit 1
+fi
+
+if [[ ! -v LANG ]]; then
+    printf "No LANG set\n" >&2
+    exit 1
+fi
+
+compose_file=/usr/share/X11/locale/$LANG/Compose
+
+if [[ ! -f $compose_file || ! -r $compose_file ]]; then
+    printf "File does not exist or is not readable: %q\n" "$compose_file" >&2
+    exit 1
+fi
+
+grep "^[^#]" "$compose_file" |
+    bemenu -l 20 -b -p compose |
+    cut -d\" -f2 |
+    tr -d '[:space:]' |
+    wl-copy -n

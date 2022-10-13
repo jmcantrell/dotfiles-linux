@@ -1,0 +1,5 @@
+bindsym       $super+u exec bemenu-unicode
+bindsym  $alt+$super+u exec bemenu-emoji
+bindsym shift+$super+u exec bemenu-compose
+
+# vi:ft=sway

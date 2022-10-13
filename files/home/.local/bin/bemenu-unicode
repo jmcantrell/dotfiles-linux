@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# Copy a menu-selected emoji to the clipboard.
+
+set -euo pipefail
+
+data_file=/usr/share/unicode/UnicodeData.txt
+cache_file=${XDG_CACHE_HOME:-$HOME/.cache}/${0##*/}.txt
+
+if [[ ! -f $cache_file || $data_file -nt $cache_file ]]; then
+    mkdir -p "$(dirname "$cache_file")"
+    {
+        while IFS=';' read -r code name _; do
+            printf "%b\t%s\t%s\n" "\U$code" "$code" "$name"
+        done < <(grep "^[0-9A-F]" "$data_file")
+    } >"$cache_file"
+fi
+
+bemenu -l 20 -b -p unicode <"$cache_file" |
+    cut -d$'\t' -f1 |
+    tr -d '[:space:]' |
+    wl-copy -n

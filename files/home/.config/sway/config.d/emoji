@@ -1,3 +1,0 @@
-bindsym $super+F12 exec bemenu-emoji
-
-# vi:ft=sway
