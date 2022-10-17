@@ -1,10 +1,10 @@
-client.background $dark
+client.background $color_dark
 
-#class                  border  bg      text    indicator child_border
-client.urgent           $bright $urgent $bright $marker   $bright
-client.focused          $focus  $focus  $bright $marker   $focus
-client.focused_inactive $border $border $bright $border   $border
-client.unfocused        $border $border $normal $border   $border
-client.placeholder      $border $border $normal $border   $border
+#class                   border         bg             text           indicator      child_border
+client.urgent            $color_bright  $color_urgent  $color_bright  $color_marker  $color_bright
+client.focused           $color_focus   $color_focus   $color_bright  $color_marker  $color_focus
+client.focused_inactive  $color_border  $color_border  $color_bright  $color_border  $color_border
+client.unfocused         $color_border  $color_border  $color_normal  $color_border  $color_border
+client.placeholder       $color_border  $color_border  $color_normal  $color_border  $color_border
 
 # vi:ft=sway

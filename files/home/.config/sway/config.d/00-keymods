@@ -1,0 +1,4 @@
+set $alt   mod1
+set $super mod4
+
+# vi:ft=sway

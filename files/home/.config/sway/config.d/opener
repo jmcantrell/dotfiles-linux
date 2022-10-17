@@ -1,0 +1,3 @@
+bindsym $super+o exec opener "$(wl-paste -n)"
+
+# vi:ft=sway

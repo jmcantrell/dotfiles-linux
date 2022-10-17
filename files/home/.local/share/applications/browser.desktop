@@ -4,7 +4,7 @@ Name=Browser
 GenericName=Web Browser
 Comment=Browse the World Wide Web
 Keywords=Internet;WWW;Browser;Web;Explorer
-Exec=browser %U
+Exec=browser --target window %U
 Icon=web-browser
 Terminal=false
 X-MultipleArgs=true
@@ -16,4 +16,4 @@ Actions=new-private-window;
 
 [Desktop Action new-private-window]
 Name=New Private Window
-Exec=browser-private %U
+Exec=browser --target private-window %U

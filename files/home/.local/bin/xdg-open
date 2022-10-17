@@ -1,20 +1,3 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
-# Pretend rifle is xdg-open.
-# Usage: xdg-open FILE...
-
-set -euo pipefail
-
-args=()
-for arg in "$@"; do
-    # Since we're masquerading as xdg-open, we need to handle file URLs
-    if [[ $arg == file://* ]]; then
-        arg=${arg#file://}
-        arg=${arg//+/ }
-        arg=${arg//%/\\x}
-        printf -v arg "%b" "$arg"
-    fi
-    args+=("$arg")
-done
-
-exec rifle "${args[@]}"
+exec opener "$1"

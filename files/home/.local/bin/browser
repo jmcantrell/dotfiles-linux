@@ -1,5 +1,9 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Run the preferred web browser.
 
-exec qutebrowser --target window "$@"
+if [[ -v DISPLAY || -v WAYLAND_DISPLAY ]]; then
+    exec qutebrowser --target window "$@"
+else
+    exec links "$@"
+fi

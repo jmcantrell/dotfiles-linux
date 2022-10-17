@@ -1,0 +1,12 @@
+set $mode_snippets snippets: (r)ead, (w)rite, (d)elete, (e)dit, (t)ype
+mode "$mode_snippets" {
+    bindsym r exec bemenu-snippets read,   mode "default"
+    bindsym w exec bemenu-snippets write,  mode "default"
+    bindsym d exec bemenu-snippets delete, mode "default"
+    bindsym e exec bemenu-snippets edit,   mode "default"
+    bindsym t exec bemenu-snippets type,   mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $super+Insert mode "$mode_snippets"
+
+# vi:ft=sway

@@ -7,15 +7,15 @@ bar {
     status_command swaystatus --log-journal
 
     colors {
-        background $dark
-        separator  $bright
-        statusline $bright
+        background  $color_dark
+        separator   $color_bright
+        statusline  $color_bright
 
-        #class             border  bg      text
-        urgent_workspace   $bright $urgent $bright
-        active_workspace   $bright $focus  $bright
-        focused_workspace  $bright $focus  $bright
-        inactive_workspace $border $dark   $normal
+        #class              border         bg             text
+        urgent_workspace    $color_bright  $color_urgent  $color_bright
+        active_workspace    $color_bright  $color_focus   $color_bright
+        focused_workspace   $color_bright  $color_focus   $color_bright
+        inactive_workspace  $color_border  $color_dark    $color_normal
     }
 }
 

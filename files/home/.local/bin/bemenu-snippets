@@ -14,32 +14,27 @@ Options:
 Actions:
     read            read snippet to clipboard
     write           write clipboard to snippet
-    append          append clipboard to snippet
     delete          delete snippet
     edit            open snippet in editor
     type            type snippet to active window"
 
 do_read() {
-    snip "${snip_options[@]}" read "$1" | wl-copy
+    snippets "${snippets_options[@]}" read "$1" | wl-copy
 }
 
 do_write() {
-    wl-paste | snip "${snip_options[@]}" write "$1"
-}
-
-do_append() {
-    wl-paste | snip "${snip_options[@]}" append "$1"
+    wl-paste | snippets "${snippets_options[@]}" write "$1"
 }
 
 do_type() {
-    wtype -s 25 "$(snip "${snip_options[@]}" read "$1")"
+    wtype -s 25 "$(snippets "${snippets_options[@]}" read "$1")"
 }
 
-snip_options=()
+snippets_options=()
 
 while getopts ":D:h" option; do
     case $option in
-    D) snip_options+=(-D "$OPTARG") ;;
+    D) snippets_options+=(-D "$OPTARG") ;;
     h)
         printf "%s\n" "$usage"
         exit 0
@@ -54,14 +49,14 @@ done && shift $((OPTIND - 1))
 action=${1:?missing action}
 
 case $action in
-read | write | append | delete | edit | type) ;;
+read | write | delete | edit | type) ;;
 *)
     printf "Invalid action: %s\n" "$action" >&2
     exit 1
     ;;
 esac
 
-if ! name=$(snip list | bemenu -b -p "$action snippet" | head -n1) || [[ -z $name ]]; then
+if ! name=$(snippets list | bemenu -b -p "$action snippet" | head -n1) || [[ -z $name ]]; then
     printf "No snippet name entered or selected\n" >&2
     exit 1
 fi
@@ -69,6 +64,6 @@ fi
 export EDITOR=${VISUAL:-gvim}
 
 case $action in
-delete | edit) snip "${snip_options[@]}" "$action" "$name" ;;
+delete | edit) snippets "${snippets_options[@]}" "$action" "$name" ;;
 *) do_"$action" "$name" ;;
 esac

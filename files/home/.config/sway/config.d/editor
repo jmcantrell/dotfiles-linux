@@ -1,4 +1,4 @@
-bindsym      $super+e exec $terminal_here -e editor
-bindsym $alt+$super+e exec $terminal_here --class floating -e editor
+bindsym      $super+e exec terminal editor
+bindsym $alt+$super+e exec terminal --app-id=floating editor
 
 # vi:ft=sway

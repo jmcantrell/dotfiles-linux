@@ -1,4 +1,0 @@
-bindsym      $super+f exec $terminal_here -e ranger
-bindsym $alt+$super+f exec $terminal_here --class floating -e ranger
-
-# vi:ft=sway

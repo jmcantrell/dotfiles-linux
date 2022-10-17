@@ -1,5 +1,13 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Run the preferred terminal emulator.
 
-exec foot "$@"
+set -euo pipefail
+
+options=(--log-level="${LOG_LEVEL:-none}")
+
+if cwd=$(sway-pwd); then
+    options+=(--working-directory="$cwd")
+fi
+
+exec foot "${options[@]}" "$@"

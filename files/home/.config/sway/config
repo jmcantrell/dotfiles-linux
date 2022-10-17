@@ -1,20 +1,3 @@
-# Easier to remember names.
-set $alt   mod1
-set $super mod4
-
-# Open a terminal in the same working directory as the focused window.
-set $terminal_here cd "$(swaypwd)" && terminal
-
-set $dark   #000000
-set $bright #ffffff
-set $normal #4c4c4c
-set $border #191919
-set $marker #667f33
-set $urgent #993333
-set $focus  #663399
-
-bindsym shift+$super+c reload
-
 include /etc/sway/config.d/*
 include ./config.d/*
 

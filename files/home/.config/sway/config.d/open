@@ -1,3 +1,0 @@
-bindsym $super+o exec xdg-open "$(wl-paste -n)"
-
-# vi:ft=sway

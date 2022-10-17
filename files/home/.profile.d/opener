@@ -1,0 +1,3 @@
+export OPENER=opener
+
+# vi:ft=sh

@@ -1,6 +1,110 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-# An easier-to-type opener command. It's also one less cognitive burden given
-# that the opener for MacOS is `open`.
+set -euo pipefail
 
-exec xdg-open "$@"
+is_desktop() {
+    [[ -v WAYLAND_DISPLAY || -v DISPLAY ]]
+}
+
+fork() {
+    "$@" &
+    disown
+    exit
+}
+
+target=${1:?missing file/url}
+
+if [[ $target == file://* ]]; then
+    target=${target#file://}
+    target=${target//+/ }
+    target=${target//%/\\x}
+    printf -v target "%b" "$target"
+fi
+
+filename=$(basename "$target")
+mime_type=$(file --dereference --brief --mime-type "$target")
+ext=${filename##*.}
+
+if [[ $mime_type == inode/directory ]]; then
+    terminal --working-directory="$target"
+fi
+
+if [[ $target =~ ^https?:// || $ext =~ ^x?html?$ ]]; then
+    if is_desktop; then
+        fork browser -- "$target"
+    else
+        exec browser -- "$target"
+    fi
+fi
+
+if [[ $target == magnet:* || $ext =~ ^(torrent|metalink)$ ]]; then
+    if is_desktop; then
+        fork transmission-gtk -- "$target"
+    else
+        exec aria2c-torrent -- "$target"
+    fi
+fi
+
+if [[ $mime_type == text/* ]]; then
+    if is_desktop; then
+        fork visual -- "$target"
+    else
+        exec editor -- "$target"
+    fi
+fi
+
+if [[ $mime_type == image/* ]]; then
+    if is_desktop; then
+        fork imv -- "$target"
+    else
+        exec cacaview -- "$target"
+    fi
+fi
+
+if [[ $mime_type == audio/* || $ext =~ ^(m3u|pls)$ ]]; then
+    if is_desktop; then
+        terminal mpv -- "$target"
+    else
+        exec mpv -- "$target"
+    fi
+fi
+
+if [[ $mime_type == video/* ]]; then
+    if is_desktop; then
+        exec mpv -- "$target" &
+    else
+        exec mpv -- "$target"
+    fi
+fi
+
+if [[ $ext =~ ^(pdf|epub|cb[rz]|djvu)$ ]]; then
+    if is_desktop; then
+        fork zathura -- "$target"
+    fi
+fi
+
+if [[ $ext =~ ^(mobi|azw3)$ ]]; then
+    if is_desktop; then
+        fork ebook-viewer "$target"
+    fi
+fi
+
+if [[ $ext =~ ^(pptx?|od[dfgpst]|docx?|sxc|xlsx?|xlt|xlw|gnm|gnumeric)$ ]]; then
+    if is_desktop; then
+        fork libreoffice -- "$target"
+    fi
+    if [[ $ext =~ ^(docx?)$ ]]; then
+        exec catdoc -- "$target"
+    fi
+fi
+
+if [[ $ext =~ ^(7z|ace|ar|arc|bz2?|cab|cpio|cpt|deb|dgc|dmg|gz|jar|msi|pkg|rar|shar|tar|tgz|xar|xpi|xz|zip|zst)$ ]]; then
+    if is_desktop; then
+        terminal --hold aunpack -- "$target"
+    else
+        exec aunpack -- "$target"
+    fi
+fi
+
+printf "Unknown file or URL: %q\n" "$target" >&2
+exit 1

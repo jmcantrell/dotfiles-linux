@@ -1,4 +1,4 @@
-set $dict terminal --class floating -e with-pager dict
+set $dict terminal --app-id=floating with-pager dict
 
 bindsym      $super+d exec $dict "$(wl-paste -np)"
 bindsym ctrl+$super+d exec $dict "$(wl-paste -n)"

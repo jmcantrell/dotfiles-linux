@@ -1,4 +1,4 @@
-bindsym      $super+Home exec wl-copy -n "$(swaypwd)"
-bindsym ctrl+$super+Home exec wl-copy -n "$(swaypwd "$(sway-select-window-id)")"
+bindsym      $super+Home exec wl-copy -n "$(sway-pwd)"
+bindsym ctrl+$super+Home exec wl-copy -n "$(sway-pwd "$(sway-select-window-id)")"
 
 # vi:ft=sway

@@ -1,4 +1,4 @@
-bindsym      $super+Return exec $terminal_here
-bindsym $alt+$super+Return exec $terminal_here --class floating
+bindsym      $super+Return exec terminal
+bindsym $alt+$super+Return exec terminal --app-id=floating
 
 # vi:ft=sway

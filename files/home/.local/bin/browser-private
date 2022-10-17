@@ -1,5 +1,0 @@
-#!/usr/bin/env sh
-
-# Run the preferred web browser in private mode.
-
-exec qutebrowser --target private-window "$@"

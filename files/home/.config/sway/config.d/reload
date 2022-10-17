@@ -1,0 +1,3 @@
+bindsym shift+$super+c reload
+
+# vi:ft=sway

@@ -1,0 +1,9 @@
+set $color_dark   #000000
+set $color_bright #ffffff
+set $color_normal #4c4c4c
+set $color_border #191919
+set $color_marker #667f33
+set $color_urgent #993333
+set $color_focus  #663399
+
+# vi:ft=sway

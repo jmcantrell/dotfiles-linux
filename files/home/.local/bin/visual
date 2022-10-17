@@ -1,11 +1,3 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
-# Simulate a GUI for a console editor.
-# In a graphical session, start it in a terminal.
-# Otherwise, just start it normally.
-
-if [[ -v DISPLAY || -v WAYLAND_DISPLAY ]]; then
-    exec terminal -e editor "$@" &>/dev/null &
-else
-    exec editor "$@"
-fi
+exec gvim "$@"
