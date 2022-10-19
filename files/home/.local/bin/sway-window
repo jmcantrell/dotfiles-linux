@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
 
-# Gets the properties for a given window ID.
-# Usage: sway-window ID
+# Gets the properties for a given window ID (or the current one).
+# Usage: sway-window [ID]
 
 set -euo pipefail
 
-swaymsg -t get_tree |
-    jq --argjson id "${1:?missing window id}" '.. | select(.id? == $id)'
+jq_options=()
+
+if [[ -v 1 ]]; then
+    jq_options+=(--argjson id "$1")
+    jq_selector='.. | select(.id? == $id)'
+else
+    jq_selector='.. | select(.visible? and .focused?)'
+fi
+
+swaymsg -t get_tree | jq "${jq_options[@]}" "$jq_selector"
