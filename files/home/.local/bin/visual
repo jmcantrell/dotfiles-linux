@@ -1,3 +1,31 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-exec gvim "$@"
+# Pretend that an editor in a terminal has a gui.
+
+# Recognize the -f/--nofork option:
+
+fork=1
+args=()
+
+for arg in "$@"; do
+    if [[ $arg == -f || $arg == --nofork ]]; then
+        fork=0
+    else
+        args+=("$arg")
+    fi
+done
+
+cmd=(editor "${args[@]}")
+
+if [[ ! -v DISPLAY && ! -v WAYLAND_DISPLAY ]]; then
+    exec "${cmd[@]}"
+fi
+
+cmd=(terminal "${cmd[@]}")
+
+if ((fork)); then
+    "${cmd[@]}" &
+    disown
+else
+    exec "${cmd[@]}"
+fi

@@ -7,12 +7,12 @@ is_desktop() {
 }
 
 fork() {
-    "$@" &
+    "$@" 2>&1 | logger -t "${0##*/}" &
     disown
     exit
 }
 
-target=${1:?missing file/url}
+target=${1:?missing file/URL}
 
 if [[ $target == file://* ]]; then
     target=${target#file://}
@@ -21,12 +21,14 @@ if [[ $target == file://* ]]; then
     printf -v target "%b" "$target"
 fi
 
-filename=$(basename "$target")
 mime_type=$(file --dereference --brief --mime-type "$target")
+
+filename=$(basename "$target")
 ext=${filename##*.}
+ext=${ext,,}
 
 if [[ $mime_type == inode/directory ]]; then
-    terminal --working-directory="$target"
+    fork terminal --working-directory="$target"
 fi
 
 if [[ $target =~ ^https?:// || $ext =~ ^x?html?$ ]]; then
@@ -71,7 +73,7 @@ fi
 
 if [[ $mime_type == video/* ]]; then
     if is_desktop; then
-        exec mpv -- "$target" &
+        fork mpv -- "$target"
     else
         exec mpv -- "$target"
     fi

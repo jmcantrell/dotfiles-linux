@@ -3,6 +3,7 @@
 set -euo pipefail
 
 # Ensure any generated file does not interfere with stow.
-rm -f ~/.config/mimeapps.list
+rm -vf ~/.config/mimeapps.list
 
+printf "Stowing package: %q\n" "$PWD/files/home"
 stow --no-folding --dir ./files --target ~ --restow home
