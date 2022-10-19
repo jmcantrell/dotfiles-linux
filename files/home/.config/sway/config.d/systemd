@@ -1,0 +1,7 @@
+set $environment_vars DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP
+
+exec_always dbus-update-activation-environment --systemd $environment_vars
+exec_always systemctl --user import-environment $environment_vars
+exec_always systemctl --user start sway-session.target
+
+# vi:ft=sway
