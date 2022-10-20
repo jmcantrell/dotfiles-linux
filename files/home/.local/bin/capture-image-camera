@@ -31,8 +31,7 @@ Options:
                     (default: '$file_type')
 
 Arguments:
-    FILE            output file (used instead of default)
-                    formats any sequences recognized by strftime
+    FILE            output file (formats sequences recognized by strftime)
                     (default: '$directory/$file_name.$file_type')"
 
 edit=0

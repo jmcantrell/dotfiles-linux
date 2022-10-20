@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
-# Pretend that an editor in a terminal has a gui.
-
-# Recognize the -f/--nofork option:
+# Try to open the editor in the most gui-like way.
+# The order of preference is: terminal, tmux, directly.
 
 fork=1
 args=()
@@ -18,13 +17,17 @@ done
 cmd=(editor "${args[@]}")
 
 if [[ ! -v DISPLAY && ! -v WAYLAND_DISPLAY ]]; then
-    exec "${cmd[@]}"
+    if [[ -v TMUX ]]; then
+        exec tmux new-window "${cmd[@]}"
+    else
+        exec "${cmd[@]}"
+    fi
 fi
 
 cmd=(terminal "${cmd[@]}")
 
 if ((fork)); then
-    "${cmd[@]}" &
+    "${cmd[@]}" 2>&1 | logger -t "${0##*/}" &
     disown
 else
     exec "${cmd[@]}"

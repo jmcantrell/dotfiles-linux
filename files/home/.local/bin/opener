@@ -2,108 +2,164 @@
 
 set -euo pipefail
 
-is_desktop() {
-    [[ -v WAYLAND_DISPLAY || -v DISPLAY ]]
+usage="Open the given path in the appropriate program.
+
+Usage:
+    ${0##*/} [OPTIONS] PATH
+
+Options:
+    -h             show this help text and exit
+    -g LOCATION    go to a specific location in the file
+
+Arguments:
+    PATH           the file/directory/URL to open"
+
+unset goto
+
+while getopts ":g:h" option; do
+    case $option in
+    g) goto=$OPTARG ;;
+    h)
+        printf "%s\n" "$usage"
+        exit 0
+        ;;
+    :)
+        printf "Option missing argument: %s\n" "$OPTARG" >&2
+        exit 1
+        ;;
+    *)
+        printf "Invalid option: %s\n" "$OPTARG" >&2
+        exit 1
+        ;;
+    esac
+done && shift $((OPTIND - 1))
+
+try_desktop() {
+    if [[ -v WAYLAND_DISPLAY || -v DISPLAY ]]; then
+        "$@" 2>&1 | logger -t "${0##*/}" &
+        disown
+        exit 0
+    fi
 }
 
-fork() {
-    "$@" 2>&1 | logger -t "${0##*/}" &
-    disown
-    exit
+try_tmux() {
+    if [[ -v TMUX ]]; then
+        exec tmux new-window "$@"
+    fi
 }
 
-target=${1:?missing file/URL}
+is_positive_int() {
+    [[ $value =~ ^[0-9]+$ ]] && ((value > 0))
+}
 
-if [[ $target == file://* ]]; then
-    target=${target#file://}
-    target=${target//+/ }
-    target=${target//%/\\x}
-    printf -v target "%b" "$target"
+ensure_positive_int() {
+    local value=${1:-${2:-1}}
+    if ! is_positive_int "$value"; then
+        printf "Invalid value: %s (must be a positive integer)\n" "$value" >&2
+        exit 1
+    fi
+    printf "%s" "$value"
+}
+
+path=${1:?missing path}
+
+if [[ $path == file://* ]]; then
+    path=${path#file://}
+    path=${path//+/ }
+    path=${path//%/\\x}
+    printf -v path "%b" "$path"
 fi
 
-mime_type=$(file --dereference --brief --mime-type "$target")
+trap '(($? == 9)) && printf "Unrecognized path: %q\n" "$path" >&2' EXIT
 
-filename=$(basename "$target")
+if [[ -d $path ]]; then
+    try_desktop terminal --working-directory="$path"
+    try_tmux terminal --working-directory="$path"
+    cd "$path" && exec shell
+fi
+
+mime_type=$(file --dereference --brief --mime-type "$path")
+
+filename=$(basename "$path")
 ext=${filename##*.}
 ext=${ext,,}
 
-if [[ $mime_type == inode/directory ]]; then
-    fork terminal --working-directory="$target"
+if [[ $path =~ ^https?:// || $ext =~ ^x?html?$ ]]; then
+    try_desktop browser -- "$path"
+    try_tmux browser -- "$path"
+    exec browser -- "$path"
 fi
 
-if [[ $target =~ ^https?:// || $ext =~ ^x?html?$ ]]; then
-    if is_desktop; then
-        fork browser -- "$target"
-    else
-        exec browser -- "$target"
-    fi
-fi
-
-if [[ $target == magnet:* || $ext =~ ^(torrent|metalink)$ ]]; then
-    if is_desktop; then
-        fork transmission-gtk -- "$target"
-    else
-        exec aria2c-torrent -- "$target"
-    fi
+if [[ $path == magnet:* || $ext =~ ^(torrent|metalink)$ ]]; then
+    try_desktop transmission-gtk -- "$path"
+    try_tmux aria2c-torrent -- "$path"
+    exec aria2c-torrent -- "$path"
 fi
 
 if [[ $mime_type == text/* ]]; then
-    if is_desktop; then
-        fork visual -- "$target"
-    else
-        exec editor -- "$target"
+    options=()
+
+    if [[ -v goto ]]; then
+        line=$(ensure_positive_int "${goto%%:*}")
+        column=$(ensure_positive_int "${goto##*:}")
+        options+=(-c "normal ${line:-1}G${column:-1}|")
     fi
+
+    exec visual "${options[@]}" -- "$path"
 fi
 
 if [[ $mime_type == image/* ]]; then
-    if is_desktop; then
-        fork imv -- "$target"
-    else
-        exec cacaview -- "$target"
-    fi
+    try_desktop imv -- "$path"
+    try_tmux cacaview -- "$path"
+    exec cacaview -- "$path"
 fi
 
 if [[ $mime_type == audio/* || $ext =~ ^(m3u|pls)$ ]]; then
-    if is_desktop; then
-        fork terminal mpv -- "$target"
-    else
-        exec mpv -- "$target"
-    fi
+    try_desktop mpv -- "$path"
+    try_tmux mpv -- "$path"
+    exec mpv -- "$path"
 fi
 
 if [[ $mime_type == video/* ]]; then
-    if is_desktop; then
-        fork mpv -- "$target"
-    else
-        exec mpv -- "$target"
-    fi
+    try_desktop mpv -- "$path"
+    exec mpv -- "$path"
 fi
 
 if [[ $ext =~ ^(pdf|epub|cb[rz]|djvu)$ ]]; then
-    if is_desktop; then
-        fork zathura -- "$target"
+    options=()
+
+    if [[ -v goto ]]; then
+        if is_positive_int "$goto"; then
+            options+=(--page="$goto")
+        else
+            options+=(--bookmark="$goto")
+        fi
     fi
+
+    try_desktop zathura -- "$path"
+    exit 9
 fi
 
 if [[ $ext =~ ^(mobi|azw3)$ ]]; then
-    if is_desktop; then
-        fork ebook-viewer "$target"
+    options=()
+
+    if [[ -v goto ]]; then
+        options+=(--open-at="$goto")
     fi
+
+    try_desktop ebook-viewer "${options[@]}" "$path"
+    exit 9
 fi
 
 if [[ $ext =~ ^(pptx?|od[dfgpst]|docx?|sxc|xlsx?|xlt|xlw|gnm|gnumeric)$ ]]; then
-    if is_desktop; then
-        fork libreoffice -- "$target"
-    fi
+    try_desktop libreoffice -- "$path"
+    exit 9
 fi
 
 if [[ $ext =~ ^(7z|ace|ar|arc|bz2?|cab|cpio|cpt|deb|dgc|dmg|gz|jar|msi|pkg|rar|shar|tar|tgz|xar|xpi|xz|zip|zst)$ ]]; then
-    if is_desktop; then
-        fork terminal --hold aunpack -- "$target"
-    else
-        exec aunpack -- "$target"
-    fi
+    try_desktop terminal --hold aunpack -- "$path"
+    try_tmux aunpack --page -- "$path"
+    exec aunpack -- "$path"
 fi
 
-printf "Unknown file or URL: %q\n" "$target" >&2
-exit 1
+exit 9

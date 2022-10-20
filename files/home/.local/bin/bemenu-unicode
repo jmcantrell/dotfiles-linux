@@ -16,7 +16,6 @@ if [[ ! -f $cache_file || $data_file -nt $cache_file ]]; then
     } >"$cache_file"
 fi
 
-bemenu -l 20 -b -p unicode <"$cache_file" |
-    cut -d$'\t' -f1 |
-    tr -d '[:space:]' |
-    wl-copy -n
+readarray -t codes < <(bemenu -l 20 -b -p unicode <"$cache_file" | cut -d$'\t' -f2)
+
+printf "%b" "${codes[@]/#/\\U}" | wl-copy
