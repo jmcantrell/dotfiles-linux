@@ -1,4 +1,5 @@
 order = [
+    "hostname",
     "network_interfaces",
     "path_exists:mullvad",
     "systemd_unit:swayidle",
