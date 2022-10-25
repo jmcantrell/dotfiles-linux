@@ -29,30 +29,28 @@ def proc_stat_cpu_columns(*columns):
     return [int(values[column_index[column]]) for column in columns]
 
 
-def sample():
+def proc_stat_sample():
     return proc_stat_cpu_columns("user", "system", "idle", "iowait")
 
 
 class Element(BaseElement):
-
-    def __init__(self, *args, **kwargs):
-        self._format = kwargs.pop("format", "cpu {:.1f}%")
-        self._previous_sample = sample()
+    def __init__(self, *args, full_text=None, **kwargs):
         super().__init__(*args, **kwargs)
+        self._full_text = full_text or "cpu {:.1f}%"
+        self._previous_sample = proc_stat_sample()
 
     def on_update(self, output):
-        current_sample = sample()
-
-        user, system, idle, iowait = values = [
-            b - a for a, b in zip(self._previous_sample, current_sample)
-        ]
-
+        sample = proc_stat_sample()
+        values = [b - a for a, b in zip(self._previous_sample, sample)]
         total = sum(values)
-        active = total - idle
-        percent = active * 100 / total
 
-        self._previous_sample = current_sample
+        if total == 0:
+            percent = 0
+        else:
+            active = total - values[2]  # idle
+            percent = active * 100 / total
 
-        full_text = self._format.format(percent)
+        self._previous_sample = sample
 
+        full_text = self._full_text.format(percent)
         output.append(self.create_block(full_text))

@@ -21,13 +21,11 @@ def is_active(unit, **kwargs):
 
 
 class Element(BaseElement):
-    name = "systemd_unit"
-
-    def __init__(self, *args, **kwargs):
-        self._unit = kwargs.pop("unit")
-        self._user = kwargs.pop("user", False)
-        self._label = kwargs.pop("label", self._unit)
+    def __init__(self, *args, unit=None, user=False, full_text=None, **kwargs):
         super().__init__(*args, **kwargs)
+        self._user = user
+        self._unit = unit or (user and "session.slice") or "user.slice"
+        self._full_text = full_text or self._unit
 
     def _systemctl(self, *args):
         return systemctl(*args, self._unit, user=self._user)
@@ -37,14 +35,11 @@ class Element(BaseElement):
         return is_active(self._unit, user=self._user)
 
     def on_update(self, output):
-        kwargs = {}
-
-        if not is_active(self._unit, user=self._user):
+        kwargs = {"instance": str(self._unit)}
+        if not self._is_active:
             kwargs["color"] = color_off
 
-        kwargs["instance"] = str(self._unit)
-
-        output.append(self.create_block(self._label, **kwargs))
+        output.append(self.create_block(self._full_text, **kwargs))
 
     def on_click_1(self, _):
         self._systemctl("stop" if self._is_active else "start")

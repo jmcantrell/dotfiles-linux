@@ -16,33 +16,27 @@ def is_muted(sink):
 
 
 class Element(BaseElement):
-
-    def __init__(self, *args, **kwargs):
-        self._sink = kwargs.pop("sink", "@DEFAULT_SINK@")
-        self._format = kwargs.pop("format", "audio {}")
-        self._volume_format = kwargs.pop("volume_format", "{}%")
+    def __init__(self, *args, sink=None, full_text=None, volume_text=None, **kwargs):
         super().__init__(*args, **kwargs)
-
-    @property
-    def _volume_text(self):
-        volumes = stereo_volume(self._sink)
-        if len(set(volumes)) == 1:
-            return self._volume_format.format(volumes[0])
-        else:
-            return " / ".join([self._volume_format.format(v) for v in volumes])
-
-    @property
-    def _is_muted(self):
-        return is_muted(self._sink)
+        self._sink = sink or "@DEFAULT_SINK@"
+        self._full_text = full_text or "audio {}"
+        self._volume_text = volume_text or "{}%"
 
     def on_update(self, output):
-        kwargs = {}
-
         try:
-            if self._is_muted:
-                kwargs["color"] = color_off
-            full_text = self._format.format(self._volume_text)
+            muted = is_muted(self._sink)
+            volumes = stereo_volume(self._sink)
         except subprocess.CalledProcessError:
             return
 
+        kwargs = {}
+        if muted:
+            kwargs["color"] = color_off
+
+        if len(set(volumes)) == 1:
+            volume_text = self._volume_text.format(volumes[0])
+        else:
+            volume_text = " / ".join([self._volume_text.format(v) for v in volumes])
+
+        full_text = self._full_text.format(volume_text)
         output.append(self.create_block(full_text, **kwargs))

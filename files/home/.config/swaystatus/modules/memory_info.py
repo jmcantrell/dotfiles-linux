@@ -23,14 +23,13 @@ def get_line_kbytes(line_number):
 
 
 class Element(BaseElement):
-
-    def __init__(self, *args, **kwargs):
-        self._line_number = find_line_number(kwargs.pop("key", "MemAvailable"))
-        self._format = kwargs.pop("format", "mem {}")
+    def __init__(self, *args, key=None, full_text=None, **kwargs):
         super().__init__(*args, **kwargs)
+        self._key = key or "MemAvailable"
+        self._line_number = find_line_number(self._key)
+        self._full_text = full_text or "mem {}"
 
     def on_update(self, output):
         memory_bytes = get_line_kbytes(self._line_number) * 1024
-        memory_human = bytes_to_human(memory_bytes)
-        full_text = self._format.format(memory_human)
+        full_text = self._full_text.format(bytes_to_human(memory_bytes))
         output.append(self.create_block(full_text))

@@ -57,22 +57,21 @@ def path_free_bytes(path):
 
 
 class Element(BaseElement):
-    name = "mounts"
-
-    def __init__(self, *args, **kwargs):
-        self._format = kwargs.pop("format", "{label} {free}")
+    def __init__(self, *args, full_text=None, **kwargs):
         super().__init__(*args, **kwargs)
+        self._full_text = full_text or "{label} {free}"
 
     def on_update(self, output):
         for path, vfstype in mounted_paths():
             instance = str(path)
             label = path.name or "root"
-            format_kwargs = {"label": label, "free": ""}
+
+            kwargs = {"label": label, "free": ""}
             if vfstype not in nosize_vfstypes:
                 try:
-                    free_bytes = path_free_bytes(path)
-                    format_kwargs["free"] = bytes_to_human(free_bytes)
+                    kwargs["free"] = bytes_to_human(path_free_bytes(path))
                 except PermissionError:
                     pass
-            full_text = self._format.format(**format_kwargs).strip()
+
+            full_text = self._full_text.format(**kwargs).strip()
             output.append(self.create_block(full_text, instance=instance))

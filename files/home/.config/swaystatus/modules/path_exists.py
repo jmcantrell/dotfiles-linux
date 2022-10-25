@@ -4,20 +4,15 @@ from .colors import color_off
 
 
 class Element(BaseElement):
-    name = "path_exists"
-
-    def __init__(self, *args, **kwargs):
-        path = kwargs.pop("path", "/")
-        self._path = Path(path).expanduser()
-        self._label = kwargs.pop("label", path)
+    def __init__(self, *args, path=None, full_text=None, **kwargs):
         super().__init__(*args, **kwargs)
+        self._path = Path(path)
+        self._full_text = full_text or "{}"
 
     def on_update(self, output):
         kwargs = {}
-
-        if not self._path.exists():
+        if not self._path.expanduser().exists():
             kwargs["color"] = color_off
 
-        kwargs["instance"] = str(self._path)
-
-        output.append(self.create_block(self._label, **kwargs))
+        full_text = self._full_text.format(str(self._path))
+        output.append(self.create_block(full_text, **kwargs))

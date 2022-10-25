@@ -2,22 +2,23 @@ import os, subprocess
 from subprocess import DEVNULL
 
 data_sizes_in_bytes = {}
-data_size_symbols = "BKMGTPEZY"
-for i, s in enumerate(data_size_symbols[1:]):
+data_size_symbols = "YZEPTGMKB"
+for i, s in enumerate(reversed(data_size_symbols[:-1])):
     data_sizes_in_bytes[s] = 1 << (i + 1) * 10
 
 
-def bytes_to_human(value, format="{value} {symbol}"):
+def bytes_to_human(value, fmt=None):
     if value == 0:
         return "0"
 
-    for symbol in reversed(data_size_symbols[1:]):
-        if value >= data_sizes_in_bytes[symbol]:
-            value = value / data_sizes_in_bytes[symbol]
-            value = "{:n}".format(round(value, 1))
-            return format.format(symbol=symbol, value=value)
+    fmt = fmt or "{value:n} {symbol}"
 
-    return format.format(symbol=data_size_symbols[0], value=value)
+    for symbol in data_size_symbols[:-1]:
+        if value >= data_sizes_in_bytes[symbol]:
+            value /= data_sizes_in_bytes[symbol]
+            return fmt.format(value=round(value, 1), symbol=symbol)
+
+    return fmt.format(value=value, symbol=data_size_symbols[-1])
 
 
 def run(command, *args, **kwargs):

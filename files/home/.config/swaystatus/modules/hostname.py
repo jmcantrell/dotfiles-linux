@@ -5,10 +5,10 @@ source = Path("/etc/hostname")
 
 
 class Element(BaseElement):
-    def __init__(self, *args, **kwargs):
-        self._format = kwargs.pop("format", "{}")
-        self._watch = kwargs.pop("watch", False)
+    def __init__(self, *args, watch=False, full_text=None, **kwargs):
         super().__init__(*args, **kwargs)
+        self._watch = watch
+        self._full_text = full_text or "{}"
         self._last_update = 0
         self._cached_hostname = None
 
@@ -23,5 +23,5 @@ class Element(BaseElement):
         return self._cached_hostname
 
     def on_update(self, output):
-        full_text = self._format.format(self._hostname)
+        full_text = self._full_text.format(self._hostname)
         output.append(self.create_block(full_text))

@@ -13,40 +13,40 @@ order = [
 ]
 
 [settings.network_interfaces]
-on_click.1 = 'terminal --hold -e networkctl status'
-on_click.2 = 'terminal -e sudo iftop -i ${instance}'
-on_click.3 = 'terminal -e ip -color -human monitor'
+on_click.1 = 'terminal --hold networkctl status'
+on_click.2 = 'terminal sudo iftop -i ${instance}'
+on_click.3 = 'terminal ip -color -human monitor'
 
 [settings.mounts]
-on_click.1 = 'terminal --hold -e df --si --human-readable ${instance}'
-on_click.3 = 'terminal -e ncdu ${instance}'
+on_click.1 = 'terminal --hold df --si --human-readable ${instance}'
+on_click.3 = 'terminal ncdu ${instance}'
 
 [settings."path_exists:mullvad"]
 path = "/sys/class/net/wg-mullvad"
-label = "vpn"
+full_text = "vpn"
 on_click.1 = "mullvad-toggle"
-on_click.2 = 'terminal -e sudo iftop -i wg-mullvad'
-on_click.3 = "terminal --hold -e mullvad-details"
+on_click.2 = 'terminal sudo iftop -i wg-mullvad'
+on_click.3 = "terminal --hold mullvad-details"
 
 [settings."systemd_unit:swayidle"]
-label = "idle"
+full_text = "idle"
 unit = "swayidle.service"
 user = true
 
 [settings.clock]
 on_click.1 = "date --iso-8601=seconds | wl-copy -n"
 on_click.2 = "date --iso-8601=seconds --utc | wl-copy -n"
-on_click.3 = "terminal -e set-timezone"
+on_click.3 = "terminal set-timezone"
 
 [settings.cpu_usage]
-on_click.1 = "terminal -e top"
-on_click.3 = "terminal -e sudo iotop"
+on_click.1 = "terminal top"
+on_click.3 = "terminal sudo iotop"
 
 [settings.memory_info]
-on_click.1 = "terminal -e watch free -h"
+on_click.1 = "terminal watch free -h"
 
 [settings.batteries]
-on_click.1 = "terminal -e watch acpi --details"
+on_click.1 = "terminal watch acpi --details"
 
 [settings.pulseaudio]
 on_click.1 = "set-audio-volume mute"
@@ -56,4 +56,4 @@ on_click.5 = "set-audio-volume down"
 
 [settings.mpris]
 on_click.1 = "playerctl play-pause"
-on_click.3 = "terminal --hold -e playerctl metadata"
+on_click.3 = "terminal --hold playerctl metadata"
