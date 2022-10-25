@@ -105,6 +105,7 @@ if [[ $mime_type == text/* ]]; then
         options+=(-c "normal ${line:-1}G${column:-1}|")
     fi
 
+    try_desktop visual "${options[@]}" -- "$path"
     exec visual "${options[@]}" -- "$path"
 fi
 

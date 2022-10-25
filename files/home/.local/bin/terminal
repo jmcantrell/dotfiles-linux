@@ -4,9 +4,9 @@
 
 set -euo pipefail
 
-options=()
+options=(--log-level="${LOG_LEVEL:-warning}")
 
-if command -v sway-pwd && cwd=$(sway-pwd); then
+if command -v sway-pwd >/dev/null && cwd=$(sway-pwd); then
     options+=(--working-directory="$cwd")
 fi
 

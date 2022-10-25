@@ -3,32 +3,12 @@
 # Try to open the editor in the most gui-like way.
 # The order of preference is: terminal, tmux, directly.
 
-fork=1
-args=()
-
-for arg in "$@"; do
-    if [[ $arg == -f || $arg == --nofork ]]; then
-        fork=0
-    else
-        args+=("$arg")
-    fi
-done
-
-cmd=(editor "${args[@]}")
-
 if [[ ! -v DISPLAY && ! -v WAYLAND_DISPLAY ]]; then
     if [[ -v TMUX ]]; then
-        exec tmux new-window "${cmd[@]}"
+        exec tmux new-window editor "$@"
     else
-        exec "${cmd[@]}"
+        exec editor "$@"
     fi
 fi
 
-cmd=(terminal "${cmd[@]}")
-
-if ((fork)); then
-    "${cmd[@]}" 2>&1 | logger -t "${0##*/}" &
-    disown
-else
-    exec "${cmd[@]}"
-fi
+exec terminal editor "$@"
