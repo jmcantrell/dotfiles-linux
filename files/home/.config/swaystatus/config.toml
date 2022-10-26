@@ -18,8 +18,9 @@ on_click.2 = 'terminal sudo iftop -i ${instance}'
 on_click.3 = 'terminal ip -color -human monitor'
 
 [settings.mounts]
-on_click.1 = 'terminal --hold df --si --human-readable ${instance}'
-on_click.3 = 'terminal ncdu ${instance}'
+on_click.1 = 'terminal --working-directory=$instance'
+on_click.2 = 'terminal --hold df --si --human-readable $instance'
+on_click.3 = 'terminal ncdu $instance'
 
 [settings."path_exists:mullvad"]
 path = "/sys/class/net/wg-mullvad"
