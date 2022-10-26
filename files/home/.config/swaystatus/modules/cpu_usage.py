@@ -1,5 +1,5 @@
 from pathlib import Path
-from swaystatus import BaseElement
+from swaystatus.element import BaseElement
 
 source = Path("/proc/stat")
 

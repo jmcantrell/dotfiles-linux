@@ -1,5 +1,6 @@
-import subprocess, html
-from swaystatus import BaseElement
+import html
+import subprocess
+from swaystatus.element import BaseElement
 from .util import capture_stdout
 
 

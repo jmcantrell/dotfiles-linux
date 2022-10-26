@@ -1,5 +1,5 @@
 from pathlib import Path
-from swaystatus import BaseElement
+from swaystatus.element import BaseElement
 
 source = Path("/sys/class/power_supply")
 

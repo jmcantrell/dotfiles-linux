@@ -1,5 +1,5 @@
 from subprocess import CalledProcessError
-from swaystatus import BaseElement
+from swaystatus.element import BaseElement
 from .util import run_quietly
 from .colors import color_off
 

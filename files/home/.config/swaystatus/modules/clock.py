@@ -1,5 +1,5 @@
 import time
-from swaystatus import BaseElement
+from swaystatus.element import BaseElement
 
 
 class Element(BaseElement):

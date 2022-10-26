@@ -1,5 +1,5 @@
 import subprocess
-from swaystatus import BaseElement
+from swaystatus.element import BaseElement
 from .util import capture_stdout
 from .colors import color_off
 

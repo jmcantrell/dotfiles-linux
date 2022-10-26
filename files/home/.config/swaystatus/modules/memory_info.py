@@ -1,5 +1,5 @@
 from pathlib import Path
-from swaystatus import BaseElement
+from swaystatus.element import BaseElement
 from .util import bytes_to_human, get_file_line
 
 source = Path("/proc/meminfo")

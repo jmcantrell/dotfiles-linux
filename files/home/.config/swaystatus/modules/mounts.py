@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from swaystatus import BaseElement
+from swaystatus.element import BaseElement
 from .util import bytes_to_human
 
 source = Path("/proc/mounts")
