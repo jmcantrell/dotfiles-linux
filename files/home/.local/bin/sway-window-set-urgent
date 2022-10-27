@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+parent_pid() {
+    awk '/^PPid:/ { print $NF }' /proc/"$1"/status
+}
+
+has_window() {
+    swaymsg -t get_tree | jq -e --argjson pid "$1" '.. | select(.pid? == $pid)' >/dev/null
+}
+
+pid=${1:-$$}
+
+while [[ -f /proc/$pid/status ]]; do
+    if has_window "$pid"; then
+        swaymsg "[pid=\"$pid\"]" mark urgent
+        swaymsg '[con_mark="urgent"]' urgent enable
+        exit 0
+    fi
+    pid=$(parent_pid "$pid")
+done
+
+exit 1

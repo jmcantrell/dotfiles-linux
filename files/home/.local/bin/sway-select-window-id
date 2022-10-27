@@ -1,9 +1,7 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 # Returns the ID of a selected window.
 
-set -euo pipefail
-
-swaymsg -t get_tree |
+exec swaymsg -t get_tree |
     jq -r '.. | select(.id? and .visible?) | .rect + {id} | "\(.x),\(.y) \(.width)x\(.height) \(.id)"' |
     slurp -r -f "%l"

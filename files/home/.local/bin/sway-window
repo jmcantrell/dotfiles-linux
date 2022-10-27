@@ -14,4 +14,4 @@ else
     jq_selector='.. | select(.visible? and .focused?)'
 fi
 
-swaymsg -t get_tree | jq "${jq_options[@]}" "$jq_selector"
+exec swaymsg -t get_tree | jq "${jq_options[@]}" "$jq_selector"
