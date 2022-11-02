@@ -9,7 +9,7 @@ Usage:
 
 Options:
     -h             show this help text and exit
-    -g LOCATION    go to a specific location in the file
+    -g LOCATION    go to a specific location (if supported)
 
 Arguments:
     PATH           the file/directory/URL to open"
@@ -96,7 +96,7 @@ if [[ $path == magnet:* || $ext =~ ^(torrent|metalink)$ ]]; then
     exec aria2c-torrent -- "$path"
 fi
 
-if [[ $mime_type == text/* ]]; then
+if [[ $mime_type == text/* || $mime_type == application/x-subrip ]]; then
     options=()
 
     if [[ -v goto ]]; then
