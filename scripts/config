@@ -32,7 +32,7 @@ if [[ $(stat -fc "%T" /) == btrfs ]]; then
 fi
 
 # Enable desktop tools.
-systemctl --user enable --now {mako,udiskie,swayidle}.service
+systemctl --user enable --now {mako,udiskie,swayidle,kanshi}.service
 
 # Only enable battery monitoring if a battery exists.
 if [[ -e /sys/class/power_supply/BAT0 ]]; then

@@ -1,0 +1,4 @@
+profile {
+    output 'Dell Inc. DELL SE198WFP GM7788543WRM' position 0,0
+    output LVDS-1 position 1440,0
+}
