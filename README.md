@@ -12,7 +12,7 @@ Install packages, symlink files, and configure system:
 ./scripts/config
 ```
 
-## Additional tasks
+## Maintenance
 
 Update files with latest changes:
 
