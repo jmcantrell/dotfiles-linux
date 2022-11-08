@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+config_file=${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs
+
+if [[ -f $config_file ]] && ! . "$config_file"; then
+    printf "Unable to source file: %q\n" "$config_file" >&2
+    exit 1
+fi
+
+name=${1:-}
+
+if [[ -z $name ]]; then
+    value=$HOME
+else
+    env_var=XDG_${name^^}_DIR
+    value=${!env_var:-$HOME}
+fi
+
+printf "%s\n" "$value"
