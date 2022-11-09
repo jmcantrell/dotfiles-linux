@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+[[ -v SWAYSOCK ]] || return 1
+
+exec img2sixel -w "$(swaymsg -t get_tree | jq '.. | select(.visible? and .focused?).rect.width')" "$@"
