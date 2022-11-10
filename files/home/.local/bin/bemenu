@@ -2,6 +2,8 @@
 
 # Wrapper for bemenu that adds some default options.
 
+killall bemenu
+
 exec /usr/bin/bemenu -i -b -n \
     --fn 'monospace 12' \
     --tb='#222222' --tf='#ffffff' \
