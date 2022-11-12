@@ -34,6 +34,9 @@ fi
 # Enable desktop tools.
 systemctl --user enable --now {mako,udiskie,swayidle,kanshi}.service
 
+# Enable foot server.
+systemctl --user enable --now foot-server@wayland-1.{socket,service}
+
 # Only enable battery monitoring if a battery exists.
 if [[ -e /sys/class/power_supply/BAT0 ]]; then
     systemctl --user enable --now check-battery.timer
