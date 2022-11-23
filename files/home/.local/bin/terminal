@@ -10,4 +10,4 @@ if command -v sway-pwd >/dev/null && cwd=$(sway-pwd); then
     options+=(--working-directory="$cwd")
 fi
 
-exec footclient "${options[@]}" "$@"
+exec foot "${options[@]}" "$@"
