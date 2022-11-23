@@ -1,0 +1,4 @@
+alias cbi=wl-copy
+alias cbo=wl-paste
+
+# vi:ft=sh
