@@ -29,7 +29,7 @@ relays_file=/usr/local/share/mullvad/relays.json
 mkdir -p "$(dirname "$relays_file")"
 curl -sSL -o "$relays_file" https://api.mullvad.net/public/relays/wireguard/v1/
 
-conf_template='[Interface]
+config_template='[Interface]
 PrivateKey = $PRIVATE_KEY
 Address = $ADDRESS
 DNS = $DNS
@@ -45,8 +45,8 @@ mkdir -p "$wg_config_dir"
 umask 077
 
 while read -r hostname && read -r public_key && read -r ipv4_addr_in; do
-    conf_file=$wg_config_dir/mullvad-${hostname%-wireguard}.conf
+    config_file=$wg_config_dir/mullvad-${hostname%-wireguard}.conf
     export PUBLIC_KEY=$public_key
     export ENDPOINT=$ipv4_addr_in:51820
-    envsubst <<<"$conf_template" >"$conf_file"
+    envsubst <<<"$config_template" >"$config_file"
 done < <(jq -er '.. | select(.hostname?) | .hostname, .public_key, .ipv4_addr_in' "$relays_file")

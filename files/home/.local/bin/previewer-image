@@ -4,4 +4,4 @@ set -euo pipefail
 
 [[ -v SWAYSOCK ]] || return 1
 
-exec img2sixel -w "$(swaymsg -t get_tree | jq '.. | select(.visible? and .focused?).rect.width')" "$@"
+exec img2sixel -w "$(swaymsg -t get_tree | jq -r '.. | select(.visible? and .focused?).rect.width')" "$@"
