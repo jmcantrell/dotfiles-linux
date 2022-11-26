@@ -1,2 +1,7 @@
+alias t='trash-put -v'
+alias unt='trash-restore'
+alias tls='trash-list'
+alias te='trash-empty -v'
+alias trm='trash-rm'
 
 # vi:ft=sh
