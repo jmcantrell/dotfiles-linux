@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-# Start a wayland window manager with logging after loading its environment.
+# Start a wayland window manager with logging after loading an environment.
 
 set -euo pipefail
 shopt -s nullglob
 
 for file in ~/.wprofile.d/*; do
-    if [[ -f $file ]] && ! source "$file"; then
+    if [[ -f $file ]] && ! . "$file"; then
         printf "Unable to source file: %q\n" "$file" >&2
         exit 1
     fi

@@ -4,4 +4,6 @@
 
 set -euo pipefail
 
-udiskie-umount "$(udiskie-info -a -o "{mount_path}" -f is_mounted | sort | bemenu -l 20 -b -p unmount)"
+while IFS= read -r path; do
+    udiskie-umount "$path"
+done < <(udiskie-info -a -o "{mount_path}" -f is_mounted | sort | bemenu -l 20 -b -p unmount)

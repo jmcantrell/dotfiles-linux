@@ -4,7 +4,7 @@
 
 # Relies on writing the device IDs to a procfs file, which is reset on each
 # boot, hence, the systemd service. A helper script is generated when this
-# script runs and used to detect the device IDs every time the service is
+# script runs and is used to detect the device IDs every time the service is
 # started to ensure that any hardware reconfiguration (though unlikely) does
 # not break the functionality.
 

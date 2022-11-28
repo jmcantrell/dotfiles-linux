@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Provides an equivalent version of this command without needing to install the
+# package (and the included service that creates the directories).
+
 set -euo pipefail
 
 config_file=${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs

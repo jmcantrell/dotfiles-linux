@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 
+# Alert the user when the given command is done.
+# Usage: ding [COMMAND [ARGUMENT...]]
+
 set -euo pipefail
 
+# If this isn't a desktop session, just run the command.
 if [[ ! -v WAYLAND_DISPLAY || ! -v DISPLAY ]]; then
     exec "$@"
 fi
 
-if "$@"; then
+if "${@:-true}"; then
     sound=complete
 else
     sound=dialog-error

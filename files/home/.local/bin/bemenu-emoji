@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Copy a menu-selected emoji to the clipboard.
+# Copy menu-selected emoji to the clipboard.
 
 set -euo pipefail
 

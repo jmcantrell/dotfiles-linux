@@ -115,15 +115,20 @@ if [[ $mime_type == image/* ]]; then
     exec cacaview -- "$path"
 fi
 
-if [[ $mime_type == audio/* || $ext =~ ^(m3u|pls)$ ]]; then
-    try_desktop mpv -- "$path"
-    try_tmux mpv -- "$path"
-    exec mpv -- "$path"
-fi
+if [[ $mime_type =~ ^(audio|video)/ || $ext =~ ^(m3u|pls)$ ]]; then
+    options=()
 
-if [[ $mime_type == video/* ]]; then
-    try_desktop mpv -- "$path"
-    exec mpv -- "$path"
+    if [[ -v goto ]]; then
+        options+=(--start="$goto")
+    fi
+
+    try_desktop mpv "${options[@]}" -- "$path"
+
+    if [[ $mime_type == audio/* ]]; then
+        try_tmux mpv "${options[@]}" -- "$path"
+    fi
+
+    exec mpv "${options[@]}" -- "$path"
 fi
 
 if [[ $ext =~ ^(pdf|epub|cb[rz]|djvu)$ ]]; then
@@ -137,7 +142,7 @@ if [[ $ext =~ ^(pdf|epub|cb[rz]|djvu)$ ]]; then
         fi
     fi
 
-    try_desktop zathura -- "$path"
+    try_desktop zathura "${options[@]}" -- "$path"
     exit 9
 fi
 

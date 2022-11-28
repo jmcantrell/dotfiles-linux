@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Copy menu-selected unicode composition to the clipboard.
+
 set -euo pipefail
 
 locale_conf=/etc/locale.conf

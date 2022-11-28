@@ -4,9 +4,7 @@ set -euo pipefail
 
 port_config_file=/usr/local/etc/mullvad/port.conf
 
-if [[ ! -f $port_config_file ]]; then
-    exit 0
-fi
+[[ -f $port_config_file ]] || exit 0
 
 unset PORT
 
