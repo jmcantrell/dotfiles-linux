@@ -1,4 +1,3 @@
-bindsym      $super+Escape exec browser --target window
-bindsym $alt+$super+Escape exec browser --target private-window
+bindsym $super+Escape exec browser
 
 # vi:ft=sway
